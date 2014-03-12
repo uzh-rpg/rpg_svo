@@ -129,7 +129,7 @@ Although SVO can be used with this camera model, the algorithm does not work yet
 Parameter Settings
 ------------------
 
-A description of all parameters which can be set via the launchfile is provided in `svo/include/config.h`. The default parameters can be viewed in `svo/src/config.cpp`. Moreover, some additional parameters (mainly rostopic names etc.) are read from the ros parameter server in `svo_ros/slam_node.cpp`.
+A description of all parameters which can be set via the launchfile is provided in `svo/include/config.h`. The default parameters can be viewed in `svo/src/config.cpp`. Moreover, some additional parameters (mainly rostopic names etc.) are read from the ros parameter server in `svo_ros/vo_node.cpp`.
 
 Generating Code Documentation
 -----------------------------
@@ -142,8 +142,8 @@ You can generate a Doxygen documentation as follows
 Contributing
 ------------
 
-You are very welcome to contribute by opening a pull request via Github.
-I try to follow the ROS C++ style guide.
+You are very welcome to contribute to SVO by opening a pull request via Github.
+I try to follow the ROS C++ style guide http://wiki.ros.org/CppStyleGuide
 
 Licence
 -------
@@ -155,7 +155,7 @@ Citing
 
 If you use SVO in an academic context, please cite the following publication:
 
-    @article{Pomerleau12comp,
+    @article{Forster2014ICRA,
       author = {Forster, Christian and Pizzoli, Matia and Scaramuzza, Davide},
       title = {{SVO: Fast Semi-Direct Monocular Visual Odometry}},
       journal = {IEEE International Conference on Robotics and Automation (ICRA)},
