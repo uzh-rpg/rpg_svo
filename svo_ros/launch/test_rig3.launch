@@ -1,0 +1,16 @@
+<launch>
+  <node pkg="svo_ros" type="vo" name="svo" clear_params="true" launch-prefix="gdb -ex run --args" output="screen"> 
+    <param name="cam_topic" value="/camera/image_raw" type="str" />
+    <param name="cam_model" value="ATAN" type="str" />
+    <param name="cam_width" value="752" />
+    <param name="cam_height" value="480" />
+    <param name="cam_fx" value="0.509326" />
+    <param name="cam_fy" value="0.796651" />
+    <param name="cam_cx" value="0.459051" />
+    <param name="cam_cy" value="0.510056" />
+    <param name="cam_d0" value="0.93207" />
+    <param name="init_rx" value="3.14" />
+    <rosparam file="$(find svo_ros)/param/vo_fast.yaml" />
+  </node>
+  <node name="svo_ros_rviz" pkg="rviz" type="rviz" args=" -d $(find svo_ros)/rviz_config.rviz" /> 
+</launch>

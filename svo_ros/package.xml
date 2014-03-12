@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<package>
+  <name>svo_ros</name>
+  <version>0.1.0</version>
+  <description>
+    Monocular Visual Odometry - ROS Nodes
+  </description>
+  <author>Christian Forster</author>
+  <maintainer email="forster@ifi.uzh.ch">Christian Forster</maintainer>
+  <license>GPLv3</license>
+
+  <!-- Dependencies which this package needs to build itself. -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Dependencies needed to compile this package. -->
+  <build_depend>roscpp</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>visualization_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>image_transport</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>svo</build_depend>
+  <build_depend>svo_msgs</build_depend>
+  <build_depend>vikit_common</build_depend>
+  <build_depend>vikit_ros</build_depend>
+  
+  <!-- Dependencies needed after this package is compiled. -->
+  <run_depend>roscpp</run_depend>
+  <run_depend>nav_msgs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>visualization_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>image_transport</run_depend>
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>svo</run_depend>
+  <run_depend>svo_msgs</run_depend>
+  <run_depend>vikit_common</run_depend>
+  <run_depend>vikit_ros</run_depend>
+</package>

@@ -1,0 +1,25 @@
+<launch>
+  
+    <node pkg="svo_ros" type="vo" name="svo" clear_params="true" output="screen">
+    
+        <param name="cam_topic" value="/camera/image_raw" type="str" />
+        <rosparam file="$(find rpg_calib)/cameras/bluefox_847_cfo_atan.yaml" />
+        <rosparam file="$(find svo_ros)/param/vo_fast.yaml" />
+
+        <param name="map_scale" value="0.5" />
+        <param name="init_rx" value="3.14" />
+        <param name="image_publishing_level" value="0" />
+        <param name="publish_every_nth_img" value="1" />
+        <param name="accept_console_user_input" value="True" />
+        
+        <param name="publish_dense_input" value="True" />
+        <param name="publish_every_nth_dense_input" value="5" />
+    </node>
+    
+    <!--
+    <node pkg="image_view" type="image_view" name="image_svo">
+        <remap from="image" to="/svo/image" />
+    </node>
+    -->
+    
+</launch>

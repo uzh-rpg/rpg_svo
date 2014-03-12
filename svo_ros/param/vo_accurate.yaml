@@ -1,0 +1,4 @@
+grid_size: 20
+max_n_kfs: 50
+loba_num_iter: 10
+max_fts: 200
