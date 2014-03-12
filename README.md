@@ -57,10 +57,10 @@ I suggest an out-of-source build of g2o:
 
 If you don't want to make a system install, then you can replace the cmake command with `cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$HOME/installdir` 
 
-#### ViKit - Some useful tools that we need
+#### vikit - Some useful tools that we need
 
-ViKit for instance contains camera models, some math and interpolation functions that SVO needs.
-ViKit is a catkin project, therefore, download it into your catkin workspace source folder.
+vikit for contains camera models, some math and interpolation functions that SVO needs.
+vikit is a catkin project, therefore, download it into your catkin workspace source folder.
 
     cd catkin_ws/src
     git clone https://github.com/uzh-rpg/rpg_vikit.git
@@ -88,17 +88,12 @@ Open a new console and start SVO with the prepared launchfile:
 
     roslaunch svo_ros test_rig3.launch
     
-Open a new console and start RViz
-
-    rosrun rviz rviz
-    
-In RViz, load the configuration file (File > Open Config) which is stored in `svo_ros/rviz_config.rviz`.
-
 Now you are ready to start the rosbag. Open a new console and change to the directory where you have downloaded the example dataset. Then type:
 
     rosbag play airground_rig_s3_2013-03-18_21-38-48.bag
     
 Now you should see the video with tracked features (green) and in RViz how the camera moves.
+If you want to see the number of tracked features, fps and tracking quality, run the GUI.
 
 SVO GUI
 -------
@@ -109,7 +104,7 @@ If the widget is not found, try this:
 
     rm ~/.config/ros.org/rqt_gui.ini
     rosrun rqt_svo rqt_svo
-    
+
 
 Keyboard Shortcuts
 ------------------
