@@ -135,3 +135,15 @@ Licence
 -------
 
 The source code is released under GPLv3 licence. A professional edition license for closed-source projects is also available. Please contact `forster at ifi dot uzh dot ch` for further information.
+
+Citing
+------
+
+If you use SVO in an academic context, please cite the following publication:
+
+    @article{Pomerleau12comp,
+      author = {Forster, Christian and Pizzoli, Matia and Scaramuzza, Davide},
+      title = {{SVO: Fast Semi-Direct Monocular Visual Odometry}},
+      journal = {IEEE International Conference on Robotics and Automation (ICRA)},
+      year = {2014}
+    }
