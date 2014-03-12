@@ -1,6 +1,14 @@
 SVO
 ===
 
+This code implements a semi-direct visual odometry pipeline that is described in the paper 
+
+C. Forster, M. Pizzoli, D. Scaramuzza,
+"SVO: Fast Semi-Direct Monocular Visual Odometry,"
+IEEE International Conference on Robotics and Automation (ICRA), 2014.
+
+Video: http://youtu.be/2YnIMfw6bJY
+
 Disclaimer
 ----------
 
