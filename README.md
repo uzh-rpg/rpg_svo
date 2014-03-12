@@ -105,6 +105,12 @@ SVO GUI
 
 Type `rosrun rqt_svo rqt_svo` to run the SVO widget that displays the number of tracked features, the frame rate and provides some interface buttons.
 
+If the widget is not found, try this:
+
+    rm ~/.config/ros.org/rqt_gui.ini
+    rosrun rqt_svo rqt_svo
+    
+
 Keyboard Shortcuts
 ------------------
 
@@ -120,10 +126,10 @@ Camera Calibration
 You need a calibrated camera to run SVO. We use the Matrix Vision Bluefox cameras in our lab, which have VGA resolution and global shutter.
 SVO supports three camera models: 
 
-1. The `ATAN` model --- our preference --- which is also used by `PTAM`. This model uses the _FOV_ distortion model of "Deverneay and Faugeras, Straight lines have to be straight, 2001". You can calibrate your camera with this model by using the calibration tool in this package: https://github.com/ethz-asl/ethzasl_ptam We prefer this model because the projection and unprojection can be computed faster than with the other models. Further, the industral cameras that we use have neglectable tangential distortion.
+1. The `ATAN` model - our preference - which is also used by _PTAM_. This model uses the _FOV_ distortion model of "Deverneay and Faugeras, Straight lines have to be straight, 2001". You can calibrate your camera with this model by using the calibration tool in this package: https://github.com/ethz-asl/ethzasl_ptam We prefer this model because the projection and unprojection can be computed faster than with the other models. Further, the industral cameras that we use have neglectable tangential distortion.
 2. The `Pinhole` model with three radial and two tangential distortion parameters. This model is standard in OpenCV and ROS. You can use the ROS camera calibration tool: http://wiki.ros.org/camera_calibration
-3. The `Ocam` model by Davide Scaramuzza which can be used to model Omnidirectional cameras. Use the OCamCalib toolbox to calibrate your camera: http://rpg.ifi.uzh.ch/software_datasets.html
-Although SVO can be used with this camera model, the algorithm does not work yet (!) with omnidirectional cameras.
+3. The `Ocam` model by Davide Scaramuzza which can be used to model cameras with high field of view or even omnidirectional cameras. Use the OCamCalib toolbox to calibrate your camera: http://rpg.ifi.uzh.ch/software_datasets.html
+Although SVO can be used with this camera model, the algorithm does not work yet with omnidirectional cameras.
 
 Parameter Settings
 ------------------
