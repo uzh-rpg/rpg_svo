@@ -3,9 +3,9 @@ SVO
 
 This code implements a semi-direct visual odometry pipeline that is described in the paper 
 
-C. Forster, M. Pizzoli, D. Scaramuzza,
-"SVO: Fast Semi-Direct Monocular Visual Odometry,"
-IEEE International Conference on Robotics and Automation (ICRA), 2014.
+*   C. Forster, M. Pizzoli, D. Scaramuzza,
+    "__SVO: Fast Semi-Direct Monocular Visual Odometry__,"
+    IEEE International Conference on Robotics and Automation (ICRA), 2014.
 
 Video: http://youtu.be/2YnIMfw6bJY
 
@@ -14,10 +14,18 @@ Disclaimer
 
 SVO has been tested under ROS Groovy and Hydro and Ubuntu 12.04 and 13.04. This is research code, any fitness for a particular purpose is disclaimed.
 
+
+Licence
+-------
+
+The source code is released under a GPLv3 licence. A professional edition license for closed-source projects is also available. Please contact `forster at ifi dot uzh dot ch` for further information.
+
+
 Installation Instructions
 -------------------------
 
-We use two workspaces, one for the plain CMake projects `Sophus`, `Fast` and optionally `g2o` and another workspace for the Catkin projects `rpg_vikit` and `rpg_svo`. Make sure to clone in the right folder.
+SVO can be used conveniently with ROS (www.ros.org).
+We use two workspaces, one for the plain CMake projects `Sophus`, `Fast` and optionally `g2o` and another workspace for the ROS-Catkin projects `rpg_vikit` and `rpg_svo`. Make sure to clone in the right folder.
 
 #### Sophus - Lie groups
 
@@ -34,7 +42,7 @@ Sophus by Hauke Strasdat implements Lie groups that we need to describe rigid bo
 
 You don't need to install the library since `cmake ..` writes the package location to `~.cmake/packages/` where CMake can later find it.
 
-#### Fast Detector
+#### Fast - Corner Detector
 
 The Fast detector by Edward Rosten is used to detect corners.
 To simplify installation we provide a CMake package that contains the fast detector from the libCVD library (http://www.edwardrosten.com/cvd/).
@@ -47,7 +55,7 @@ To simplify installation we provide a CMake package that contains the fast detec
     cmake ..
     make
 
-#### OPTIONAL: g2o - General Graph Optimization
+#### g2o - General Graph Optimization _OPTIONAL_
 
 Only required if you want to run bundle adjustment. It is not necessary for visual odometry. In fact, we don't run it on our MAVs.
 g2o requires the following system dependencies: `cmake, libeigen3-dev, libsuitesparse-dev, libqt4-dev, qt4-qmake, libqglviewer-qt4-dev`, install them with `apt-get`
@@ -134,6 +142,8 @@ SVO supports three camera models:
 3. The `Ocam` model by Davide Scaramuzza which can be used to model cameras with high field of view or even omnidirectional cameras. Use the OCamCalib toolbox to calibrate your camera: http://rpg.ifi.uzh.ch/software_datasets.html
 Although SVO can be used with this camera model, the algorithm does not work yet with omnidirectional cameras.
 
+We save the calibration in _YAML_ format (see examples in `svo_ros/param`) and include it in the launchfiles (see examples in `svo_ros/launch`).
+
 Parameter Settings
 ------------------
 
@@ -152,11 +162,6 @@ Contributing
 
 You are very welcome to contribute to SVO by opening a pull request via Github.
 I try to follow the ROS C++ style guide http://wiki.ros.org/CppStyleGuide
-
-Licence
--------
-
-The source code is released under GPLv3 licence. A professional edition license for closed-source projects is also available. Please contact `forster at ifi dot uzh dot ch` for further information.
 
 Citing
 ------
