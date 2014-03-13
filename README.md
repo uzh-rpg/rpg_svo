@@ -20,6 +20,10 @@ Licence
 
 The source code is released under a GPLv3 licence. A professional edition license for closed-source projects is also available. Please contact `forster at ifi dot uzh dot ch` for further information.
 
+Documentation
+-------------
+
+The API is documented here: http://uzh-rpg.github.io/rpg_svo/doc/
 
 Installation Instructions
 -------------------------
@@ -149,13 +153,6 @@ Parameter Settings
 
 A description of all parameters which can be set via the launchfile is provided in `svo/include/config.h`. The default parameters can be viewed in `svo/src/config.cpp`. Moreover, some additional parameters (mainly rostopic names etc.) are read from the ros parameter server in `svo_ros/vo_node.cpp`.
 
-Generating Code Documentation
------------------------------
-
-You can generate a Doxygen documentation as follows
-
-    cd svo
-    doxygen Doxyfile
 
 Contributing
 ------------
