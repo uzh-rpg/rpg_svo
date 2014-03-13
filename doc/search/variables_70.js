@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['patch',['patch',['../structsvo_1_1matcher_1_1PatchData.html#a11be50cce013f521f839143cf6ee530c',1,'svo::matcher::PatchData']]],
+  ['patch_5farea_5f',['patch_area_',['../classsvo_1_1SparseImgAlign.html#aae10bffb0eb3d7974827aea999e6ebf5',1,'svo::SparseImgAlign']]],
+  ['patch_5fcov',['patch_cov',['../structsvo_1_1Seed.html#a071c64618ac259d244f5c66562ab0f67',1,'svo::Seed']]],
+  ['patch_5fhalfsize_5f',['patch_halfsize_',['../classsvo_1_1SparseImgAlign.html#a5a7642743deb9c367c0f6a77943554da',1,'svo::SparseImgAlign']]],
+  ['patch_5fsize',['patch_size',['../structsvo_1_1matcher_1_1PatchData.html#a8ee6000ad91fc1e68f08a4c227974880',1,'svo::matcher::PatchData']]],
+  ['patch_5fsize_5f',['patch_size_',['../classsvo_1_1SparseImgAlign.html#a3f8df3bcfbe96ded4db316486c0ad97a',1,'svo::SparseImgAlign']]],
+  ['patch_5fwith_5fborder',['patch_with_border',['../structsvo_1_1matcher_1_1PatchData.html#a4e0662e7e45e47798bef98eea0762fa8',1,'svo::matcher::PatchData']]],
+  ['permon_5f',['permon_',['../classsvo_1_1DepthFilter.html#a40141a32e428d40b125f2bcc00922589',1,'svo::DepthFilter']]],
+  ['pi',['PI',['../namespacesvo.html#a15738a874426a0dd328b323a123a25d7',1,'svo']]],
+  ['point',['point',['../structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced',1,'svo::Feature']]],
+  ['point_5fcandidates_5f',['point_candidates_',['../classsvo_1_1Map.html#ac5b6f3aeead45f658870f5cbb8e81348',1,'svo::Map']]],
+  ['point_5fcounter_5f',['point_counter_',['../classsvo_1_1Point.html#a41040ba71548161a17106c4555750265',1,'svo::Point']]],
+  ['pos_5f',['pos_',['../classsvo_1_1Point.html#aa14dd9455e79aa16a09a2e383a826273',1,'svo::Point']]],
+  ['poseoptim_5fnum_5fiter',['poseoptim_num_iter',['../classsvo_1_1Config.html#afefb774ff65acaf23e0e82ae87d3a8c3',1,'svo::Config']]],
+  ['poseoptim_5fthresh',['poseoptim_thresh',['../classsvo_1_1Config.html#ace074f2af7bbd79085b0679282ed5808',1,'svo::Config']]],
+  ['pt',['pt',['../structsvo_1_1reprojection_1_1Candidate.html#a185cace1d03aee15c9d81ac058005ac9',1,'svo::reprojection::Candidate']]],
+  ['px',['px',['../structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698',1,'svo::Feature::px()'],['../structsvo_1_1reprojection_1_1Candidate.html#a36ad761459ee46adc5c3ddc4202182c6',1,'svo::reprojection::Candidate::px()']]],
+  ['px_5fcur_5f',['px_cur_',['../classsvo_1_1initialization_1_1KltHomographyInit.html#a3095aca74984526e16fd7f00a0fe6acf',1,'svo::initialization::KltHomographyInit']]],
+  ['px_5fref_5f',['px_ref_',['../classsvo_1_1initialization_1_1KltHomographyInit.html#a65827886726fbbc87d6a63fafc076e0c',1,'svo::initialization::KltHomographyInit']]]
+];
