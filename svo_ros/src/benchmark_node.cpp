@@ -25,7 +25,6 @@
 #include <vikit/params_helper.h>
 #include <vikit/camera_loader.h>
 #include <vikit/abstract_camera.h>
-#include <vikit/user_input_thread.h>
 #include <svo/config.h>
 #include <svo/frame.h>
 #include <svo/map.h>
@@ -39,11 +38,9 @@ class BenchmarkNode
 {
   svo::FrameHandlerMono* vo_;
   svo::Visualizer visualizer_;
-  vk::UserInputThread user_input_thread_;
   int frame_count_;
   std::ofstream trace_est_pose_;
   vk::AbstractCamera* cam_;
-  bool quit_;
 
 public:
   BenchmarkNode(ros::NodeHandle& nh);
@@ -54,8 +51,7 @@ public:
 
 BenchmarkNode::BenchmarkNode(ros::NodeHandle& nh) :
     vo_(NULL),
-    frame_count_(0),
-    quit_(false)
+    frame_count_(0)
 {
   // Create Camera
   if(!vk::camera_loader::loadFromRosNs("svo", cam_))
@@ -103,13 +99,10 @@ void BenchmarkNode::runCamImuBenchmark()
       throw std::runtime_error("Image could not be loaded.");
 
     // Add image to VO
-    processUserActions();
     vo_->addImage(img, it->stamp_);
 
     // Visualize
     visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->stamp_);
-    if(vo_->stage() != svo::FrameHandlerMono::PAUSED)
-      visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
 
     // write pose to tracefile
     if(vo_->stage() == svo::FrameHandlerMono::DEFAULT_FRAME)
@@ -123,20 +116,8 @@ void BenchmarkNode::runCamImuBenchmark()
       trace_est_pose_ << p.x() << " " << p.y() << " " << p.z() << " "
                       << q.x() << " " << q.y() << " " << q.z() << " " << q.w() << endl;
     }
-    if (!ros::ok() || quit_)
+    if (!ros::ok())
       break;
-  }
-}
-
-void BenchmarkNode::processUserActions()
-{
-  char input = user_input_thread_.getInput();
-  switch(input)
-  {
-    case 'q': quit_ = true;   break;
-    case 'r': vo_->reset(); break;
-    case 's': vo_->start(); break;
-    default: ;
   }
 }
 
