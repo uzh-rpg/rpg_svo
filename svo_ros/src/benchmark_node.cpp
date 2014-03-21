@@ -45,8 +45,8 @@ class BenchmarkNode
 public:
   BenchmarkNode(ros::NodeHandle& nh);
   ~BenchmarkNode();
-  void runCamImuBenchmark();
-  void processUserActions();
+  void tracePose(const SE3& T_w_f, const double timestamp);
+  void runBenchmark(const std::string& benchmark_dir);
 };
 
 BenchmarkNode::BenchmarkNode(ros::NodeHandle& nh) :
@@ -68,10 +68,21 @@ BenchmarkNode::~BenchmarkNode()
   delete cam_;
 }
 
-void BenchmarkNode::runCamImuBenchmark()
+void BenchmarkNode::tracePose(const SE3& T_w_f, const double timestamp)
+{
+  Quaterniond q(T_w_f.unit_quaternion());
+  Vector3d p(T_w_f.translation());
+  trace_est_pose_.precision(15);
+  trace_est_pose_.setf(std::ios::fixed, std::ios::floatfield );
+  trace_est_pose_ << timestamp << " ";
+  trace_est_pose_.precision(6);
+  trace_est_pose_ << p.x() << " " << p.y() << " " << p.z() << " "
+                  << q.x() << " " << q.y() << " " << q.z() << " " << q.w() << endl;
+}
+
+void BenchmarkNode::runBenchmark(const std::string& benchmark_dir)
 {
   // create image reader and load dataset
-  std::string benchmark_dir(vk::getParam<std::string>("svo/dataset_directory"));
   std::string filename_benchmark(benchmark_dir + "/images.txt");
   vk::FileReader<FileType::DatasetImg> dataset_reader(filename_benchmark);
   dataset_reader.skipComments();
@@ -84,7 +95,7 @@ void BenchmarkNode::runCamImuBenchmark()
   std::string trace_est_name(Config::traceDir() + "/traj_estimate.txt");
   trace_est_pose_.open(trace_est_name.c_str());
   if(trace_est_pose_.fail())
-    throw std::runtime_error("ERROR:frame_count_ could not create tracefile. probably the specified folder does not exist.");
+    throw std::runtime_error("Could not create tracefile. Does folder exist?");
 
   // process dataset
   for(vk::vector<FileType::DatasetImg>::iterator it = dataset.begin();
@@ -106,16 +117,7 @@ void BenchmarkNode::runCamImuBenchmark()
 
     // write pose to tracefile
     if(vo_->stage() == svo::FrameHandlerMono::DEFAULT_FRAME)
-    {
-      Quaterniond q(vo_->lastFrame()->T_f_w_.inverse().unit_quaternion());
-      Vector3d p(vo_->lastFrame()->T_f_w_.inverse().translation());
-      trace_est_pose_.precision(15);
-      trace_est_pose_.setf(std::ios::fixed, std::ios::floatfield );
-      trace_est_pose_ << it->stamp_<< " ";
-      trace_est_pose_.precision(6);
-      trace_est_pose_ << p.x() << " " << p.y() << " " << p.z() << " "
-                      << q.x() << " " << q.y() << " " << q.z() << " " << q.w() << endl;
-    }
+      tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->stamp_);
     if (!ros::ok())
       break;
   }
@@ -127,10 +129,9 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "svo");
   ros::NodeHandle nh;
-  {
-    svo::BenchmarkNode benchmark(nh);
-    benchmark.runCamImuBenchmark();
-  }
+  svo::BenchmarkNode benchmark(nh);
+  std::string benchmark_dir(vk::getParam<std::string>("svo/dataset_directory"));
+  benchmark.runBenchmark(benchmark_dir);
   printf("BenchmarkNode finished.\n");
   return 0;
 }
