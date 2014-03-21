@@ -74,6 +74,15 @@ addImage(const cv::Mat& img, double timestamp)
   finishFrameProcessingCommon(last_frame_->id_, res, last_frame_->nObs());
 }
 
+void FrameHandlerMono::
+setFirstFrame(const FramePtr& first_frame)
+{
+  resetAll();
+  last_frame_ = first_frame;
+  map_.addKeyframe(last_frame_);
+  stage_ = DEFAULT_FRAME;
+}
+
 FrameHandlerMono::UpdateResult FrameHandlerMono::
 processFirstFrame()
 {
