@@ -17,7 +17,6 @@
 #ifndef SVO_FRAME_H_
 #define SVO_FRAME_H_
 
-#include <algorithm>
 #include <sophus/se3.h>
 #include <vikit/math_utils.h>
 #include <vikit/abstract_camera.h>
@@ -32,7 +31,6 @@ typedef g2o::VertexSE3Expmap g2oFrameSE3;
 namespace svo {
 
 class Point;
-class Frame;
 struct Feature;
 
 typedef list<Feature*> Features;
@@ -57,7 +55,7 @@ public:
   g2oFrameSE3*                  v_kf_;                  //!< Temporary pointer to the g2o node object of the keyframe.
   int                           last_published_ts_;     //!< Timestamp of last publishing.
 
-  Frame(vk::AbstractCamera* cam, const cv::Mat& img, double timestamp=0.0);
+  Frame(vk::AbstractCamera* cam, const cv::Mat& img, double timestamp);
   ~Frame();
 
   /// Initialize new frame and create image pyramid.

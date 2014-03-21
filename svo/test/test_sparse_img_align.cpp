@@ -86,7 +86,7 @@ void SparseImgAlignTest::testSequence(
     if(i==0)
     {
       // set reference frame
-      frame_ref_.reset(new svo::Frame(cam_, img));
+      frame_ref_.reset(new svo::Frame(cam_, img, 0.0));
       frame_ref_->T_f_w_ = T_gt_w;
 
       // load ground-truth depth
@@ -115,7 +115,7 @@ void SparseImgAlignTest::testSequence(
       continue;
     }
 
-    frame_cur_.reset(new svo::Frame(cam_, img));
+    frame_cur_.reset(new svo::Frame(cam_, img, 0.0));
     //frame_cur_->T_f_w_ = frame_ref_->T_f_w_; // start at reference frame
     frame_cur_->T_f_w_ = T_prev_w; // start at last frame
 
