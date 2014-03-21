@@ -25,10 +25,14 @@
 #include <vikit/params_helper.h>
 #include <vikit/camera_loader.h>
 #include <vikit/abstract_camera.h>
+#include <vikit/blender_utils.h>
 #include <svo/config.h>
 #include <svo/frame.h>
+#include <svo/feature.h>
 #include <svo/map.h>
+#include <svo/point.h>
 #include <svo/frame_handler_mono.h>
+#include <svo/feature_detection.h>
 #include <svo_ros/visualizer.h>
 #include <svo_ros/dataset_img.h>
 
@@ -46,7 +50,8 @@ public:
   BenchmarkNode(ros::NodeHandle& nh);
   ~BenchmarkNode();
   void tracePose(const SE3& T_w_f, const double timestamp);
-  void runBenchmark(const std::string& benchmark_dir);
+  void runBenchmark(const std::string& dataset_dir);
+  void runBlenderBenchmark(const std::string& dataset_dir);
 };
 
 BenchmarkNode::BenchmarkNode(ros::NodeHandle& nh) :
@@ -56,6 +61,12 @@ BenchmarkNode::BenchmarkNode(ros::NodeHandle& nh) :
   // Create Camera
   if(!vk::camera_loader::loadFromRosNs("svo", cam_))
     throw std::runtime_error("Camera model not correctly specified.");
+
+  // create pose tracefile
+  std::string trace_est_name(Config::traceDir() + "/traj_estimate.txt");
+  trace_est_pose_.open(trace_est_name.c_str());
+  if(trace_est_pose_.fail())
+    throw std::runtime_error("Could not create tracefile. Does folder exist?");
 
   // Initialize VO
   vo_ = new svo::FrameHandlerMono(cam_);
@@ -80,46 +91,106 @@ void BenchmarkNode::tracePose(const SE3& T_w_f, const double timestamp)
                   << q.x() << " " << q.y() << " " << q.z() << " " << q.w() << endl;
 }
 
-void BenchmarkNode::runBenchmark(const std::string& benchmark_dir)
+void BenchmarkNode::runBenchmark(const std::string& dataset_dir)
 {
   // create image reader and load dataset
-  std::string filename_benchmark(benchmark_dir + "/images.txt");
+  std::string filename_benchmark(dataset_dir + "/images.txt");
   vk::FileReader<FileType::DatasetImg> dataset_reader(filename_benchmark);
   dataset_reader.skipComments();
-  if(!dataset_reader.next())
-    std::runtime_error("Failed to open images file");
+  if(!dataset_reader.next()) {
+    SVO_ERROR_STREAM("Failed opening dataset: "<<filename_benchmark);
+    return;
+  }
   std::vector<FileType::DatasetImg> dataset;
   dataset_reader.readAllEntries(dataset);
 
-  // create pose tracefile
-  std::string trace_est_name(Config::traceDir() + "/traj_estimate.txt");
-  trace_est_pose_.open(trace_est_name.c_str());
-  if(trace_est_pose_.fail())
-    throw std::runtime_error("Could not create tracefile. Does folder exist?");
-
   // process dataset
-  for(vk::vector<FileType::DatasetImg>::iterator it = dataset.begin();
-      it != dataset.end(); ++it, ++frame_count_)
+  for(auto it = dataset.begin(); it != dataset.end() && ros::ok(); ++it, ++frame_count_)
   {
     // Read image
-    std::string img_filename(benchmark_dir + "/" + it->imgname_);
+    std::string img_filename(dataset_dir + "/" + it->image_name_);
     cv::Mat img(cv::imread(img_filename, 0));
-    if(frame_count_ == 0)
-      SVO_INFO_STREAM("Reading image "<<img_filename);
-    if(img.empty())
-      throw std::runtime_error("Image could not be loaded.");
+    if(img.empty()) {
+      SVO_ERROR_STREAM("Reading image "<<img_filename<<" failed.");
+      return;
+    }
 
     // Add image to VO
-    vo_->addImage(img, it->stamp_);
+    vo_->addImage(img, it->timestamp_);
 
     // Visualize
-    visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->stamp_);
+    visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
 
     // write pose to tracefile
     if(vo_->stage() == svo::FrameHandlerMono::DEFAULT_FRAME)
-      tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->stamp_);
-    if (!ros::ok())
-      break;
+      tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->timestamp_);
+  }
+}
+
+void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
+{
+  // create image reader and load dataset
+  std::string filename_benchmark(dataset_dir + "/images.txt");
+  vk::FileReader<vk::blender_utils::file_format::ImageNameAndPose> dataset_reader(filename_benchmark);
+  dataset_reader.skipComments();
+  if(!dataset_reader.next()) {
+    SVO_ERROR_STREAM("Failed opening dataset: "<<filename_benchmark);
+    return;
+  }
+  std::vector<vk::blender_utils::file_format::ImageNameAndPose> dataset;
+  dataset_reader.readAllEntries(dataset);
+
+  // process dataset
+  for(auto it = dataset.begin(); it != dataset.end() && ros::ok(); ++it, ++frame_count_)
+  {
+    // Read image
+    std::string img_filename(dataset_dir + "/" + it->image_name_ + "_0.png");
+    cv::Mat img(cv::imread(img_filename, 0));
+    if(img.empty()) {
+      SVO_ERROR_STREAM("Reading image "<<img_filename<<" failed.");
+      return;
+    }
+
+    // Set reference frame with depth
+    if(frame_count_ == 0)
+    {
+      // set reference frame at ground-truth pose
+      FramePtr frame_ref(new Frame(cam_, img, it->timestamp_));
+      frame_ref->T_f_w_ = Sophus::SE3(it->q_, it->t_).inverse();
+
+      // load ground-truth depth
+      cv::Mat depthmap;
+      vk::blender_utils::loadBlenderDepthmap(
+          dataset_dir+"/depth/"+it->image_name_+"_0.depth", *cam_, depthmap);
+
+      // extract features, generate features with 3D points
+      svo::feature_detection::FastDetector detector;
+      svo::feature_detection::Corners corners;
+      detector.detect(frame_ref->img_pyr_, frame_ref->fts_, svo::Config::gridSize(),
+                      svo::Config::nPyrLevels(), svo::Config::triangMinCornerScore(), &corners);
+      for(auto corner=corners.begin(); corner!=corners.end(); ++corner)
+      {
+        if(corner->score < Config::triangMinCornerScore())
+          continue;
+        svo::Feature* ftr = new svo::Feature(frame_ref.get(), Eigen::Vector2d(corner->x, corner->y), corner->level);
+        Eigen::Vector3d pt_pos_cur = ftr->f*depthmap.at<float>(corner->y, corner->x);
+        Eigen::Vector3d pt_pos_world = frame_ref->T_f_w_.inverse()*pt_pos_cur;
+        svo::Point* point = new svo::Point(pt_pos_world, svo::Point::DEPTH);
+        ftr->point = point;
+        frame_ref->addFeature(ftr);
+      }
+      SVO_INFO_STREAM("Added "<<corners.size()<<" 3d pts to the reference frame.");
+      vo_->setFirstFrame(frame_ref);
+      SVO_INFO_STREAM("Set reference frame.");
+      continue;
+    }
+
+    // Add image to VO
+    vo_->addImage(img, it->timestamp_);
+
+    // write pose to tracefile
+    if(vo_->stage() == svo::FrameHandlerMono::DEFAULT_FRAME)
+      tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->timestamp_);
   }
 }
 
