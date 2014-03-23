@@ -9,8 +9,8 @@ import argparse
 import csv
 import numpy as np
 from matplotlib import rc
-import scripts.analyse_logs as analyse_logs
-import scripts.analyse_timing as analyse_timing
+import svo_analysis.analyse_logs as analyse_logs
+import svo_analysis.analyse_timing as analyse_timing
 
 if __name__=="__main__":
   
