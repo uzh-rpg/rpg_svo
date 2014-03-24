@@ -96,7 +96,6 @@ startFrameProcessingCommon()
   {
     resetAll();
     stage_ = FIRST_FRAME;
-    set_start_ = false;
   }
 
   if(stage_ == PAUSED)
@@ -145,6 +144,7 @@ resetCommon()
   map_.reset();
   stage_ = PAUSED;
   set_reset_ = false;
+  set_start_ = false;
   tracking_quality_ = BAD;
   depth_filter_->reset();
   num_obs_last_ = 0;

@@ -79,6 +79,7 @@ setFirstFrame(const FramePtr& first_frame)
 {
   resetAll();
   last_frame_ = first_frame;
+  last_frame_->setKeyframe();
   map_.addKeyframe(last_frame_);
   stage_ = DEFAULT_FRAME;
 }
