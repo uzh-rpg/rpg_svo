@@ -10,20 +10,8 @@ import yaml
 import rospkg
 import argparse
 import time
-import svo_analysis.cpu_info as cpu_info
-
-class RosNode:
-  def __init__(self, package, executable):
-    self.package = package
-    self.executable = executable
-    
-  def run(self, parameter_dictionary):
-    parameter_string = ''
-    for key in parameter_dictionary.keys():
-      parameter_string = parameter_string + ' _' + key + ':=' + str(parameter_dictionary[key])
-    print('starting ros node')
-    os.system('rosrun ' + self.package + ' ' + self.executable + ' ' + parameter_string)
-    print('ros node finished processing')
+import vikit_py.cpu_info as cpu_info
+import vikit_py.ros_node as ros_node
 
 if __name__=="__main__":
   
@@ -47,8 +35,10 @@ if __name__=="__main__":
     expParams['experiment_name'] = expParams['time']+'_svo_' + args.experiment_file
 
   # load dataset parameters
-  datasetParamsFile = os.path.join(rospkg.RosPack().get_path('Datasets'), 
-                                   expParams['dataset'], 'dataset_params.yaml')
+  expParams['dataset_directory'] = os.path.join(rospkg.RosPack().get_path('Datasets'), expParams['dataset'])
+  if not os.path.exists(expParams['dataset_directory']):
+    raise Exception("Provided dataset folder does not exist.")
+  datasetParamsFile = os.path.join(expParams['dataset_directory'], 'dataset_params.yaml')
   datasetParams = yaml.load(open(datasetParamsFile,'r'))
   
   # load algorithm parameters
@@ -72,7 +62,7 @@ if __name__=="__main__":
     outfile.write(yaml.dump(params, default_flow_style=False))
     
   # start ros node
-  node = RosNode('svo_ros','benchmark')
+  node = ros_node.RosNode('svo_ros','benchmark')
   node.run(params)
   
   
