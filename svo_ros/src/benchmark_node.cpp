@@ -130,7 +130,7 @@ void BenchmarkNode::runBenchmark(const std::string& dataset_dir)
 void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
 {
   // create image reader and load dataset
-  std::string filename_benchmark(dataset_dir + "/images.txt");
+  std::string filename_benchmark(dataset_dir + "/trajectory.txt");
   vk::FileReader<vk::blender_utils::file_format::ImageNameAndPose> dataset_reader(filename_benchmark);
   dataset_reader.skipComments();
   if(!dataset_reader.next()) {
@@ -144,7 +144,7 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
   for(auto it = dataset.begin(); it != dataset.end() && ros::ok(); ++it, ++frame_count_)
   {
     // Read image
-    std::string img_filename(dataset_dir + "/" + it->image_name_ + "_0.png");
+    std::string img_filename(dataset_dir + "/img/" + it->image_name_ + "_0.png");
     cv::Mat img(cv::imread(img_filename, 0));
     if(img.empty()) {
       SVO_ERROR_STREAM("Reading image "<<img_filename<<" failed.");
@@ -177,6 +177,7 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
         Eigen::Vector3d pt_pos_world = frame_ref->T_f_w_.inverse()*pt_pos_cur;
         svo::Point* point = new svo::Point(pt_pos_world, svo::Point::DEPTH);
         ftr->point = point;
+        ftr->point->addFrameRef(ftr);
         frame_ref->addFeature(ftr);
       }
       SVO_INFO_STREAM("Added "<<corners.size()<<" 3d pts to the reference frame.");
@@ -202,7 +203,10 @@ int main(int argc, char** argv)
   ros::NodeHandle nh;
   svo::BenchmarkNode benchmark(nh);
   std::string benchmark_dir(vk::getParam<std::string>("svo/dataset_directory"));
-  benchmark.runBenchmark(benchmark_dir);
+  if(vk::getParam<bool>("svo/dataset_is_blender", false))
+    benchmark.runBlenderBenchmark(benchmark_dir);
+  else
+    benchmark.runBenchmark(benchmark_dir);
   printf("BenchmarkNode finished.\n");
   return 0;
 }
