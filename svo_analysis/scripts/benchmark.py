@@ -10,6 +10,7 @@ import yaml
 import rospkg
 import argparse
 import time
+import svo_analysis.analyse_trajectory as analyse_trajectory
 import vikit_py.cpu_info as cpu_info
 import vikit_py.ros_node as ros_node
 
@@ -29,7 +30,7 @@ if __name__=="__main__":
                                'experiments', args.experiment_file+'.yaml')
   expParams = yaml.load(open(expParamsFile, 'r'))
   expParams['time'] = time.strftime("%Y%m%d_%H%M", time.localtime())
-  #expParams['platform'] = cpu_info.getCpuInfo()
+  expParams['platform'] = cpu_info.get_cpu_info()
   expParams['experiment_name'] = args.name
   if(expParams['experiment_name'] == None):
     expParams['experiment_name'] = expParams['time']+'_svo_' + args.experiment_file
@@ -43,7 +44,7 @@ if __name__=="__main__":
   
   # load algorithm parameters
   algoParamsFile = os.path.join(rospkg.RosPack().get_path('svo_ros'), 
-                                   'param', expParams['param_settings']+'.yaml')
+                                'param', expParams['param_settings']+'.yaml')
   algoParams = yaml.load(open(algoParamsFile,'r'))
 
   # combine all parameters
@@ -61,9 +62,16 @@ if __name__=="__main__":
   with open(params_dump_file,'w') as outfile:
     outfile.write(yaml.dump(params, default_flow_style=False))
     
-  # start ros node
+  # execute ros node
   node = ros_node.RosNode('svo_ros','benchmark')
   node.run(params)
+  
+  # TODO: check if it is a synthetic dataset 
+  # plot trajectory error
+  analyse_trajectory.analyse_trajectory(params['trace_dir'])
+  
+  
+  
   
   
   

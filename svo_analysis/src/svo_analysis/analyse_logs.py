@@ -6,6 +6,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rc
 
+# tell matplotlib to use latex font
+rc('font',**{'family':'serif','serif':['Cardo']})
+rc('text', usetex=True)
+  
 def analyse_logs(D, trace_name):
 
   # identify measurements which result from normal frames and which from keyframes
@@ -123,10 +127,6 @@ if __name__=="__main__":
   # change dictionary values from list to numpy array for easier manipulation
   for field, value in D.items():
     D[field] = np.array(D[field])
-
-  # tell matplotlib to use latex font
-  rc('font',**{'family':'serif','serif':['Cardo']})
-  rc('text', usetex=True)
 
   analyse_logs(D, args.trace_name)
 

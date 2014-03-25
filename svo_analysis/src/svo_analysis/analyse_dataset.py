@@ -4,7 +4,6 @@ import associate
 import numpy as np
 import matplotlib.pyplot as plt
 import yaml
-import transformations
 
 def loadDataset(filename):
   file = open(filename)
