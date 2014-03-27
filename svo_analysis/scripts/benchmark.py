@@ -10,9 +10,9 @@ import yaml
 import rospkg
 import argparse
 import time
-import svo_analysis.analyse_trajectory as analyse_trajectory
 import vikit_py.cpu_info as cpu_info
 import vikit_py.ros_node as ros_node
+import evaluate
 
 if __name__=="__main__":
   
@@ -67,8 +67,7 @@ if __name__=="__main__":
   node.run(params)
   
   # TODO: check if it is a synthetic dataset 
-  # plot trajectory error
-  analyse_trajectory.analyse_trajectory(params['trace_dir'])
+  evaluate.evaluate_dataset(params['trace_dir'])
   
   
   

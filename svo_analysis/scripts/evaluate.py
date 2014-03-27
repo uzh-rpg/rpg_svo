@@ -5,26 +5,19 @@ Created on Sat Aug 10 18:21:47 2013
 @author: Christian Forster
 """
 
-import argparse
+import os
 import csv
 import numpy as np
-from matplotlib import rc
+import rospkg
+import argparse
 import svo_analysis.analyse_logs as analyse_logs
 import svo_analysis.analyse_timing as analyse_timing
+import svo_analysis.analyse_trajectory as analyse_trajectory
 
-if __name__=="__main__":
+def evaluate_dataset(trace_dir):
   
-  # parse command line 
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--trace_name', help='svo tracefile with timings and logs', default='20131121_0930_px7')
-  args = parser.parse_args()
-
-  # config
-  results_dir = 'results/'+args.trace_name
-  trace_file = results_dir+'/'+args.trace_name+'.csv'
-
-  # tracefile
-  data = csv.reader(open(trace_file))
+  # read tracefile
+  data = csv.reader(open(os.path.join(trace_dir, 'trace.csv')))
   fields = data.next()
   D = dict()
   for field in fields:
@@ -39,9 +32,19 @@ if __name__=="__main__":
   for field, value in D.items():
     D[field] = np.array(D[field])
 
-  # tell matplotlib to use latex font
-  rc('font',**{'family':'serif','serif':['Cardo']})
-  rc('text', usetex=True)
+  # generate plots
+  analyse_logs.analyse_logs(D, trace_dir)
+  analyse_timing.analyse_timing(D, trace_dir)
+  analyse_trajectory.analyse_trajectory(trace_dir)
 
-  analyse_logs.analyse_logs(D, results_dir+'/'+args.trace_name)
-  analyse_timing.analyse_timing(D, results_dir+'/'+args.trace_name)
+if __name__=="__main__":
+  parser = argparse.ArgumentParser(description='''
+  Evaluates tracefiles of SVO and generates the plots.
+  ''')
+  parser.add_argument('experiment_name', help='directory name of the tracefiles')
+  args = parser.parse_args()
+
+  trace_dir = os.path.join(rospkg.RosPack().get_path('svo_analysis'), 
+                           'results',
+                           args.experiment_name)
+  evaluate_dataset(trace_dir)
