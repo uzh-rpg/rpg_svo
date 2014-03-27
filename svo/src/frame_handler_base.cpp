@@ -53,6 +53,9 @@ FrameHandlerBase() :
   g_permon->addTimer("pyramid_creation");
   g_permon->addTimer("sparse_img_align");
   g_permon->addTimer("reproject");
+  g_permon->addTimer("reproject_kfs");
+  g_permon->addTimer("reproject_candidates");
+  g_permon->addTimer("feature_align");
   g_permon->addTimer("pose_optimizer");
   g_permon->addTimer("point_optimizer");
   g_permon->addTimer("local_ba");
