@@ -28,7 +28,8 @@
 #include <svo/reprojection.h>
 #include <svo/depth_filter.h>
  
-namespace svo {
+namespace svo
+{
 
 // definition of global and static variables which were declared in the header
 #ifdef SVO_TRACE
@@ -37,13 +38,13 @@ vk::PerformanceMonitor* g_permon = NULL;
 
 FrameHandlerBase::
 FrameHandlerBase() :
-  stage_(PAUSED),
+  stage_(STAGE_PAUSED),
   set_reset_(false),
   set_start_(false),
   acc_frame_timings_(10),
   acc_num_obs_(10),
   num_obs_last_(0),
-  tracking_quality_(BAD),
+  tracking_quality_(TRACKING_BAD),
   depth_filter_(NULL)
 {
 #ifdef SVO_TRACE
@@ -96,10 +97,10 @@ startFrameProcessingCommon(const double timestamp)
   if(set_start_)
   {
     resetAll();
-    stage_ = FIRST_FRAME;
+    stage_ = STAGE_FIRST_FRAME;
   }
 
-  if(stage_ == PAUSED)
+  if(stage_ == STAGE_PAUSED)
     return false;
 
   SVO_LOG(timestamp);
@@ -123,7 +124,7 @@ finishFrameProcessingCommon(
 
   // save processing time to calculate fps
   acc_frame_timings_.push_back(timer_.stop());
-  if(stage_ == DEFAULT_FRAME)
+  if(stage_ == STAGE_DEFAULT_FRAME)
     acc_num_obs_.push_back(num_observations);
   num_obs_last_ = num_observations;
   SVO_STOP_TIMER("tot_time");
@@ -138,7 +139,7 @@ finishFrameProcessingCommon(
   #endif
 
   // reset if failure or requested
-  if(dropout == FAILURE || set_reset_)
+  if(dropout == RESULT_FAILURE || set_reset_)
     resetAll();
   return 0;
 }
@@ -147,10 +148,10 @@ void FrameHandlerBase::
 resetCommon()
 {
   map_.reset();
-  stage_ = PAUSED;
+  stage_ = STAGE_PAUSED;
   set_reset_ = false;
   set_start_ = false;
-  tracking_quality_ = BAD;
+  tracking_quality_ = TRACKING_BAD;
   depth_filter_->reset();
   num_obs_last_ = 0;
   SVO_INFO_STREAM("RESET");
@@ -159,22 +160,22 @@ resetCommon()
 void FrameHandlerBase::
 setTrackingQuality(const size_t num_observations)
 {
-  tracking_quality_ = GOOD;
+  tracking_quality_ = TRACKING_GOOD;
   if(num_observations < Config::qualityMinFts())
   {
     ROS_WARN_STREAM_THROTTLE(0.5, "Tracking less than "<< Config::qualityMinFts() <<" features!");
-    tracking_quality_ = BAD;
+    tracking_quality_ = TRACKING_BAD;
   }
   const int feature_drop = static_cast<int>(num_obs_last_) - num_observations;
   if(feature_drop > Config::qualityMaxFtsDrop())
   {
     ROS_WARN_STREAM("Lost "<< feature_drop <<" features!");
-    tracking_quality_ = BAD;
+    tracking_quality_ = TRACKING_BAD;
   }
   if(num_observations < 20)
   {
     ROS_ERROR_STREAM("Tracking less than 20 features!");
-    tracking_quality_ = INSUFFICIENT;
+    tracking_quality_ = TRACKING_INSUFFICIENT;
   }
 }
 

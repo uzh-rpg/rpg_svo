@@ -26,13 +26,14 @@
 #include <svo/global.h>
 #include <svo/map.h>
 
-namespace vk {
-  class AbstractCamera;
-  class PerformanceMonitor;
+namespace vk
+{
+class AbstractCamera;
+class PerformanceMonitor;
 }
 
-namespace svo {
-
+namespace svo
+{
 class Point;
 class Matcher;
 class DepthFilter;
@@ -41,9 +42,22 @@ class DepthFilter;
 class FrameHandlerBase : boost::noncopyable
 {
 public:
-  enum Stage { PAUSED, FIRST_FRAME, SECOND_FRAME, DEFAULT_FRAME };
-  enum TrackingQuality { INSUFFICIENT, BAD, GOOD };
-  enum UpdateResult { NO_KEYFRAME, IS_KEYFRAME, FAILURE };
+  enum Stage {
+    STAGE_PAUSED,
+    STAGE_FIRST_FRAME,
+    STAGE_SECOND_FRAME,
+    STAGE_DEFAULT_FRAME
+  };
+  enum TrackingQuality {
+    TRACKING_INSUFFICIENT,
+    TRACKING_BAD,
+    TRACKING_GOOD
+  };
+  enum UpdateResult {
+    RESULT_NO_KEYFRAME,
+    RESULT_IS_KEYFRAME,
+    RESULT_FAILURE
+  };
 
   FrameHandlerBase();
 
