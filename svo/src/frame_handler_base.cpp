@@ -56,6 +56,7 @@ FrameHandlerBase() :
   g_permon->addTimer("point_optimizer");
   g_permon->addTimer("local_ba");
   g_permon->addTimer("tot_time");
+  g_permon->addLog("timestamp");
   g_permon->addLog("img_align_n_tracked");
   g_permon->addLog("repr_n_mps");
   g_permon->addLog("repr_n_new_references");
@@ -90,7 +91,7 @@ FrameHandlerBase::
 }
 
 bool FrameHandlerBase::
-startFrameProcessingCommon()
+startFrameProcessingCommon(const double timestamp)
 {
   if(set_start_)
   {
@@ -101,6 +102,7 @@ startFrameProcessingCommon()
   if(stage_ == PAUSED)
     return false;
 
+  SVO_LOG(timestamp);
   SVO_DEBUG_STREAM("New Frame");
   SVO_START_TIMER("tot_time");
   timer_.start();
@@ -111,7 +113,10 @@ startFrameProcessingCommon()
 }
 
 int FrameHandlerBase::
-finishFrameProcessingCommon(size_t update_id, UpdateResult dropout, size_t num_observations)
+finishFrameProcessingCommon(
+    const size_t update_id,
+    const UpdateResult dropout,
+    const size_t num_observations)
 {
   SVO_DEBUG_STREAM("Frame: "<<update_id<<"\t fps-avg = "<< 1.0/acc_frame_timings_.getMean()<<"\t nObs = "<<acc_num_obs_.getMean());
   SVO_LOG(dropout);

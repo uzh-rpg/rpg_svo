@@ -43,9 +43,9 @@ FrameHandlerMono::
 {}
 
 void FrameHandlerMono::
-addImage(const cv::Mat& img, double timestamp)
+addImage(const cv::Mat& img, const double timestamp)
 {
-  if(!startFrameProcessingCommon())
+  if(!startFrameProcessingCommon(timestamp))
     return;
 
   // some cleanup from last iteration, can't do before because of visualization

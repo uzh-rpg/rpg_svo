@@ -90,13 +90,13 @@ protected:
   DepthFilter* depth_filter_;                   //!< Depth estimation algorithm runs in a parallel thread and is used to initialize new 3D points.
 
   /// Before a frame is processed, this function is called.
-  bool startFrameProcessingCommon();
+  bool startFrameProcessingCommon(const double timestamp);
 
   /// When a frame is finished processing, this function is called.
   int finishFrameProcessingCommon(
-      size_t update_id,
-      UpdateResult dropout,
-      size_t num_observations);
+      const size_t update_id,
+      const UpdateResult dropout,
+      const size_t num_observations);
 
   /// Reset the map and frame handler to start from scratch.
   void resetCommon();
