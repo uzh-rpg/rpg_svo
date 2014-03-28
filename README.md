@@ -165,9 +165,9 @@ Citing
 
 If you use SVO in an academic context, please cite the following publication:
 
-    @article{Forster2014ICRA,
+    @inproceedings{Forster2014ICRA,
       author = {Forster, Christian and Pizzoli, Matia and Scaramuzza, Davide},
-      title = {{SVO: Fast Semi-Direct Monocular Visual Odometry}},
-      journal = {IEEE International Conference on Robotics and Automation (ICRA)},
+      title = {{SVO}: Fast Semi-Direct Monocular Visual Odometry},
+      booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
       year = {2014}
     }
