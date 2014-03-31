@@ -30,19 +30,16 @@
 
 namespace svo {
 
-FrameHandlerMono::
-FrameHandlerMono(vk::AbstractCamera* cam) :
+FrameHandlerMono::FrameHandlerMono(vk::AbstractCamera* cam) :
   FrameHandlerBase(),
   cam_(cam),
   reprojector_(cam_, map_)
 {}
 
-FrameHandlerMono::
-~FrameHandlerMono()
+FrameHandlerMono::~FrameHandlerMono()
 {}
 
-void FrameHandlerMono::
-addImage(const cv::Mat& img, const double timestamp)
+void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
 {
   if(!startFrameProcessingCommon(timestamp))
     return;
@@ -73,8 +70,7 @@ addImage(const cv::Mat& img, const double timestamp)
   finishFrameProcessingCommon(last_frame_->id_, res, last_frame_->nObs());
 }
 
-void FrameHandlerMono::
-setFirstFrame(const FramePtr& first_frame)
+void FrameHandlerMono::setFirstFrame(const FramePtr& first_frame)
 {
   resetAll();
   last_frame_ = first_frame;
@@ -83,8 +79,7 @@ setFirstFrame(const FramePtr& first_frame)
   stage_ = STAGE_DEFAULT_FRAME;
 }
 
-FrameHandlerMono::UpdateResult FrameHandlerMono::
-processFirstFrame()
+FrameHandlerMono::UpdateResult FrameHandlerMono::processFirstFrame()
 {
   new_frame_->T_f_w_ = T_f_w_init_;
   if(klt_homography_init_.addFirstFrame(new_frame_) == initialization::FAILURE)
@@ -96,8 +91,7 @@ processFirstFrame()
   return RESULT_IS_KEYFRAME;
 }
 
-FrameHandlerMono::UpdateResult FrameHandlerMono::
-processSecondFrame()
+FrameHandlerBase::UpdateResult FrameHandlerMono::processSecondFrame()
 {
   initialization::InitResult res = klt_homography_init_.addSecondFrame(new_frame_);
   if(res == initialization::FAILURE)
@@ -123,8 +117,7 @@ processSecondFrame()
   return RESULT_IS_KEYFRAME;
 }
 
-FrameHandlerMono::UpdateResult FrameHandlerMono::
-processFrame()
+FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
 {
   // Set initial pose TODO use prior
   new_frame_->T_f_w_ = last_frame_->T_f_w_;
@@ -225,8 +218,7 @@ processFrame()
   return RESULT_IS_KEYFRAME;
 }
 
-void FrameHandlerMono::
-resetAll()
+void FrameHandlerMono::resetAll()
 {
   resetCommon();
   last_frame_.reset();
@@ -235,8 +227,7 @@ resetAll()
   overlap_kfs_.clear();
 }
 
-bool FrameHandlerMono::
-needNewKf(double scene_depth_mean)
+bool FrameHandlerMono::needNewKf(double scene_depth_mean)
 {
   for(auto it=overlap_kfs_.begin(), ite=overlap_kfs_.end(); it!=ite; ++it)
   {
@@ -249,8 +240,7 @@ needNewKf(double scene_depth_mean)
   return true;
 }
 
-void FrameHandlerMono::
-setCoreKfs(size_t n_closest)
+void FrameHandlerMono::setCoreKfs(size_t n_closest)
 {
   size_t n = min(n_closest, overlap_kfs_.size()-1);
   std::partial_sort(overlap_kfs_.begin(), overlap_kfs_.begin()+n, overlap_kfs_.end(),

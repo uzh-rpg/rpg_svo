@@ -35,8 +35,7 @@ namespace svo
 vk::PerformanceMonitor* g_permon = NULL;
 #endif
 
-FrameHandlerBase::
-FrameHandlerBase() :
+FrameHandlerBase::FrameHandlerBase() :
   stage_(STAGE_PAUSED),
   set_reset_(false),
   set_start_(false),
@@ -85,16 +84,14 @@ FrameHandlerBase() :
   SVO_INFO_STREAM("NanoSlam initialized");
 }
 
-FrameHandlerBase::
-~FrameHandlerBase()
+FrameHandlerBase::~FrameHandlerBase()
 {
   SVO_INFO_STREAM("SVO destructor invoked.");
   delete depth_filter_;
   SVO_INFO_STREAM("SVO destructed.");
 }
 
-bool FrameHandlerBase::
-startFrameProcessingCommon(const double timestamp)
+bool FrameHandlerBase::startFrameProcessingCommon(const double timestamp)
 {
   if(set_start_)
   {
@@ -115,8 +112,7 @@ startFrameProcessingCommon(const double timestamp)
   return true;
 }
 
-int FrameHandlerBase::
-finishFrameProcessingCommon(
+int FrameHandlerBase::finishFrameProcessingCommon(
     const size_t update_id,
     const UpdateResult dropout,
     const size_t num_observations)
@@ -146,8 +142,7 @@ finishFrameProcessingCommon(
   return 0;
 }
 
-void FrameHandlerBase::
-resetCommon()
+void FrameHandlerBase::resetCommon()
 {
   map_.reset();
   stage_ = STAGE_PAUSED;
@@ -159,8 +154,7 @@ resetCommon()
   SVO_INFO_STREAM("RESET");
 }
 
-void FrameHandlerBase::
-setTrackingQuality(const size_t num_observations)
+void FrameHandlerBase::setTrackingQuality(const size_t num_observations)
 {
   tracking_quality_ = TRACKING_GOOD;
   if(num_observations < Config::qualityMinFts())
@@ -186,8 +180,10 @@ bool ptLastOptimComparator(Point* lhs, Point* rhs)
   return (lhs->last_structure_optim_ < rhs->last_structure_optim_);
 }
 
-void FrameHandlerBase::
-optimizeStructure(FramePtr frame, size_t max_n_pts, int max_iter)
+void FrameHandlerBase::optimizeStructure(
+    FramePtr frame,
+    size_t max_n_pts,
+    int max_iter)
 {
   deque<Point*> pts;
   for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it)
