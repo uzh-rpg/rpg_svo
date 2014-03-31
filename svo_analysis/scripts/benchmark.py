@@ -23,6 +23,8 @@ if __name__=="__main__":
   parser.add_argument('experiment_file', help='experiment file in svo_analysis/experiments folder')
   parser.add_argument('--name', help='experiment name')
   parser.add_argument('--evaluate', help='evaluate tracefile after running SVO', action='store_true')
+  parser.add_argument('--version', help='version of svo to evaluate', default='svo_ros')
+  parser.add_argument('--executable', help='the executable to be called', default='benchmark')
   args = parser.parse_args()
 
   # load experiment parameters
@@ -33,7 +35,7 @@ if __name__=="__main__":
   expParams['platform'] = cpu_info.get_cpu_info()
   expParams['experiment_name'] = args.name
   if(expParams['experiment_name'] == None):
-    expParams['experiment_name'] = expParams['time']+'_svo_' + args.experiment_file
+    expParams['experiment_name'] = expParams['time']+'_'+args.version+'_' + args.experiment_file
 
   # load dataset parameters
   expParams['dataset_directory'] = os.path.join(rospkg.RosPack().get_path('Datasets'), expParams['dataset'])
@@ -63,7 +65,7 @@ if __name__=="__main__":
     outfile.write(yaml.dump(params, default_flow_style=False))
     
   # execute ros node
-  node = ros_node.RosNode('svo_ros','benchmark')
+  node = ros_node.RosNode(args.version, args.executable)
   node.run(params)
   
   # TODO: check if it is a synthetic dataset 
