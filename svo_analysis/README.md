@@ -19,7 +19,7 @@ Source your new `.bashrc` script, go to the new dataset folder and download the 
 
 #### Run Benchmark
 
-In SVO you need to set the `TRACE` flag to `TRUE` and recompile SVO.
+In the _CMakeLists.txt_ of SVO you need to set the `TRACE` flag to `TRUE` and recompile SVO.
 Afterwards run
 
     rosrun svo_analysis benchmark.py flying_room_1_fast
