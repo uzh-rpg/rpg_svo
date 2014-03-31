@@ -25,8 +25,7 @@
 #include <svo/matcher.h>
 #include <svo/map.h>
 #include <svo/point.h>
-#include <svo/depth_filter.h>
- 
+
 namespace svo
 {
 
@@ -42,8 +41,7 @@ FrameHandlerBase::FrameHandlerBase() :
   acc_frame_timings_(10),
   acc_num_obs_(10),
   num_obs_last_(0),
-  tracking_quality_(TRACKING_BAD),
-  depth_filter_(NULL)
+  tracking_quality_(TRACKING_BAD)
 {
 #ifdef SVO_TRACE
   // Initialize Performance Monitor
@@ -75,20 +73,12 @@ FrameHandlerBase::FrameHandlerBase() :
   g_permon->init(Config::traceName(), Config::traceDir());
 #endif
 
-  // create depth filter and set callback
-  feature_detection::DetectorPtr feature_detector(new feature_detection::FastDetector());
-  DepthFilter::callback_t depth_filter_cb = boost::bind(&MapPointCandidates::newCandidatePoint, &map_.point_candidates_, _1, _2);
-  depth_filter_ = new DepthFilter(feature_detector, depth_filter_cb);
-  depth_filter_->startThread();
-
   SVO_INFO_STREAM("NanoSlam initialized");
 }
 
 FrameHandlerBase::~FrameHandlerBase()
 {
   SVO_INFO_STREAM("SVO destructor invoked.");
-  delete depth_filter_;
-  SVO_INFO_STREAM("SVO destructed.");
 }
 
 bool FrameHandlerBase::startFrameProcessingCommon(const double timestamp)
@@ -149,7 +139,6 @@ void FrameHandlerBase::resetCommon()
   set_reset_ = false;
   set_start_ = false;
   tracking_quality_ = TRACKING_BAD;
-  depth_filter_->reset();
   num_obs_last_ = 0;
   SVO_INFO_STREAM("RESET");
 }

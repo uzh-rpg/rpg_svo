@@ -33,11 +33,20 @@ namespace svo {
 FrameHandlerMono::FrameHandlerMono(vk::AbstractCamera* cam) :
   FrameHandlerBase(),
   cam_(cam),
-  reprojector_(cam_, map_)
-{}
+  reprojector_(cam_, map_),
+  depth_filter_(NULL)
+{
+  // create depth filter and set callback
+  feature_detection::DetectorPtr feature_detector(new feature_detection::FastDetector());
+  DepthFilter::callback_t depth_filter_cb = boost::bind(&MapPointCandidates::newCandidatePoint, &map_.point_candidates_, _1, _2);
+  depth_filter_ = new DepthFilter(feature_detector, depth_filter_cb);
+  depth_filter_->startThread();
+}
 
 FrameHandlerMono::~FrameHandlerMono()
-{}
+{
+  delete depth_filter_;
+}
 
 void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
 {
@@ -225,6 +234,7 @@ void FrameHandlerMono::resetAll()
   new_frame_.reset();
   core_kfs_.clear();
   overlap_kfs_.clear();
+  depth_filter_->reset();
 }
 
 bool FrameHandlerMono::needNewKf(double scene_depth_mean)
