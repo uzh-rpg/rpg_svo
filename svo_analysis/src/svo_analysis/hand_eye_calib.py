@@ -11,81 +11,6 @@ import associate
 import rotation_utils as ru
 import matplotlib.pyplot as plt
 
-def alignSim3(model, data, n):
-
-  # select the first n datapoints and remove its mean so their center is zero
-  M = model[0:n,:]
-  D = data[0:n,:]
-
-  # substract mean
-  mu_M = M.mean(0)
-  mu_D = D.mean(0)
-  M_zerocentered = M - mu_M
-  D_zerocentered = D - mu_D
-
-  # correlation
-  C = 1.0/n*np.dot(M_zerocentered.transpose(), D_zerocentered)
-  sigma2 = 1.0/n*np.multiply(D_zerocentered,D_zerocentered).sum()
-  U_svd,D_svd,V_svd = np.linalg.linalg.svd(C)
-  D_svd = np.diag(D_svd)
-  V_svd = np.transpose(V_svd)
-  S = np.eye(3)
-
-  if(np.linalg.det(U_svd)*np.linalg.det(V_svd) < 0):
-    S[2,2] = -1
-
-  R = np.dot(U_svd, np.dot(S, np.transpose(V_svd)))
-  s = 1.0/sigma2*np.trace(np.dot(D_svd, S))
-  t = mu_M-s*np.dot(R,mu_D)
-
-  return s, R, t
-
-def matrixLog(A):
-  theta = np.arccos((np.trace(A)-1.0)/2.0)
-  log_theta = 0.5*theta/np.sin(theta) * (A - A.transpose())
-  x = np.array([log_theta[2,1], log_theta[0,2], log_theta[1,0]])
-  return x
-
-def handEyeCalib(q_gt, q_es, p_gt, p_es, I, delta=10, verbose=True):
-  ''' Implementation of the least squares solution described in the paper:
-  Robot Sensor Calibration: Solving AX=XB on the Euclidean Group
-  by Frank C. Park and Bryan J. Martin
-  '''
-  n = np.shape(I)[0]
-  M = np.zeros([3,3])
-  C = np.zeros([3*n, 3])
-  b_A = np.zeros([3*n,1])
-  b_B = np.zeros([3*n,1])
-  for ix, i in enumerate(I):
-    A1 = ru.quat2dcm(q_es[i,:])
-    A2 = ru.quat2dcm(q_es[i+delta,:])
-    A  = np.dot(A1.transpose(), A2)
-    B1 = ru.quat2dcm(q_gt[i,:])
-    B2 = ru.quat2dcm(q_gt[i+delta,:])
-    B  = np.dot(B1.transpose(), B2)
-    alpha = matrixLog(A)
-    beta = matrixLog(B)
-    M = M + np.dot(np.matrix(beta).transpose(), np.matrix(alpha))
-    C[3*ix:3*ix+3,:] = np.eye(3) - A
-    b_A[3*ix:3*ix+3,0] = np.dot(np.transpose(A1), p_es[i+delta,:]-p_es[i,:])
-    b_B[3*ix:3*ix+3,0] = np.dot(np.transpose(B1), p_gt[i+delta,:]-p_gt[i,:])
-
-  # compute rotation  
-  D,V = np.linalg.linalg.eig(np.dot(M.transpose(), M))
-  Lambda = np.diag([np.sqrt(1.0/D[0]), np.sqrt(1.0/D[1]), np.sqrt(1.0/D[2])])
-  Vinv = np.linalg.linalg.inv(V)
-  X = np.dot(V, np.dot(Lambda, np.dot(Vinv, M.transpose())))
-
-  # compute translation
-  d = np.zeros([3*n,1])
-  for i in range(n):
-    d[3*i:3*i+3,:] = b_A[3*i:3*i+3,:] - np.dot(X, b_B[3*i:3*i+3,:])
-
-  b = np.dot(np.linalg.inv(np.dot(np.transpose(C),C)),  np.dot(np.transpose(C),d))
-
-  return np.array(X),b
-
-
 # user config
 display = True
 dataset = '20130906_2149_ptam_i7_asl2'
@@ -121,7 +46,7 @@ q_es = np.array([[float(value) for value in data_es[b][3:7]] for a,b in matches]
 
 # --------------------------------------------------------------------------------
 # align Sim3 to get scale
-scale,rot,trans = alignSim3(p_gt, p_es, np.shape(matches)[0])
+scale,rot,trans = align_sim3(p_gt, p_es, np.shape(matches)[0])
 p_es = scale*p_es
 #p_es = np.transpose(scale*np.dot(rot,np.transpose(p_es)))+trans
 
@@ -142,7 +67,7 @@ if display:
 
 # select random measurements
 I = np.array(rand(n_measurements,1)*(np.shape(matches)[0]-delta), dtype=int)[:,0]
-R,b = handEyeCalib(q_gt, q_es, p_gt, p_es, I, delta, True)
+R,b = hand_eye_calib(q_gt, q_es, p_gt, p_es, I, delta, True)
 
 print 'quat = ' + str(ru.dcm2quat(R))
 print 'b = ' + str(b)

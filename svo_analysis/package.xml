@@ -1,0 +1,19 @@
+<package>
+
+  <name>svo_analysis</name>
+  <version>0.0.1</version>
+  <description>
+    Python scripts to analyse performance of SVO.
+  </description>
+  <maintainer email="forster@ifi.uzh.ch">Christian Forster</maintainer>
+  <author>Christian Forster</author>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rospy</build_depend>
+
+  <run_depend>python-rospkg</run_depend>
+  <run_depend>python-yaml</run_depend>
+  <run_depend>rospy</run_depend>
+
+</package>

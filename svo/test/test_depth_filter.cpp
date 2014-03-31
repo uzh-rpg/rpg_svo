@@ -118,7 +118,7 @@ void DepthFilterTest::testReconstruction(
     if(i == 0)
     {
       // create reference frame and load ground truth depthmap
-      frame_ref_.reset(new svo::Frame(cam_, img));
+      frame_ref_.reset(new svo::Frame(cam_, img, 0.0));
       frame_ref_->T_f_w_ = T_w_f.inverse();
       depth_filter_->addKeyframe(frame_ref_, 3, 1);
       vk::blender_utils::loadBlenderDepthmap(dataset_dir+"/depth/" + (*it).image_name_ + "_0.depth", *cam_, depth_ref_);
@@ -126,7 +126,7 @@ void DepthFilterTest::testReconstruction(
     }
 
     n_converged_seeds_=0;
-    frame_cur_ = svo::FramePtr(new svo::Frame(cam_, img));
+    frame_cur_ = svo::FramePtr(new svo::Frame(cam_, img, 0.0));
     frame_cur_->T_f_w_ = T_w_f.inverse();
     depth_filter_->addFrame(frame_cur_);
     n_converged_per_iteration.push_back(n_converged_seeds_);

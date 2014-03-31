@@ -70,6 +70,7 @@ void reprojectMap(
   resetGrid(grid);
 
   // Identify those Keyframes which share a common field of view.
+  SVO_START_TIMER("reproject_kfs");
   list< pair<FramePtr,double> > close_kfs;
   map.getCloseKeyframes(frame, close_kfs);
 
@@ -103,8 +104,10 @@ void reprojectMap(
         overlap_kfs.back().second++;
     }
   }
+  SVO_STOP_TIMER("reproject_kfs");
 
   // Now project all point candidates
+  SVO_START_TIMER("reproject_candidates");
   {
     boost::unique_lock<boost::mutex> lock(candidate_points.mut_);
     auto it=candidate_points.candidates_.begin();
@@ -122,10 +125,12 @@ void reprojectMap(
       }
       ++it;
     }
-  }
+  } // unlock the mutex when out of scope
+  SVO_STOP_TIMER("reproject_candidates");
 
   // Now we go through each grid cell and select one point to match.
   // At the end, we should have at maximum one reprojected point per cell.
+  SVO_START_TIMER("feature_align");
   n_matches=0; n_trials=0;
   for(size_t i=0; i<grid.cells.size(); ++i)
   {
@@ -136,6 +141,7 @@ void reprojectMap(
     if(n_matches > (size_t) Config::maxFts())
       break;
   }
+  SVO_STOP_TIMER("feature_align");
 }
 
 bool pointQualityComparator(Candidate& lhs, Candidate& rhs)

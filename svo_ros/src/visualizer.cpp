@@ -110,7 +110,7 @@ publishMinimal(const cv::Mat& img, const FramePtr& frame, const FrameHandlerMono
     cv::cvtColor(frame->img_pyr_[img_pub_level_], img_rgb, CV_GRAY2RGB);
 
     // during initialization, draw lines
-    if(slam.stage() == FrameHandlerBase::SECOND_FRAME)
+    if(slam.stage() == FrameHandlerBase::STAGE_SECOND_FRAME)
     {
       const vector<cv::Point2f>& px_ref(slam.initFeatureTrackRefPx());
       const vector<cv::Point2f>& px_cur(slam.initFeatureTrackCurPx());
@@ -148,7 +148,7 @@ publishMinimal(const cv::Mat& img, const FramePtr& frame, const FrameHandlerMono
     img_msg.encoding = sensor_msgs::image_encodings::BGR8;
     pub_images_.publish(img_msg.toImageMsg());
   }
-  else if(frame == NULL && pub_images_.getNumSubscribers() > 0 && slam.stage() == FrameHandlerBase::PAUSED)
+  else if(frame == NULL && pub_images_.getNumSubscribers() > 0 && slam.stage() == FrameHandlerBase::STAGE_PAUSED)
   {
     // display image when slam is not running
     cv_bridge::CvImage img_msg;

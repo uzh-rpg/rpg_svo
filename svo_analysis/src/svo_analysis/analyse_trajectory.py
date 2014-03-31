@@ -1,43 +1,52 @@
 # -*- coding: utf-8 -*-
 
-import associate
-import numpy as np
-import matplotlib.pyplot as plt
+import os
 import yaml
-import transformations
+from .tum_benchmark_tools import associate
+import matplotlib.pyplot as plt
+import vikit_py.transformations as transformations
+import vikit_py.align_trajectory as align_trajectory
+import numpy as np
+
+# plot options
 from matplotlib import rc
+rc('font',**{'family':'serif','serif':['Cardo']})
+rc('text', usetex=True)
 
-def alignSim3(model, data, n):
+def plot_translation_error(timestamps, translation_error, results_dir):
+  fig = plt.figure(figsize=(8, 2.5))
+  ax = fig.add_subplot(111, xlabel='time [s]', ylabel='position drift [mm]', xlim=[0,timestamps[-1]-timestamps[0]+4])
+  ax.plot(timestamps-timestamps[0], translation_error[:,0]*1000, 'r-', label='x')
+  ax.plot(timestamps-timestamps[0], translation_error[:,1]*1000, 'g-', label='y')
+  ax.plot(timestamps-timestamps[0], translation_error[:,2]*1000, 'b-', label='z')
+  ax.legend()
+  fig.tight_layout()
+  fig.savefig(results_dir+'/translation_error.pdf')
 
-  # select the first n datapoints and remove its mean so their center is zero
-  M = model[0:n,:]
-  D = data[0:n,:]
+def plot_rotation_error(timestamps, rotation_error, results_dir):
+  fig = plt.figure(figsize=(8, 2.5))
+  ax = fig.add_subplot(111, xlabel='time [s]', ylabel='orientation drift [rad]', xlim=[0,timestamps[-1]-timestamps[0]+4])
+  ax.plot(timestamps-timestamps[0], rotation_error[:,0], 'r-', label='yaw')
+  ax.plot(timestamps-timestamps[0], rotation_error[:,1], 'g-', label='pitch')
+  ax.plot(timestamps-timestamps[0], rotation_error[:,2], 'b-', label='roll')
+  ax.legend()
+  fig.tight_layout()
+  fig.savefig(results_dir+'/orientation_error.pdf')
 
-  # substract mean
-  mu_M = M.mean(0)
-  mu_D = D.mean(0)
-  M_zerocentered = M - mu_M
-  D_zerocentered = D - mu_D
-
-  # correlation
-  C = 1.0/n*np.dot(M_zerocentered.transpose(), D_zerocentered)
-  sigma2 = 1.0/n*np.multiply(D_zerocentered,D_zerocentered).sum()
-  U_svd,D_svd,V_svd = np.linalg.linalg.svd(C)
-  D_svd = np.diag(D_svd)
-  V_svd = np.transpose(V_svd)
-  S = np.eye(3)
-
-  if(np.linalg.det(U_svd)*np.linalg.det(V_svd) < 0):
-    S[2,2] = -1
-
-  R = np.dot(U_svd, np.dot(S, np.transpose(V_svd)))
-  s = 1.0/sigma2*np.trace(np.dot(D_svd, S))
-  t = mu_M-s*np.dot(R,mu_D)
-
-  return s, R, t
-
-
-def getRigidBodyTrafo(quat,trans):
+def analyse_trajectory(results_dir):
+  # plot translation error
+  data = np.loadtxt(os.path.join(results_dir, 'translation_error.txt'))
+  timestamps = data[:,0]
+  translation_error = data[:,1:4]
+  plot_translation_error(timestamps, translation_error, results_dir)
+  
+  # plot orientation error
+  data = np.loadtxt(os.path.join(results_dir, 'orientation_error.txt'))
+  timestamps = data[:,0]
+  orientation_error = data[:,1:4]
+  plot_rotation_error(timestamps, orientation_error, results_dir)
+  
+def get_rigid_body_trafo(quat,trans):
   T = transformations.quaternion_matrix(quat)
   T[0:3,3] = trans
   return T
@@ -49,10 +58,6 @@ if __name__ == '__main__':
   n_align_frames = 100
   save = True
   results_dir = '../results/'+dataset
-  
-  # plot options
-  rc('font',**{'family':'serif','serif':['Cardo']})
-  rc('text', usetex=True)
   
   # load dataset parameters
   params_stream = open(results_dir+'/params.yaml')
@@ -72,7 +77,7 @@ if __name__ == '__main__':
   P = yaml.load(dataset_param_file_stream)
   T_cm_quat = np.array([P['calib_Tcm_qx'], P['calib_Tcm_qy'], P['calib_Tcm_qz'], P['calib_Tcm_qw']])
   T_cm_tran = np.array([P['calib_Tcm_tx'], P['calib_Tcm_ty'], P['calib_Tcm_tz']])
-  T_cm = getRigidBodyTrafo(T_cm_quat, T_cm_tran)
+  T_cm = get_rigid_body_trafo(T_cm_quat, T_cm_tran)
   T_mc = transformations.inverse_matrix(T_cm)
   
   # load data
@@ -94,12 +99,12 @@ if __name__ == '__main__':
   # align Sim3 to get scale
   if(n_align_frames > np.shape(matches)[0]):
     raise NameError('n_matches_for_scale is too large')
-  scale,rot,trans = alignSim3(p_gt, p_es, n_align_frames)
+  scale,rot,trans = align_trajectory.align_sim3(p_gt, p_es, n_align_frames)
   print 'scale = '+str(scale)
   
   # get trafo between (v)ision and (o)ptitrack frame
-  T_om = getRigidBodyTrafo(q_gt[0,:], p_gt[0,:])
-  T_vc = getRigidBodyTrafo(q_es[0,:], scale*p_es[0,:])
+  T_om = get_rigid_body_trafo(q_gt[0,:], p_gt[0,:])
+  T_vc = get_rigid_body_trafo(q_es[0,:], scale*p_es[0,:])
   T_cv = transformations.inverse_matrix(T_vc)
   T_ov = np.dot(T_om, np.dot(T_mc, T_cv))
   print 'T_ov = ' + str(T_ov)
@@ -111,7 +116,7 @@ if __name__ == '__main__':
   
   # rotate trajectory
   for i in range(np.shape(matches)[0]):
-    T_vc = getRigidBodyTrafo(q_es[i,:],p_es[i,:])
+    T_vc = get_rigid_body_trafo(q_es[i,:],p_es[i,:])
     T_vc[0:3,3] *= scale
     T_om = np.dot(T_ov, np.dot(T_vc, T_cm))
     p_es_aligned[i,:] = T_om[0:3,3]
@@ -136,15 +141,9 @@ if __name__ == '__main__':
           
   # plot position error (drift)
   translation_error = (p_gt-p_es_aligned)
-  fig = plt.figure(figsize=(8, 2.5))
-  ax = fig.add_subplot(111, xlabel='time [s]', ylabel='position drift [m]', xlim=[0,t_es[-1]+4])
-  ax.plot(t_es, translation_error[:,0], 'r-', label='x')
-  ax.plot(t_es, translation_error[:,1], 'g-', label='y')
-  ax.plot(t_es, translation_error[:,2], 'b-', label='z')
-  fig.tight_layout()
+  plot_translation_error(t_es, translation_error, results_dir)
   
   if save:
-    fig.savefig(results_dir+'/translation_error.pdf')
     f = open(translation_error_filename,'w')
     for i in range(translation_error.shape[0]):
       f.write('%.7f %.5f %.5f %.5f\n'%(t_es[i], translation_error[i,0],  translation_error[i,1],  translation_error[i,2]))
@@ -152,16 +151,9 @@ if __name__ == '__main__':
     
   # plot orientation error (drift)
   orientation_error = (rpy_gt - rpy_es_aligned)
-  fig = plt.figure(figsize=(8, 2.5))
-  ax = fig.add_subplot(111, xlabel='time [s]', ylabel='orientation drift [rad]', xlim=[0,t_es[-1]+4])
-  ax.plot(t_es, orientation_error[:,0], 'r--', label='yaw')
-  ax.plot(t_es, orientation_error[:,1], 'g--', label='pitch')
-  ax.plot(t_es, orientation_error[:,2], 'b--', label='roll')
-  ax.legend()
-  fig.tight_layout()
-  
-  if save:
-    fig.savefig(results_dir+'/orientation_error.pdf')
+  plot_rotation_error(t_es, orientation_error, results_dir)
+    
+  if save:  
     f = open(orientation_error_filename,'w')
     for i in range(orientation_error.shape[0]):
       f.write('%.7f %.5f %.5f %.5f\n'%(t_es[i], orientation_error[i,0],  orientation_error[i,1],  orientation_error[i,2]))

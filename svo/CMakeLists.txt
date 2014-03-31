@@ -2,7 +2,7 @@
 # user build settings
 
 SET(DEBUG FALSE)
-SET(TRACE FALSE)
+SET(TRACE TRUE)
 SET(HAVE_G2O FALSE) 
 
 ################################################################################

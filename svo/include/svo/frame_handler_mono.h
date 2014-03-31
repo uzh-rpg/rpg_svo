@@ -34,6 +34,9 @@ public:
   /// Provide an image.
   void addImage(const cv::Mat& img, double timestamp);
 
+  /// Set the first frame (used for synthetic datasets in benchmark node)
+  void setFirstFrame(const FramePtr& first_frame);
+
   /// Get the last frame that has been processed.
   FramePtr lastFrame() { return last_frame_; }
 

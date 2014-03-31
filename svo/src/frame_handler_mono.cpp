@@ -43,9 +43,9 @@ FrameHandlerMono::
 {}
 
 void FrameHandlerMono::
-addImage(const cv::Mat& img, double timestamp)
+addImage(const cv::Mat& img, const double timestamp)
 {
-  if(!startFrameProcessingCommon())
+  if(!startFrameProcessingCommon(timestamp))
     return;
 
   // some cleanup from last iteration, can't do before because of visualization
@@ -58,12 +58,12 @@ addImage(const cv::Mat& img, double timestamp)
   SVO_STOP_TIMER("pyramid_creation");
 
   // process frame
-  UpdateResult res = FAILURE;
-  if(stage_ == DEFAULT_FRAME)
+  UpdateResult res = RESULT_FAILURE;
+  if(stage_ == STAGE_DEFAULT_FRAME)
     res = processFrame();
-  else if(stage_ == SECOND_FRAME)
+  else if(stage_ == STAGE_SECOND_FRAME)
     res = processSecondFrame();
-  else if(stage_ == FIRST_FRAME)
+  else if(stage_ == STAGE_FIRST_FRAME)
     res = processFirstFrame();
 
   // set last frame
@@ -74,17 +74,27 @@ addImage(const cv::Mat& img, double timestamp)
   finishFrameProcessingCommon(last_frame_->id_, res, last_frame_->nObs());
 }
 
+void FrameHandlerMono::
+setFirstFrame(const FramePtr& first_frame)
+{
+  resetAll();
+  last_frame_ = first_frame;
+  last_frame_->setKeyframe();
+  map_.addKeyframe(last_frame_);
+  stage_ = STAGE_DEFAULT_FRAME;
+}
+
 FrameHandlerMono::UpdateResult FrameHandlerMono::
 processFirstFrame()
 {
   new_frame_->T_f_w_ = T_f_w_init_;
   if(klt_homography_init_.addFirstFrame(new_frame_) == initialization::FAILURE)
-    return NO_KEYFRAME;
+    return RESULT_NO_KEYFRAME;
   new_frame_->setKeyframe();
   map_.addKeyframe(new_frame_);
-  stage_ = SECOND_FRAME;
+  stage_ = STAGE_SECOND_FRAME;
   SVO_INFO_STREAM("Init: Selected first frame.");
-  return IS_KEYFRAME;
+  return RESULT_IS_KEYFRAME;
 }
 
 FrameHandlerMono::UpdateResult FrameHandlerMono::
@@ -92,9 +102,9 @@ processSecondFrame()
 {
   initialization::InitResult res = klt_homography_init_.addSecondFrame(new_frame_);
   if(res == initialization::FAILURE)
-    return FAILURE;
+    return RESULT_FAILURE;
   else if(res == initialization::NO_KEYFRAME)
-    return NO_KEYFRAME;
+    return RESULT_NO_KEYFRAME;
 
   // two-frame bundle adjustment
 #ifdef USE_BUNDLE_ADJUSTMENT
@@ -108,10 +118,10 @@ processSecondFrame()
   // add frame to map
   new_frame_->setKeyframe();
   map_.addKeyframe(new_frame_);
-  stage_ = DEFAULT_FRAME;
+  stage_ = STAGE_DEFAULT_FRAME;
   klt_homography_init_.reset();
   SVO_INFO_STREAM("Init: Selected second frame, triangulated initial map.");
-  return IS_KEYFRAME;
+  return RESULT_IS_KEYFRAME;
 }
 
 FrameHandlerMono::UpdateResult FrameHandlerMono::
@@ -140,7 +150,7 @@ processFrame()
   SVO_DEBUG_STREAM("Reprojection:\t nPoints = "<<repr_n_mps<<"\t \t nMatches = "<<repr_n_new_references);
   if(repr_n_new_references == 0) {
     SVO_ERROR_STREAM("Not enough matched features.");
-    return FAILURE;
+    return RESULT_FAILURE;
   }
 
   // pose optimization
@@ -155,7 +165,7 @@ processFrame()
   SVO_DEBUG_STREAM("PoseOptimizer:\t ErrInit = "<<sfba_error_init<<"px\t thresh = "<<sfba_thresh);
   SVO_DEBUG_STREAM("PoseOptimizer:\t ErrFin. = "<<sfba_error_final<<"px\t nObsFin. = "<<sfba_n_edges_final);
   if(sfba_n_edges_final < 10)
-    return FAILURE;
+    return RESULT_FAILURE;
 
   // structure optimization
   SVO_START_TIMER("point_optimizer");
@@ -164,14 +174,14 @@ processFrame()
 
   // select keyframe
   setTrackingQuality(sfba_n_edges_final);
-  if(tracking_quality_ == INSUFFICIENT)
-    return FAILURE;
+  if(tracking_quality_ == TRACKING_INSUFFICIENT)
+    return RESULT_FAILURE;
   double depth_mean, depth_min;
   frame_utils::getSceneDepth(*new_frame_, depth_mean, depth_min);
-  if(!needNewKf(depth_mean) || tracking_quality_ == BAD)
+  if(!needNewKf(depth_mean) || tracking_quality_ == TRACKING_BAD)
   {
     depth_filter_->addFrame(new_frame_);
-    return NO_KEYFRAME;
+    return RESULT_NO_KEYFRAME;
   }
 
   // new keyframe selected
@@ -214,7 +224,7 @@ processFrame()
   new_frame_->setKeyframe();
   map_.addKeyframe(new_frame_);
 
-  return IS_KEYFRAME;
+  return RESULT_IS_KEYFRAME;
 }
 
 void FrameHandlerMono::

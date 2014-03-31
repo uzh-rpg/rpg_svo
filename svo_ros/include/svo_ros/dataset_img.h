@@ -33,8 +33,8 @@ public:
   DatasetImg() {}
   virtual ~DatasetImg() {}
 
-  double stamp_;
-  std::string imgname_;
+  double timestamp_;
+  std::string image_name_;
 
   friend std::ostream& operator <<(std::ostream& out, const DatasetImg& pair);
   friend std::istream& operator >>(std::istream& in, DatasetImg& pair);
@@ -43,16 +43,16 @@ public:
 std::ostream& operator <<(std::ostream& out, const DatasetImg& gt)
 {
   out
-    << gt.stamp_ << " "
-    << gt.imgname_ << " "
+    << gt.timestamp_ << " "
+    << gt.image_name_ << " "
     << std::endl;
   return out;
 }
 
 std::istream& operator >>(std::istream& in, DatasetImg& gt)
 {
-  in >> gt.stamp_;
-  in >> gt.imgname_;
+  in >> gt.timestamp_;
+  in >> gt.image_name_;
   return in;
 }
 
