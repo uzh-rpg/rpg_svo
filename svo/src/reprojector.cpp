@@ -163,7 +163,9 @@ bool Reprojector::reprojectCell(Cell& cell, FramePtr frame)
     }
 
     int feature_level;
-    bool found_match = matcher::findMatchDirect(*it->pt, *frame, it->px, feature_level);
+    bool found_match = true;
+    if(options_.find_match_direct)
+      found_match = matcher::findMatchDirect(*it->pt, *frame, it->px, feature_level);
     if(!found_match)
     {
       it->pt->n_failed_reproj_++;
