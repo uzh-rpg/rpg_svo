@@ -32,6 +32,7 @@
 #include <svo/feature.h>
 #include <svo/point.h>
 #include <svo/config.h>
+#include "test_utils.h"
 
 namespace {
 
@@ -151,14 +152,15 @@ void DepthFilterTest::testReconstruction(
   }
 
   // trace error
-  std::string trace_name(std::string(TEST_TRACE_DIR) + "/depth_filter_" + experiment_name + ".txt");
+  std::string trace_dir(svo::test_utils::getTraceDir());
+  std::string trace_name(trace_dir + "/depth_filter_" + experiment_name + ".txt");
   std::ofstream ofs(trace_name.c_str());
   for(std::list<ConvergedSeed>::iterator i=results_.begin(); i!=results_.end(); ++i)
     ofs << i->x_ << ", " << i->y_ << ", " << fabs(i->error_) << std::endl;
   ofs.close();
   
   // trace convergence rate
-  trace_name = std::string(TEST_TRACE_DIR) + "/depth_filter_" + experiment_name + "_convergence.txt";
+  trace_name = trace_dir + "/depth_filter_" + experiment_name + "_convergence.txt";
   ofs.open(trace_name.c_str());
   for(std::list<size_t>::iterator it=n_converged_per_iteration.begin();
       it!=n_converged_per_iteration.end(); ++it)
@@ -166,7 +168,7 @@ void DepthFilterTest::testReconstruction(
   ofs.close();
 
   // write ply file for pointcloud visualization in Meshlab
-  trace_name = std::string(TEST_TRACE_DIR) + "/depth_filter_" + experiment_name + ".ply";
+  trace_name = trace_dir + "/depth_filter_" + experiment_name + ".ply";
   ofs.open(trace_name.c_str());
   ofs << "ply" << std::endl
       << "format ascii 1.0" << std::endl
@@ -193,7 +195,7 @@ void DepthFilterTest::testReconstruction(
 int main(int argc, char** argv)
 {
   DepthFilterTest test;
-  std::string dataset_dir(std::string(TEST_DATA_DIR) + "/flying_room_1_rig_1");
+  std::string dataset_dir(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1");
   std::string experiment_name("synth_fast_2d");
   test.testReconstruction(dataset_dir, experiment_name);
   return 0;

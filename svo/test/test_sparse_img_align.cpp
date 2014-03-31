@@ -26,6 +26,7 @@
 #include <svo/point.h>
 #include <svo/feature.h>
 #include <svo/config.h>
+#include "test_utils.h"
 
 namespace {
 
@@ -68,7 +69,8 @@ void SparseImgAlignTest::testSequence(
   std::list<double> translation_error;
 
   Sophus::SE3 T_prev_w, T_prevgt_w;
-  std::string trace_name(std::string(TEST_TRACE_DIR) + "/sparse_img_align_" + experiment_name + "_trans_estimate.txt");
+  std::string trace_dir(svo::test_utils::getTraceDir());
+  std::string trace_name(trace_dir + "/sparse_img_align_" + experiment_name + "_trans_estimate.txt");
   std::ofstream ofs(trace_name.c_str());
   for(int i=0; iter != sequence.end() && i<30; ++iter, ++i)
   {
@@ -142,7 +144,7 @@ void SparseImgAlignTest::testSequence(
   ofs.close();
 
   // trace error
-  trace_name = std::string(TEST_TRACE_DIR) + "/sparse_img_align_" + experiment_name + "_trans_error.txt";
+  trace_name = trace_dir + "/sparse_img_align_" + experiment_name + "_trans_error.txt";
   ofs.open(trace_name.c_str());
   for(std::list<double>::iterator it=translation_error.begin(); it!=translation_error.end(); ++it)
     ofs << *it << std::endl;
@@ -155,7 +157,7 @@ void SparseImgAlignTest::testSequence(
 int main(int argc, char** argv)
 {
   std::string experiment_name("flying_room_1_rig_1_fast_minlev0");
-  std::string dataset_dir(std::string(TEST_DATA_DIR) + "/flying_room_1_rig_1");
+  std::string dataset_dir(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1");
   svo::feature_detection::FastDetector detector;
   svo::Config::triangMinCornerScore() = 20;
   svo::Config::kltMinLevel() = 0;

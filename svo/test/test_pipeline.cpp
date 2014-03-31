@@ -28,6 +28,7 @@
 #include <opencv2/opencv.hpp>
 #include <sophus/se3.h>
 #include <iostream>
+#include "test_utils.h"
 
 namespace svo {
 
@@ -44,8 +45,6 @@ public:
 
 BenchmarkNode::BenchmarkNode()
 {
-  Config::traceName() = "benchmark";
-  Config::traceDir() =  std::string(TEST_TRACE_DIR)+"/..";
   cam_ = new vk::PinholeCamera(752, 480, 217.083701215, 217.083701215, 376, 240);
   vo_ = new svo::FrameHandlerMono(cam_);
   vo_->start();
@@ -62,8 +61,9 @@ void BenchmarkNode::runFromFolder()
   for(int img_id = 1; img_id < 310; ++img_id)
   {
     // load image
-	std::stringstream ss;
-    ss << std::string(TEST_DATA_DIR) << "/flying_room_1_rig_1/img/frame_" << std::setw( 6 ) << std::setfill( '0' ) << img_id << "_0.png";
+    std::stringstream ss;
+    ss << svo::test_utils::getDatasetDir() << "/flying_room_1_rig_1/img/frame_"
+       << std::setw( 6 ) << std::setfill( '0' ) << img_id << "_0.png";
     if(img_id == 1)
       std::cout << "reading image " << ss.str() << std::endl;
     cv::Mat img(cv::imread(ss.str().c_str(), 0));
@@ -75,8 +75,8 @@ void BenchmarkNode::runFromFolder()
     // display tracking quality
     if(vo_->lastFrame() != NULL)
     	std::cout << "Frame-Id: " << vo_->lastFrame()->id_ << " \t"
-    		      << "#Features: " << vo_->lastNumObservations() << " \t"
-    		      << "Proc. Time: " << vo_->lastProcessingTime()*1000 << "ms \n";
+                  << "#Features: " << vo_->lastNumObservations() << " \t"
+                  << "Proc. Time: " << vo_->lastProcessingTime()*1000 << "ms \n";
   }
 }
 
