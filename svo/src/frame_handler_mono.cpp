@@ -33,10 +33,9 @@ namespace svo {
 FrameHandlerMono::
 FrameHandlerMono(vk::AbstractCamera* cam) :
   FrameHandlerBase(),
-  cam_(cam)
-{
-  reprojection_grid_.initialize(cam_);
-}
+  cam_(cam),
+  reprojector_(cam_, map_)
+{}
 
 FrameHandlerMono::
 ~FrameHandlerMono()
@@ -141,11 +140,10 @@ processFrame()
 
   // map reprojection & feature alignment
   SVO_START_TIMER("reproject");
-  size_t repr_n_new_references, repr_n_mps;
-  reprojection::reprojectMap(
-      map_, new_frame_, reprojection_grid_, map_.point_candidates_,
-      overlap_kfs_, repr_n_new_references, repr_n_mps);
+  reprojector_.reprojectMap(new_frame_, overlap_kfs_);
   SVO_STOP_TIMER("reproject");
+  const size_t repr_n_new_references = reprojector_.n_matches_;
+  const size_t repr_n_mps = reprojector_.n_trials_;
   SVO_LOG2(repr_n_mps, repr_n_new_references);
   SVO_DEBUG_STREAM("Reprojection:\t nPoints = "<<repr_n_mps<<"\t \t nMatches = "<<repr_n_new_references);
   if(repr_n_new_references == 0) {

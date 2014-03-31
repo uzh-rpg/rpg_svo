@@ -2,7 +2,7 @@
 # user build settings
 
 SET(DEBUG FALSE)
-SET(TRACE FALSE)
+SET(TRACE TRUE)
 SET(HAVE_G2O FALSE) 
 
 ################################################################################
@@ -109,7 +109,7 @@ LIST(APPEND SOURCEFILES
   src/pose_optimizer.cpp
   src/initialization.cpp
   src/matcher.cpp
-  src/reprojection.cpp
+  src/reprojector.cpp
   src/feature_alignment.cpp
   src/feature_detection.cpp
   src/depth_filter.cpp

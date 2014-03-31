@@ -19,7 +19,7 @@
 
 #include <vikit/abstract_camera.h>
 #include <svo/frame_handler_base.h>
-#include <svo/reprojection.h>
+#include <svo/reprojector.h>
 #include <svo/initialization.h>
 
 namespace svo {
@@ -49,7 +49,7 @@ public:
 
 protected:
   vk::AbstractCamera* cam_;                     //!< Camera model, can be ATAN, Pinhole or Ocam (see vikit).
-  reprojection::Grid reprojection_grid_;        //!< Grid used for reprojection to make sure we have evenly distributed features.
+  Reprojector reprojector_;                     //!< Projects points from other keyframes into the current frame
   FramePtr new_frame_;                          //!< Current frame.
   FramePtr last_frame_;                         //!< Last frame, not necessarily a keyframe.
   set<FramePtr> core_kfs_;                      //!< Keyframes in the closer neighbourhood.

@@ -25,7 +25,6 @@
 #include <svo/matcher.h>
 #include <svo/map.h>
 #include <svo/point.h>
-#include <svo/reprojection.h>
 #include <svo/depth_filter.h>
  
 namespace svo
