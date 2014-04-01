@@ -151,7 +151,7 @@ void SparseImgAlign::precomputeReferencePatches()
 
         // cache the jacobian
         jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter) =
-            (dx*frame_jac.row(0) + dy*frame_jac.row(1))*(focal_length / (1<<level_));
+           - (dx*frame_jac.row(0) + dy*frame_jac.row(1))*(focal_length / (1<<level_));
       }
     }
   }
@@ -268,10 +268,7 @@ void SparseImgAlign::update(
     const ModelType& T_curold_from_ref,
     ModelType& T_curnew_from_ref)
 {
-  // the jacobian is computed in the coordinate frame of the reference image
-  // T_ref_from_curnew = T_ref_from_curold * SE3::exp(x_).inverse();
-  // but our state is in the reference frame of the new image, thus using (AB)^-1 = B^-1*A^-1
-  T_curnew_from_ref = SE3::exp(x_) * T_curold_from_ref;
+  T_curnew_from_ref = T_curold_from_ref * SE3::exp(x_).inverse();
 }
 
 void SparseImgAlign::startIteration()
@@ -282,7 +279,7 @@ void SparseImgAlign::finishIteration()
   if(display_)
   {
     cv::namedWindow("residuals", CV_WINDOW_AUTOSIZE);
-    cv::imshow("residuals", resimg_*4);
+    cv::imshow("residuals", resimg_*10);
     cv::waitKey(0);
   }
 }
