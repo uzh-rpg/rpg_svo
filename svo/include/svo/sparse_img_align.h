@@ -60,7 +60,7 @@ protected:
   int min_level_;                 //!< finest pyramid level for the alignment.
 
   // cache:
-  Matrix<double, 6, Dynamic, ColMajor> jacobian_cache_; //!< the first row is a flag whether the jacobian has been computed.
+  Matrix<double, 6, Dynamic, ColMajor> jacobian_cache_;
   bool have_ref_patch_cache_;
   cv::Mat ref_patch_cache_;
   std::vector<bool> visible_fts_;
