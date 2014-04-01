@@ -268,7 +268,7 @@ void SparseImgAlign::update(
     const ModelType& T_curold_from_ref,
     ModelType& T_curnew_from_ref)
 {
-  T_curnew_from_ref = T_curold_from_ref * SE3::exp(x_).inverse();
+  T_curnew_from_ref =  T_curold_from_ref * SE3::exp(-x_);
 }
 
 void SparseImgAlign::startIteration()
