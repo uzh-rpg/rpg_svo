@@ -24,15 +24,15 @@ namespace svo {
 
 int Point::point_counter_ = 0;
 
-Point::Point(Vector3d pos, PointOrigin origin) :
+Point::Point(Vector3d pos) :
   id_(point_counter_++),
   pos_(pos),
+  normal_(Vector3d::Zero()),
   n_obs_(0),
   v_pt_(NULL),
   last_published_ts_(0),
   last_projected_kf_id_(-1),
-  type_(UNKNOWN_QUALITY),
-  origin_(origin),
+  type_(TYPE_UNKNOWN),
   n_failed_reproj_(0),
   n_succeeded_reproj_(0),
   last_structure_optim_(0)

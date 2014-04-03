@@ -104,7 +104,7 @@ void SparseImgAlignTest::testSequence(
         svo::Feature* ftr = new svo::Feature(frame_ref_.get(), Eigen::Vector2d(corner->x, corner->y), corner->level);
         Eigen::Vector3d pt_pos_cur = ftr->f*depthmap.at<float>(corner->y, corner->x);
         Eigen::Vector3d pt_pos_w = frame_ref_->T_f_w_.inverse()*pt_pos_cur;
-        svo::Point* pt = new svo::Point(pt_pos_w, svo::Point::DEPTH);
+        svo::Point* pt = new svo::Point(pt_pos_w);
         ftr->point = pt;
         frame_ref_->addFeature(ftr);
       }

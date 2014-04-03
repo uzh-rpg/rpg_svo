@@ -158,7 +158,7 @@ bool reprojectCell(
   {
     ++n_trials;
 
-    if(it->pt->type_ == Point::DELETED)
+    if(it->pt->type_ == Point::TYPE_DELETED)
     {
       it = cell.erase(it);
       continue;
@@ -169,16 +169,16 @@ bool reprojectCell(
     if(!found_match)
     {
       it->pt->n_failed_reproj_++;
-      if(it->pt->type_ == Point::UNKNOWN_QUALITY && it->pt->n_failed_reproj_ > 15)
+      if(it->pt->type_ == Point::TYPE_UNKNOWN && it->pt->n_failed_reproj_ > 15)
         map.safeDeletePoint(it->pt);
-      if(it->pt->type_ == Point::CANDIDATE  && it->pt->n_failed_reproj_ > 30)
+      if(it->pt->type_ == Point::TYPE_CANDIDATE  && it->pt->n_failed_reproj_ > 30)
         candidate_points.deleteCandidatePoint(it->pt);
       it = cell.erase(it);
       continue;
     }
     it->pt->n_succeeded_reproj_++;
-    if(it->pt->type_ == Point::UNKNOWN_QUALITY && it->pt->n_succeeded_reproj_ > 10)
-      it->pt->type_ = Point::GOOD_QUALITY;
+    if(it->pt->type_ == Point::TYPE_UNKNOWN && it->pt->n_succeeded_reproj_ > 10)
+      it->pt->type_ = Point::TYPE_GOOD;
 
     Feature* new_feature = new Feature(frame.get(), it->px, feature_level);
     frame->addFeature(new_feature);

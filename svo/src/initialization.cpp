@@ -84,7 +84,7 @@ InitResult KltHomographyInit::addSecondFrame(FramePtr frame_cur)
     if(frame_ref_->cam_->isInFrame(px_cur.cast<int>(), 10) && frame_ref_->cam_->isInFrame(px_ref.cast<int>(), 10) && xyz_in_cur_[*it].z() > 0)
     {
       Vector3d pos = T_world_cur * (xyz_in_cur_[*it]*scale);
-      Point* new_point = new Point(pos, Point::TRIANGULATION);
+      Point* new_point = new Point(pos);
 
       Feature* ftr_cur(new Feature(frame_cur.get(), new_point, px_cur, f_cur_[*it], 0));
       frame_cur->addFeature(ftr_cur);

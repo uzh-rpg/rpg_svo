@@ -69,7 +69,7 @@ class PoseOptimizerTest {
       if(it->score > Config::triangMinCornerScore())
       {
         Feature* ftr(new Feature(frame_.get(), Vector2d(it->x, it->y), it->level));
-        Point* point(new Point(frame_->f2w(ftr->f*depthmap_.at<float>(it->y, it->x)), Point::DEPTH));
+        Point* point(new Point(frame_->f2w(ftr->f*depthmap_.at<float>(it->y, it->x))));
         ftr->point = point;
         ftr->frame = frame_.get();
         frame_->addFeature(ftr);

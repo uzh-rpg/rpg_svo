@@ -94,7 +94,7 @@ void Map::safeDeletePoint(Point* pt)
 
 void Map::deletePoint(Point* pt)
 {
-  pt->type_ = Point::DELETED;
+  pt->type_ = Point::TYPE_DELETED;
   trash_points_.push_back(pt);
 }
 
@@ -196,9 +196,9 @@ MapPointCandidates::~MapPointCandidates()
 void MapPointCandidates::newCandidatePoint(const Seed& seed, const Vector3d& xyz_world)
 {
   // initalize a new point
-  Point* point = new Point(xyz_world, Point::VOGIATZIS);
+  Point* point = new Point(xyz_world);
   point->addFrameRef(seed.ftr);
-  point->type_ = Point::CANDIDATE;
+  point->type_ = Point::TYPE_CANDIDATE;
   seed.ftr->point = point;
 
   // add candidate to list
@@ -215,7 +215,7 @@ void MapPointCandidates::addCandidatePointToFrame(FramePtr frame)
     if(it->first->obs_.front()->frame == frame.get())
     {
       // insert feature in the frame
-      it->first->type_ = Point::UNKNOWN_QUALITY;
+      it->first->type_ = Point::TYPE_UNKNOWN;
       it->first->n_failed_reproj_ = 0;
       it->second->frame->addFeature(it->second);
       it = candidates_.erase(it);
@@ -271,7 +271,7 @@ void MapPointCandidates::deleteCandidate(PointCandidate& c)
   // camera-rig: another frame might still be pointing to the candidate point
   // therefore, we can't delete it right now.
   delete c.second; c.second=NULL;
-  c.first->type_ = Point::DELETED;
+  c.first->type_ = Point::TYPE_DELETED;
   trash_points_.push_back(c.first);
 }
 
@@ -298,7 +298,7 @@ void frameValidation(Frame* frame, int id)
     if((*it)->point==NULL)
       continue;
 
-    if((*it)->point->type_ == Point::DELETED)
+    if((*it)->point->type_ == Point::TYPE_DELETED)
       printf("ERROR DataValidation %i: Referenced point was deleted.\n", id);
 
     if(!(*it)->point->findFrameRef(frame))

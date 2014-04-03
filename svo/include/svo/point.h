@@ -36,24 +36,27 @@ class Point : boost::noncopyable
 {
 public:
 
-  enum PointType {DELETED, CANDIDATE, UNKNOWN_QUALITY, GOOD_QUALITY };
-  enum PointOrigin { TRIANGULATION, DEPTH, VOGIATZIS, IDFILTER };
+  enum PointType {
+    TYPE_DELETED,
+    TYPE_CANDIDATE,
+    TYPE_UNKNOWN,
+    TYPE_GOOD };
 
   static int                  point_counter_;           //!< Counts the number of created points. Used to set the unique id.
   int                         id_;                      //!< Unique ID of the point.
   Vector3d                    pos_;                     //!< 3d pos of the point in the world coordinate frame.
+  Vector3d                    normal_;                  //!< Normal of the point
   list<Feature*>              obs_;                     //!< References to keyframes which observe the point.
-  size_t                      n_obs_;                   //!< Number of obervations, not only keyframes.
+  size_t                      n_obs_;                   //!< Number of obervations: Keyframes AND successful reprojections in intermediate frames.
   g2oPoint*                   v_pt_;                    //!< Temporary pointer to the point-vertex in g2o during bundle adjustment.
   int                         last_published_ts_;       //!< Timestamp of last publishing.
   int                         last_projected_kf_id_;    //!< Flag for the reprojection: don't reproject a pt twice.
   PointType                   type_;                    //!< Quality of the point.
-  PointOrigin                 origin_;                  //!< What is the source of the point, i.e. DEPTH if a kinect is used.
   int                         n_failed_reproj_;         //!< Number of failed reprojections. Used to assess the quality of the point.
   int                         n_succeeded_reproj_;      //!< Number of succeeded reprojections. Used to assess the quality of the point.
-  int                         last_structure_optim_;
+  int                         last_structure_optim_;    //!< Timestamp of last point optimization
 
-  Point(Vector3d pos, PointOrigin origin);
+  Point(Vector3d pos);
   ~Point();
 
   /// Add a reference to a frame.

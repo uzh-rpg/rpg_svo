@@ -202,7 +202,7 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
         svo::Feature* ftr = new svo::Feature(frame_ref.get(), Eigen::Vector2d(corner->x, corner->y), corner->level);
         Eigen::Vector3d pt_pos_cur = ftr->f*depthmap.at<float>(corner->y, corner->x);
         Eigen::Vector3d pt_pos_world = frame_ref->T_f_w_.inverse()*pt_pos_cur;
-        svo::Point* point = new svo::Point(pt_pos_world, svo::Point::DEPTH);
+        svo::Point* point = new svo::Point(pt_pos_world);
         ftr->point = point;
         ftr->point->addFrameRef(ftr);
         frame_ref->addFeature(ftr);
