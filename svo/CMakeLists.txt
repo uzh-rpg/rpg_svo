@@ -49,7 +49,7 @@ ELSE()
 ENDIF()
 
 # Add catkin and required ROS packages
-FIND_PACKAGE(catkin REQUIRED COMPONENTS roscpp vikit_common vikit_ros)
+FIND_PACKAGE(catkin REQUIRED COMPONENTS roscpp roslib vikit_common vikit_ros)
 
 # Add plain cmake packages 
 FIND_PACKAGE(G2O REQUIRED)
@@ -62,7 +62,7 @@ FIND_PACKAGE(Boost REQUIRED COMPONENTS system thread signals)
 # Describe catkin Project
 catkin_package(
     DEPENDS Eigen OpenCV Sophus Boost fast
-    CATKIN_DEPENDS roscpp vikit_common vikit_ros
+    CATKIN_DEPENDS roscpp roslib vikit_common vikit_ros
     INCLUDE_DIRS include
     LIBRARIES svo
 )
@@ -109,7 +109,7 @@ LIST(APPEND SOURCEFILES
   src/pose_optimizer.cpp
   src/initialization.cpp
   src/matcher.cpp
-  src/reprojection.cpp
+  src/reprojector.cpp
   src/feature_alignment.cpp
   src/feature_detection.cpp
   src/depth_filter.cpp
@@ -126,13 +126,6 @@ TARGET_LINK_LIBRARIES(svo ${LINK_LIBS})
 
 ################################################################################
 # TESTS
-
-IF(DEFINED ENV{SVO_DATASET_DIR})
-  ADD_DEFINITIONS(-DTEST_DATA_DIR=\"$ENV{SVO_DATASET_DIR}\")
-ELSE()
-  ADD_DEFINITIONS(-DTEST_DATA_DIR=\"${PROJECT_SOURCE_DIR}/test/data\")
-ENDIF()
-ADD_DEFINITIONS(-DTEST_TRACE_DIR=\"${PROJECT_SOURCE_DIR}/test/results\")
 
 ADD_EXECUTABLE(test_feature_align test/test_feature_alignment.cpp)
 TARGET_LINK_LIBRARIES(test_feature_align svo)

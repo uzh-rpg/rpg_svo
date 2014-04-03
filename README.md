@@ -91,7 +91,7 @@ Now we are ready to build SVO.
 Clone it into your catkin workspace
 
     cd catkin_ws/src
-    git clone https://github.com/uzh-rpg/rpg_slam.git
+    git clone https://github.com/uzh-rpg/rpg_svo.git
 
 If you installed g2o then set `HAVE_G2O` in `svo/CMakeLists.txt` to TRUE.
 Then build
@@ -165,9 +165,9 @@ Citing
 
 If you use SVO in an academic context, please cite the following publication:
 
-    @article{Forster2014ICRA,
+    @inproceedings{Forster2014ICRA,
       author = {Forster, Christian and Pizzoli, Matia and Scaramuzza, Davide},
-      title = {{SVO: Fast Semi-Direct Monocular Visual Odometry}},
-      journal = {IEEE International Conference on Robotics and Automation (ICRA)},
+      title = {{SVO}: Fast Semi-Direct Monocular Visual Odometry},
+      booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
       year = {2014}
     }

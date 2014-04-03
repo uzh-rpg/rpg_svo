@@ -23,6 +23,7 @@
 #include <vikit/vision.h>
 #include <vikit/abstract_camera.h>
 #include <vikit/atan_camera.h>
+#include "test_utils.h"
 
 namespace {
 
@@ -31,7 +32,7 @@ using namespace std;
 
 void testCornerDetector()
 {
-  std::string img_name(std::string(TEST_DATA_DIR) + "/flying_room_1_rig_1/img/frame_000001_0.png");
+  std::string img_name(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1/img/frame_000001_0.png");
   printf("Loading image '%s'\n", img_name.c_str());
   cv::Mat img(cv::imread(img_name, 0));
   assert(img.type() == CV_8UC1 && !img.empty());

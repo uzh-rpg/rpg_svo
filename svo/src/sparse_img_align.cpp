@@ -26,12 +26,12 @@
 
 namespace svo {
 
-SparseImgAlign::
-SparseImgAlign(int max_level, int min_level, int n_iter,
-               Method method, bool display, bool verbose) :
-    display_(display),
-    max_level_(max_level),
-    min_level_(min_level)
+SparseImgAlign::SparseImgAlign(
+    int max_level, int min_level, int n_iter,
+    Method method, bool display, bool verbose) :
+        display_(display),
+        max_level_(max_level),
+        min_level_(min_level)
 {
   n_iter_ = n_iter;
   n_iter_init_ = n_iter_;
@@ -40,8 +40,7 @@ SparseImgAlign(int max_level, int min_level, int n_iter,
   eps_ = 0.000001;
 }
 
-size_t SparseImgAlign::
-run(FramePtr ref_frame, FramePtr cur_frame)
+size_t SparseImgAlign::run(FramePtr ref_frame, FramePtr cur_frame)
 {
   reset();
 
@@ -55,7 +54,7 @@ run(FramePtr ref_frame, FramePtr cur_frame)
   cur_frame_ = cur_frame;
   ref_patch_cache_ = cv::Mat(ref_frame_->fts_.size(), patch_area_, CV_32F);
   jacobian_cache_.resize(Eigen::NoChange, ref_patch_cache_.rows*patch_area_);
-  visible_fts_.resize(ref_patch_cache_.rows, false);
+  visible_fts_.resize(ref_patch_cache_.rows, false); // TODO: should it be reset at each level?
 
   SE3 T_cur_from_ref(cur_frame_->T_f_w_ * ref_frame_->T_f_w_.inverse());
 
@@ -74,9 +73,7 @@ run(FramePtr ref_frame, FramePtr cur_frame)
 }
 
 // TODO take jacobian from Frame Class!
-void
-frameJac(const Vector3d & xyz,
-         Matrix<double,2,6> & J)
+void frameJac(const Vector3d & xyz, Matrix<double,2,6> & J)
 {
   const double x = xyz[0];
   const double y = xyz[1];
@@ -98,8 +95,7 @@ frameJac(const Vector3d & xyz,
   J(1,5) = x*z_inv;             // x/z
 }
 
-void SparseImgAlign::
-precomputeReferencePatches()
+void SparseImgAlign::precomputeReferencePatches()
 {
   const int border = patch_halfsize_+1;
   const cv::Mat& ref_img = ref_frame_->img_pyr_.at(level_);
@@ -155,22 +151,23 @@ precomputeReferencePatches()
 
         // cache the jacobian
         jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter) =
-            (dx*frame_jac.row(0) + dy*frame_jac.row(1))*(focal_length / (1<<level_));
+           - (dx*frame_jac.row(0) + dy*frame_jac.row(1))*(focal_length / (1<<level_));
       }
     }
   }
   have_ref_patch_cache_ = true;
 }
 
-double SparseImgAlign::
-computeResiduals(const SE3& T_cur_from_ref, bool linearize_system, bool compute_weight_scale)
+double SparseImgAlign::computeResiduals(
+    const SE3& T_cur_from_ref,
+    bool linearize_system,
+    bool compute_weight_scale)
 {
   // Warp the (cur)rent image such that it aligns with the (ref)erence image
-  const cv::Mat& ref_img = ref_frame_->img_pyr_.at(level_);
   const cv::Mat& cur_img = cur_frame_->img_pyr_.at(level_);
 
   if(linearize_system && display_)
-    resimg_ = cv::Mat(ref_img.size(), CV_32F, cv::Scalar(0));
+    resimg_ = cv::Mat(cur_img.size(), CV_32F, cv::Scalar(0));
 
   if(have_ref_patch_cache_ == false)
     precomputeReferencePatches();
@@ -179,7 +176,7 @@ computeResiduals(const SE3& T_cur_from_ref, bool linearize_system, bool compute_
   std::vector<float> errors;
   if(compute_weight_scale)
     errors.reserve(visible_fts_.size());
-  const int stride = ref_img.cols;
+  const int stride = cur_img.cols;
   const int border = patch_halfsize_+1;
   const float scale = 1.0f/(1<<level_);
   const Vector3d ref_pos(ref_frame_->pos());
@@ -259,8 +256,7 @@ computeResiduals(const SE3& T_cur_from_ref, bool linearize_system, bool compute_
   return chi2/n_meas_;
 }
 
-int SparseImgAlign::
-solve()
+int SparseImgAlign::solve()
 {
   x_ = H_.ldlt().solve(Jres_);
   if((bool) std::isnan((double) x_[0]))
@@ -268,26 +264,22 @@ solve()
   return 1;
 }
 
-void SparseImgAlign::
-update(const ModelType& T_curold_from_ref,  ModelType& T_curnew_from_ref)
+void SparseImgAlign::update(
+    const ModelType& T_curold_from_ref,
+    ModelType& T_curnew_from_ref)
 {
-  // the jacobian is computed in the coordinate frame of the reference image
-  // T_ref_from_curnew = T_ref_from_curold * SE3::exp(x_).inverse();
-  // but our state is in the reference frame of the new image, thus using (AB)^-1 = B^-1*A^-1
-  T_curnew_from_ref = SE3::exp(x_) * T_curold_from_ref;
+  T_curnew_from_ref =  T_curold_from_ref * SE3::exp(-x_);
 }
 
-void SparseImgAlign::
-startIteration()
+void SparseImgAlign::startIteration()
 {}
 
-void SparseImgAlign::
-finishIteration()
+void SparseImgAlign::finishIteration()
 {
   if(display_)
   {
     cv::namedWindow("residuals", CV_WINDOW_AUTOSIZE);
-    cv::imshow("residuals", resimg_*4);
+    cv::imshow("residuals", resimg_*10);
     cv::waitKey(0);
   }
 }

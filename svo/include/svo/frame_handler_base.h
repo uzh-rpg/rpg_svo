@@ -26,13 +26,14 @@
 #include <svo/global.h>
 #include <svo/map.h>
 
-namespace vk {
-  class AbstractCamera;
-  class PerformanceMonitor;
+namespace vk
+{
+class AbstractCamera;
+class PerformanceMonitor;
 }
 
-namespace svo {
-
+namespace svo
+{
 class Point;
 class Matcher;
 class DepthFilter;
@@ -41,9 +42,22 @@ class DepthFilter;
 class FrameHandlerBase : boost::noncopyable
 {
 public:
-  enum Stage { PAUSED, FIRST_FRAME, SECOND_FRAME, DEFAULT_FRAME };
-  enum TrackingQuality { INSUFFICIENT, BAD, GOOD };
-  enum UpdateResult { NO_KEYFRAME, IS_KEYFRAME, FAILURE };
+  enum Stage {
+    STAGE_PAUSED,
+    STAGE_FIRST_FRAME,
+    STAGE_SECOND_FRAME,
+    STAGE_DEFAULT_FRAME
+  };
+  enum TrackingQuality {
+    TRACKING_INSUFFICIENT,
+    TRACKING_BAD,
+    TRACKING_GOOD
+  };
+  enum UpdateResult {
+    RESULT_NO_KEYFRAME,
+    RESULT_IS_KEYFRAME,
+    RESULT_FAILURE
+  };
 
   FrameHandlerBase();
 
@@ -73,9 +87,6 @@ public:
   /// Get the number of feature observations of the last frame.
   size_t lastNumObservations() const { return num_obs_last_; }
 
-  /// Access the depth filter.
-  DepthFilter* depthFilter() const { return depth_filter_; }
-
 protected:
   Stage stage_;                 //!< Current stage of the algorithm.
   bool set_reset_;              //!< Flag that the user can set. Will reset the system before the next iteration.
@@ -87,16 +98,15 @@ protected:
   vk::RingBuffer<size_t> acc_num_obs_;          //!< Number of observed features of the last 10 frames, used to give some user feedback on the tracking performance.
   size_t num_obs_last_;                         //!< Number of observations in the previous frame.
   TrackingQuality tracking_quality_;            //!< An estimate of the tracking quality based on the number of tracked features.
-  DepthFilter* depth_filter_;                   //!< Depth estimation algorithm runs in a parallel thread and is used to initialize new 3D points.
 
   /// Before a frame is processed, this function is called.
-  bool startFrameProcessingCommon();
+  bool startFrameProcessingCommon(const double timestamp);
 
   /// When a frame is finished processing, this function is called.
   int finishFrameProcessingCommon(
-      size_t update_id,
-      UpdateResult dropout,
-      size_t num_observations);
+      const size_t update_id,
+      const UpdateResult dropout,
+      const size_t num_observations);
 
   /// Reset the map and frame handler to start from scratch.
   void resetCommon();

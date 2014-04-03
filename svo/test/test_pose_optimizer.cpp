@@ -25,6 +25,7 @@
 #include <svo/config.h>
 #include <svo/feature_detection.h>
 #include <svo/pose_optimizer.h>
+#include "test_utils.h"
 
 namespace {
 
@@ -39,7 +40,7 @@ class PoseOptimizerTest {
     cam_ = new vk::PinholeCamera(752, 480, 217.083701215, 217.083701215, 376, 240);
 
     // load image
-    std::string dataset_dir(std::string(TEST_DATA_DIR) + "/flying_room_1_rig_1");
+    std::string dataset_dir(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1");
     std::string img_name(dataset_dir+"/img/frame_000001_0.png");
     printf("Loading image '%s'\n", img_name.c_str());
     cv::Mat img(cv::imread(img_name, 0));

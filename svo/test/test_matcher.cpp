@@ -22,6 +22,7 @@
 #include <svo/frame.h>
 #include <svo/config.h>
 #include <svo/feature.h>
+#include "test_utils.h"
 
 namespace {
 
@@ -33,7 +34,7 @@ class MatcherTest {
     cam_ = new vk::PinholeCamera(752, 480, 217.083701215, 217.083701215, 376, 240);
 
     // load images
-    std::string dataset_dir(std::string(TEST_DATA_DIR) + "/flying_room_1_rig_1");
+    std::string dataset_dir(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1");
     std::string img_name(dataset_dir+"/img/frame_000071_0.png");
     printf("Loading image '%s'\n", img_name.c_str());
     cv::Mat img_ref(cv::imread(img_name, 0));
@@ -112,31 +113,32 @@ void MatcherTest::testEpipolarSearchFullImg()
   }
 
   // compute mean, median and variance of error in converged area
-  printf("n converged:  \t %zu (ref: 194472)\n", n_converged);
-  printf("mean error:   \t %f (ref: 1.0848)\n", sum_error*100/n_converged);
+  printf("n converged:  \t %zu mm (ref: 169936)\n", n_converged);
+  printf("mean error:   \t %f mm (ref: 1.912410)\n", sum_error*100/n_converged);
   std::vector<double>::iterator it = errors.begin()+0.5*errors.size();
   std::nth_element(errors.begin(), it, errors.end());
-  printf("50-percentile: \t %f (ref: 0.1343)\n", *it*100);
+  printf("50-percentile: \t %f mm (ref: 1.462241)\n", *it*100);
   it = errors.begin()+0.8*errors.size();
   std::nth_element(errors.begin(), it, errors.end());
-  printf("80-percentile: \t %f (ref: 0.3151)\n", *it*100);
+  printf("80-percentile: \t %f mm (ref: 2.620957)\n", *it*100);
   it = errors.begin()+0.95*errors.size();
   std::nth_element(errors.begin(), it, errors.end());
-  printf("95-percentile: \t %f (ref: 1.3753)\n", *it*100);
+  printf("95-percentile: \t %f mm (ref: 4.154051)\n", *it*100);
 
   // save results to file
   std::ofstream output_stream;
-  std::string output_filename(std::string(TEST_TRACE_DIR) + "/depthmap.bin");
+  std::string trace_dir(svo::test_utils::getTraceDir());
+  std::string output_filename(trace_dir + "/depthmap.bin");
   output_stream.open(output_filename.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
   output_stream.write((const char *)depthmap.data, depthmap.rows*depthmap.cols*sizeof(float));
   output_stream.close();
 
-  output_filename.assign(std::string(TEST_TRACE_DIR) + "/depthmap_error.bin");
+  output_filename.assign(trace_dir + "/depthmap_error.bin");
   output_stream.open(output_filename.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
   output_stream.write((const char *)error_map.data, error_map.rows*error_map.cols*sizeof(float));
   output_stream.close();
 
-  output_filename.assign(std::string(TEST_TRACE_DIR) + "/depthmap_mask.bin");
+  output_filename.assign(trace_dir + "/depthmap_mask.bin");
   output_stream.open(output_filename.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
   output_stream.write((const char *)mask.data, mask.rows*mask.cols*sizeof(uint8_t));
   output_stream.close();

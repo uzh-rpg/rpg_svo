@@ -14,11 +14,13 @@
 
   <!-- Dependencies needed to compile this package. -->
   <build_depend>roscpp</build_depend>
+  <build_depend>roslib</build_depend>
   <build_depend>vikit_common</build_depend>
   <build_depend>vikit_ros</build_depend>
 
   <!-- Dependencies needed after this package is compiled. -->
   <run_depend>roscpp</run_depend>
+  <run_depend>roslib</run_depend>
   <run_depend>vikit_common</run_depend>
   <run_depend>vikit_ros</run_depend>
 </package>

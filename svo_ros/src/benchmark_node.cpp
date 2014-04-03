@@ -141,7 +141,7 @@ void BenchmarkNode::runBenchmark(const std::string& dataset_dir)
     visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
 
     // write pose to tracefile
-    if(vo_->stage() == svo::FrameHandlerMono::DEFAULT_FRAME)
+    if(vo_->stage() == svo::FrameHandlerMono::STAGE_DEFAULT_FRAME)
       tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->timestamp_);
   }
 }
@@ -216,7 +216,7 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
     // Add image to VO
     vo_->addImage(img, it->timestamp_);
 
-    if(vo_->stage() != svo::FrameHandlerMono::DEFAULT_FRAME)
+    if(vo_->stage() != svo::FrameHandlerMono::STAGE_DEFAULT_FRAME)
       continue;
 
     // Compute pose error and trace to file

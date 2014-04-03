@@ -1,2 +1,3 @@
 dataset: flying_room_1_rig_1
 param_settings: vo_fast
+experiment_label: 'svo fast'
