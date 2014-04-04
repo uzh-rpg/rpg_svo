@@ -32,7 +32,7 @@ ENDIF()
 IF(HAVE_G2O)
   ADD_DEFINITIONS(-DUSE_BUNDLE_ADJUSTMENT)
 ENDIF()
-ADD_DEFINITIONS(-DUSE_ROS)
+ADD_DEFINITIONS(-DSVO_USE_ROS)
 
 # Set build flags
 SET(CMAKE_CXX_FLAGS "-Wall -Werror -D_LINUX -D_REENTRANT -march=native -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unknown-pragmas")

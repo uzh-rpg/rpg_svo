@@ -30,7 +30,7 @@
 #include <vikit/performance_monitor.h>
 #include <boost/shared_ptr.hpp>
 
-#ifdef USE_ROS
+#ifdef SVO_USE_ROS
   #include <ros/console.h>
   #define SVO_DEBUG_STREAM(x) ROS_DEBUG_STREAM(x)
   #define SVO_INFO_STREAM(x) ROS_INFO_STREAM(x)

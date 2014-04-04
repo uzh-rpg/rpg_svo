@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifdef USE_ROS
+#ifdef SVO_USE_ROS
 #include <vikit/params_helper.h>
 #endif
 #include <svo/config.h>
@@ -22,7 +22,7 @@
 namespace svo {
 
 Config::Config() :
-#ifdef USE_ROS
+#ifdef SVO_USE_ROS
     trace_name(vk::getParam<string>("svo/trace_name", "svo")),
     trace_dir(vk::getParam<string>("svo/trace_dir", "/tmp")),
     n_pyr_levels(vk::getParam<int>("svo/n_pyr_levels", 3)),
