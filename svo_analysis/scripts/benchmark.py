@@ -38,7 +38,7 @@ if __name__=="__main__":
     expParams['experiment_name'] = expParams['time']+'_'+args.version+'_' + args.experiment_file
 
   # load dataset parameters
-  expParams['dataset_directory'] = os.path.join(rospkg.RosPack().get_path('Datasets'), expParams['dataset'])
+  expParams['dataset_directory'] = os.path.join(os.environ['SVO_DATASET_DIR'], expParams['dataset'])
   if not os.path.exists(expParams['dataset_directory']):
     raise Exception("Provided dataset folder does not exist.")
   datasetParamsFile = os.path.join(expParams['dataset_directory'], 'dataset_params.yaml')
@@ -50,10 +50,12 @@ if __name__=="__main__":
   algoParams = yaml.load(open(algoParamsFile,'r'))
 
   # combine all parameters
-  params = dict(expParams.items() + datasetParams.items() + algoParams.items())
+  params = dict(expParams.items() + datasetParams.items() + datasetParams['rig']['cam0'].items() + algoParams.items())
   params['trace_name'] = 'trace'
   params['trace_dir'] = os.path.join(rospkg.RosPack().get_path('svo_analysis'),
                                      'results', params['experiment_name'])
+
+      
   
   # create folder for tracing
   if not os.path.exists(params['trace_dir']):
