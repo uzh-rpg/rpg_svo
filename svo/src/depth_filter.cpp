@@ -238,7 +238,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
     if(!it->ftr->frame->cam_->isInFrame(px.cast<int>())) {
       ++it;
       if(options_.verbose)
-        SVO_INFO_STREAM("not visible");
+    	SVO_DEBUG_STREAM("not visible");
       continue;
     }
 
@@ -263,11 +263,11 @@ void DepthFilter::updateSeeds(FramePtr frame)
       px_noise = fmax(2.0*options_.sigma_i_sq*h_inv, 1.0);
       px_error_angle = atan(px_noise/(2.0*focal_length))*2.0; // law of chord (sehnensatz)
       if(options_.verbose)
-        SVO_INFO_STREAM("Photometric disparity error "<<px_noise<<" px");
+    	SVO_DEBUG_STREAM("Photometric disparity error "<<px_noise<<" px");
     }
 
     if(options_.verbose)
-      SVO_INFO_STREAM("updated seed");
+      SVO_DEBUG_STREAM("updated seed");
 
     // compute tau
     double tau = computeTau(T_ref_cur, it->ftr->f, z, px_error_angle);
@@ -285,7 +285,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
         Vector3d xyz_world(it->ftr->frame->T_f_w_.inverse() * (it->ftr->f * (1.0/it->mu)));
         seed_converged_cb_(*it, xyz_world);
         if(options_.verbose)
-          SVO_INFO_STREAM("seed converged");
+          SVO_DEBUG_STREAM("seed converged");
       }
       it = seeds_.erase(it);
     }
