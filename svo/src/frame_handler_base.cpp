@@ -148,18 +148,18 @@ void FrameHandlerBase::setTrackingQuality(const size_t num_observations)
   tracking_quality_ = TRACKING_GOOD;
   if(num_observations < Config::qualityMinFts())
   {
-    ROS_WARN_STREAM_THROTTLE(0.5, "Tracking less than "<< Config::qualityMinFts() <<" features!");
+    SVO_WARN_STREAM_THROTTLE(0.5, "Tracking less than "<< Config::qualityMinFts() <<" features!");
     tracking_quality_ = TRACKING_BAD;
   }
   const int feature_drop = static_cast<int>(num_obs_last_) - num_observations;
   if(feature_drop > Config::qualityMaxFtsDrop())
   {
-    ROS_WARN_STREAM("Lost "<< feature_drop <<" features!");
+    SVO_WARN_STREAM("Lost "<< feature_drop <<" features!");
     tracking_quality_ = TRACKING_BAD;
   }
   if(num_observations < 20)
   {
-    ROS_ERROR_STREAM("Tracking less than 20 features!");
+    SVO_ERROR_STREAM("Tracking less than 20 features!");
     tracking_quality_ = TRACKING_INSUFFICIENT;
   }
 }
