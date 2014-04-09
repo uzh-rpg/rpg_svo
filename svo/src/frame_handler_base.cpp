@@ -79,6 +79,9 @@ FrameHandlerBase::FrameHandlerBase() :
 FrameHandlerBase::~FrameHandlerBase()
 {
   SVO_INFO_STREAM("SVO destructor invoked.");
+#ifdef SVO_TRACE
+  delete g_permon;
+#endif
 }
 
 bool FrameHandlerBase::startFrameProcessingCommon(const double timestamp)
