@@ -183,6 +183,7 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
     depth_filter_->addFrame(new_frame_);
     return RESULT_NO_KEYFRAME;
   }
+  SVO_DEBUG_STREAM("New keyframe selected.");
 
   // new keyframe selected
   for(Features::iterator it=new_frame_->fts_.begin(); it!=new_frame_->fts_.end(); ++it)
@@ -242,9 +243,10 @@ bool FrameHandlerMono::needNewKf(double scene_depth_mean)
   for(auto it=overlap_kfs_.begin(), ite=overlap_kfs_.end(); it!=ite; ++it)
   {
     Vector3d relpos = new_frame_->w2f(it->first->pos());
-    if(abs(relpos.x())/scene_depth_mean < Config::kfSelectMinDist() &&
-       abs(relpos.y())/scene_depth_mean < Config::kfSelectMinDist()*0.8 &&
-       abs(relpos.z())/scene_depth_mean < Config::kfSelectMinDist()*1.3)
+    std::cout << relpos.transpose() << std::endl;
+    if(fabs(relpos.x())/scene_depth_mean < Config::kfSelectMinDist() &&
+       fabs(relpos.y())/scene_depth_mean < Config::kfSelectMinDist()*0.8 &&
+       fabs(relpos.z())/scene_depth_mean < Config::kfSelectMinDist()*1.3)
       return false;
   }
   return true;
