@@ -243,7 +243,6 @@ bool FrameHandlerMono::needNewKf(double scene_depth_mean)
   for(auto it=overlap_kfs_.begin(), ite=overlap_kfs_.end(); it!=ite; ++it)
   {
     Vector3d relpos = new_frame_->w2f(it->first->pos());
-    std::cout << relpos.transpose() << std::endl;
     if(fabs(relpos.x())/scene_depth_mean < Config::kfSelectMinDist() &&
        fabs(relpos.y())/scene_depth_mean < Config::kfSelectMinDist()*0.8 &&
        fabs(relpos.z())/scene_depth_mean < Config::kfSelectMinDist()*1.3)
