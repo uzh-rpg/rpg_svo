@@ -1,0 +1,7 @@
+experiment_label: 'svo fast'
+param_settings: vo_fast
+datasets:
+ - 1404091756_fr1_straight
+ - 1404091807_fr1_straight_rot
+ - 1404091819_fr1_sine_2d
+ - 1404091831_fr1_sine_3d
