@@ -134,13 +134,10 @@ void BenchmarkNode::runBenchmark(const std::string& dataset_dir)
       return;
     }
 
-    // Add image to VO
     vo_->addImage(img, it->timestamp_);
 
-    // Visualize
     visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
 
-    // write pose to tracefile
     if(vo_->stage() == svo::FrameHandlerMono::STAGE_DEFAULT_FRAME)
       tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->timestamp_);
   }
@@ -213,17 +210,20 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
       continue;
     }
 
-    // Add image to VO
+    SVO_DEBUG_STREAM("Processing image "<<it->image_name_<<".");
     vo_->addImage(img, it->timestamp_);
+    visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
+    visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
 
     if(vo_->stage() != svo::FrameHandlerMono::STAGE_DEFAULT_FRAME)
-      continue;
+    {
+      SVO_ERROR_STREAM("SVO failed before entire dataset could be processed.");
+      break;
+    }
 
     // Compute pose error and trace to file
     Sophus::SE3 T_f_gt(vo_->lastFrame()->T_f_w_*T_w_gt);
     tracePoseError(T_f_gt, it->timestamp_);
-
-    // write pose to tracefile
     tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->timestamp_);
   }
 }
