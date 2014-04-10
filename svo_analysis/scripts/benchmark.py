@@ -13,6 +13,7 @@ import time
 import vikit_py.cpu_info as cpu_info
 import vikit_py.ros_node as ros_node
 import evaluate
+import shutil
 
 def run_experiment(dataset, params):
     # load dataset parameters
@@ -29,11 +30,14 @@ def run_experiment(dataset, params):
     
     # combine all parameters
     params = dict(params.items() + algo_params.items() + dataset_params['rig']['cam0'].items())
-      
-    # dump experiment params to file:
-    params_dump_file = params['trace_dir']+'/params.yaml'
+    if 'dataset_is_blender' in dataset_params:
+        params['dataset_is_blender'] = True
+    
+    # dump experiment params to file and copy the other parameter files:
+    params_dump_file = os.path.join(params['trace_dir'],'params.yaml')
     with open(params_dump_file,'w') as outfile:
         outfile.write(yaml.dump(params, default_flow_style=False))
+    shutil.copyfile(dataset_params_file, os.path.join(params['trace_dir'], 'dataset_params.yaml'))
     
     # execute ros node
     node = ros_node.RosNode(args.version, args.executable)
