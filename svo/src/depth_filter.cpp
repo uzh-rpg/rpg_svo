@@ -114,9 +114,7 @@ void DepthFilter::addKeyframe(FramePtr frame, double depth_mean, double depth_mi
 void DepthFilter::initializeSeeds(FramePtr frame)
 {
   feature_detection::Corners corners;
-  feature_detector_->detect(frame->img_pyr_, frame->fts_, svo::Config::gridSize(),
-                            svo::Config::nPyrLevels(), Config::triangMinCornerScore(),
-                            &corners);
+  feature_detector_->detect(frame->img_pyr_, frame->fts_, Config::triangMinCornerScore(), &corners);
 
   seeds_updating_halt_ = true;
   lock_t lock(seeds_mut_); // by locking the updateSeeds function stops

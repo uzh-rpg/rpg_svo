@@ -45,11 +45,11 @@ void testCornerDetector()
   // Corner detection
   vk::Timer t;
   svo::feature_detection::Corners corners;
-  svo::feature_detection::FastDetector fast_detector;
+  svo::feature_detection::FastDetector fast_detector(
+      img.cols, img.rows, svo::Config::gridSize(), svo::Config::nPyrLevels());
   for(int i=0; i<100; ++i)
   {
-    fast_detector.detect(img_pyr, fts, svo::Config::gridSize(), svo::Config::nPyrLevels(),
-                         svo::Config::triangMinCornerScore(), &corners);
+    fast_detector.detect(img_pyr, fts, svo::Config::triangMinCornerScore(), &corners);
   }
   printf("Fast corner detection took %f ms, %zu corners detected (ref i7-W520: 8.06878ms, 416)\n", t.stop()*10, corners.size());
 

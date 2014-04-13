@@ -188,10 +188,10 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
           dataset_dir+"/depth/"+it->image_name_+"_0.depth", *cam_, depthmap);
 
       // extract features, generate features with 3D points
-      svo::feature_detection::FastDetector detector;
+      svo::feature_detection::FastDetector detector(
+          cam_->width(), cam_->height(), svo::Config::gridSize(), svo::Config::nPyrLevels());
       svo::feature_detection::Corners corners;
-      detector.detect(frame_ref->img_pyr_, frame_ref->fts_, svo::Config::gridSize(),
-                      svo::Config::nPyrLevels(), svo::Config::triangMinCornerScore(), &corners);
+      detector.detect(frame_ref->img_pyr_, frame_ref->fts_, svo::Config::triangMinCornerScore(), &corners);
       for(auto corner=corners.begin(); corner!=corners.end(); ++corner)
       {
         if(corner->score < Config::triangMinCornerScore())

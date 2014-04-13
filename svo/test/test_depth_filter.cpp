@@ -90,6 +90,7 @@ void DepthFilterTest::depthFilterCb(
 
 void DepthFilterTest::testReconstruction(
     std::string dataset_dir,
+
     std::string experiment_name)
 {
   vk::FileReader<vk::blender_utils::file_format::ImageNameAndPose> sequence_file_reader(dataset_dir+"/trajectory.txt");
@@ -103,7 +104,9 @@ void DepthFilterTest::testReconstruction(
   vk::Timer t;
   std::list<size_t> n_converged_per_iteration;
 
-  svo::feature_detection::DetectorPtr feature_detector(new svo::feature_detection::FastDetector());
+  svo::feature_detection::DetectorPtr feature_detector(
+      new svo::feature_detection::FastDetector(
+          cam_->width(), cam_->height(), svo::Config::gridSize(), svo::Config::nPyrLevels()));
   svo::DepthFilter::callback_t depth_filter_cb = boost::bind(&DepthFilterTest::depthFilterCb, this, _1, _2);
   depth_filter_ = new svo::DepthFilter(feature_detector, depth_filter_cb);
 

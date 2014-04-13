@@ -110,10 +110,9 @@ void detectFeatures(
     vector<Vector3d>& f_vec)
 {
   feature_detection::Corners corners;
-  feature_detection::FastDetector detector;
-  detector.detect(frame->img_pyr_, frame->fts_, Config::gridSize(),
-                  Config::nPyrLevels(), Config::triangMinCornerScore(),
-                  &corners);
+  feature_detection::FastDetector detector(
+      frame->img().cols, frame->img().rows, Config::gridSize(), Config::nPyrLevels());
+  detector.detect(frame->img_pyr_, frame->fts_, Config::triangMinCornerScore(), &corners);
 
   // now for all maximum corners, initialize a new seed
   px_vec.clear(); px_vec.reserve(corners.size());

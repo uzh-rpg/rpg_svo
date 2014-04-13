@@ -26,7 +26,6 @@ namespace svo {
 namespace feature_detection {
 
 /// Temporary container used for corner detection. Features are initialized from these.
-// TODO: why not use feature struct?
 struct Corner
 {
   int x;        //!< x-coordinate of corner in the image.
@@ -44,14 +43,31 @@ typedef vector<Corner> Corners;
 class AbstractDetector
 {
 public:
+  AbstractDetector(
+      const int img_width,
+      const int img_height,
+      const int cell_size,
+      const int n_pyr_levels);
+
   virtual ~AbstractDetector() {};
+
   virtual void detect(
       const ImgPyr& img_pyr,
       const Features& fts,
-      const int cell_size,
-      const int n_levels,
       const double detection_threshold,
-      Corners* corners) const = 0;
+      Corners* corners) = 0;
+
+  /// Notify the detector that a cell already has a feature before detection.
+  void setGridOccpuancy(const Vector2d& px);
+
+protected:
+  const int cell_size_;
+  const int n_pyr_levels_;
+  const int grid_n_cols_;
+  const int grid_n_rows_;
+  vector<bool> grid_occupancy_;
+  void resetGrid();
+  void setExistingFeatures(const Features& fts);
 };
 typedef boost::shared_ptr<AbstractDetector> DetectorPtr;
 
@@ -59,15 +75,19 @@ typedef boost::shared_ptr<AbstractDetector> DetectorPtr;
 class FastDetector : public AbstractDetector
 {
 public:
-  FastDetector() {}
+  FastDetector(
+      const int img_width,
+      const int img_height,
+      const int cell_size,
+      const int n_pyr_levels);
+
   virtual ~FastDetector() {}
+
   virtual void detect(
-        const ImgPyr& img_pyr,
-        const Features& fts,
-        const int cell_size,
-        const int n_levels,
-        const double detection_threshold,
-        Corners* corners) const;
+      const ImgPyr& img_pyr,
+      const Features& fts,
+      const double detection_threshold,
+      Corners* corners);
 };
 
 } // namespace feature_detection

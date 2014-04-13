@@ -59,9 +59,9 @@ class PoseOptimizerTest {
 
     // detect features
     feature_detection::Corners corners;
-    feature_detection::FastDetector detector;
-    detector.detect(frame_->img_pyr_, frame_->fts_, Config::gridSize(),
-                    Config::nPyrLevels(), Config::triangMinCornerScore(), &corners);
+    feature_detection::FastDetector detector(
+        cam_->width(), cam_->height(), Config::gridSize(), Config::nPyrLevels());
+    detector.detect(frame_->img_pyr_, frame_->fts_, Config::triangMinCornerScore(), &corners);
     size_t n_fts = 0;
     for(feature_detection::Corners::iterator it=corners.begin(); it!=corners.end(); ++it)
     {

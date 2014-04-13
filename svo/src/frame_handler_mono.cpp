@@ -37,7 +37,8 @@ FrameHandlerMono::FrameHandlerMono(vk::AbstractCamera* cam) :
   depth_filter_(NULL)
 {
   // create depth filter and set callback
-  feature_detection::DetectorPtr feature_detector(new feature_detection::FastDetector());
+  feature_detection::DetectorPtr feature_detector(
+      new feature_detection::FastDetector(cam_->width(), cam_->height(), Config::gridSize(), Config::nPyrLevels()));
   DepthFilter::callback_t depth_filter_cb = boost::bind(&MapPointCandidates::newCandidatePoint, &map_.point_candidates_, _1, _2);
   depth_filter_ = new DepthFilter(feature_detector, depth_filter_cb);
   depth_filter_->startThread();
@@ -183,6 +184,7 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
     depth_filter_->addFrame(new_frame_);
     return RESULT_NO_KEYFRAME;
   }
+  new_frame_->setKeyframe();
   SVO_DEBUG_STREAM("New keyframe selected.");
 
   // new keyframe selected
@@ -222,7 +224,6 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   }
 
   // add keyframe to map
-  new_frame_->setKeyframe();
   map_.addKeyframe(new_frame_);
 
   return RESULT_IS_KEYFRAME;

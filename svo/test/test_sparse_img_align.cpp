@@ -99,8 +99,7 @@ void SparseImgAlignTest::testSequence(
       // extract features, generate features with 3D points
       svo::feature_detection::Corners corners;
       feature_detector->detect(
-          frame_ref_->img_pyr_, frame_ref_->fts_, svo::Config::gridSize(),
-          svo::Config::nPyrLevels(), svo::Config::triangMinCornerScore(), &corners);
+          frame_ref_->img_pyr_, frame_ref_->fts_, svo::Config::triangMinCornerScore(), &corners);
       for(svo::feature_detection::Corners::iterator corner=corners.begin(); corner!=corners.end(); ++corner)
       {
         svo::Feature* ftr = new svo::Feature(frame_ref_.get(), Eigen::Vector2d(corner->x, corner->y), corner->level);
@@ -158,10 +157,11 @@ int main(int argc, char** argv)
 {
   std::string experiment_name("flying_room_1_rig_1_fast_minlev0");
   std::string dataset_dir(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1");
-  svo::feature_detection::FastDetector detector;
   svo::Config::triangMinCornerScore() = 20;
   svo::Config::kltMinLevel() = 0;
   SparseImgAlignTest test;
+  svo::feature_detection::FastDetector detector(
+      test.cam_->width(), test.cam_->height(), svo::Config::gridSize(), svo::Config::nPyrLevels());
   test.testSequence(dataset_dir, experiment_name, &detector);
   return 0;
 }
