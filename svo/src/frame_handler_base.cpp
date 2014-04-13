@@ -73,12 +73,12 @@ FrameHandlerBase::FrameHandlerBase() :
   g_permon->init(Config::traceName(), Config::traceDir());
 #endif
 
-  SVO_INFO_STREAM("NanoSlam initialized");
+  SVO_INFO_STREAM("SVO initialized");
 }
 
 FrameHandlerBase::~FrameHandlerBase()
 {
-  SVO_INFO_STREAM("SVO destructor invoked.");
+  SVO_INFO_STREAM("SVO destructor invoked");
 #ifdef SVO_TRACE
   delete g_permon;
 #endif
