@@ -29,7 +29,10 @@ def run_experiment(dataset, params):
     algo_params = yaml.load(open(algo_params_file,'r'))
     
     # combine all parameters
-    params = dict(params.items() + algo_params.items() + dataset_params['rig']['cam0'].items())
+    if dataset_params['rig_size'] == 1:
+        params = dict(params.items() + algo_params.items() + dataset_params['cam0'].items())
+    else:
+        params = dict(params.items() + algo_params.items() + dataset_params.items())
     if 'dataset_is_blender' in dataset_params:
         params['dataset_is_blender'] = True
     
@@ -56,9 +59,15 @@ if __name__=="__main__":
     args = parser.parse_args()
     
     # load experiment parameters
+    args.experiment_file = args.experiment_file.replace('.yaml','')
     experiment_params_file = os.path.join(rospkg.RosPack().get_path('svo_analysis'), 
                                'experiments', args.experiment_file+'.yaml')
-    experiment_params = yaml.load(open(experiment_params_file, 'r'))
+    if os.path.exists(experiment_params_file):
+        experiment_params = yaml.load(open(experiment_params_file, 'r'))
+    else:
+        print('experiment file does not exist. run with default setttings')
+        experiment_params = dict({'experiment_label':'default','param_settings':'vo_fast',
+                                  'datasets':list([args.experiment_file])})
     params = dict()
     params['experiment_label'] = experiment_params['experiment_label']
     params['param_settings'] = experiment_params['param_settings']
