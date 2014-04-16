@@ -137,6 +137,7 @@ void BenchmarkNode::runBenchmark(const std::string& dataset_dir)
     vo_->addImage(img, it->timestamp_);
 
     visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
+    visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
 
     if(vo_->stage() == svo::FrameHandlerMono::STAGE_DEFAULT_FRAME)
       tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->timestamp_);
