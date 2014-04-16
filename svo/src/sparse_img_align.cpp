@@ -69,7 +69,17 @@ size_t SparseImgAlign::run(FramePtr ref_frame, FramePtr cur_frame)
     optimize(T_cur_from_ref);
   }
   cur_frame_->T_f_w_ = T_cur_from_ref * ref_frame_->T_f_w_;
+
+
+
   return n_meas_/patch_area_;
+}
+
+Matrix<double, 6, 6> SparseImgAlign::getFisherInformation()
+{
+  double sigma_i_sq = 5e-4*255*255; // image noise
+  Matrix<double,6,6> I = H_/sigma_i_sq;
+  return I;
 }
 
 // TODO take jacobian from Frame Class!
