@@ -34,7 +34,7 @@ def run_experiment(dataset, params):
     else:
         params = dict(params.items() + algo_params.items() + dataset_params.items())
     if 'dataset_is_blender' in dataset_params:
-        params['dataset_is_blender'] = True
+        params['dataset_is_blender'] = dataset_params['dataset_is_blender']
     
     # dump experiment params to file and copy the other parameter files:
     params_dump_file = os.path.join(params['trace_dir'],'params.yaml')
