@@ -39,6 +39,21 @@ class Svo(Plugin):
     group.add_argument('topic', type=argparse.FileType('r'), nargs='*', default=[], help='Svo Info Topic to display')
     return parser.parse_args(argv)
 
+  def save_settings(self, plugin_settings, instance_settings):
+     # TODO save intrinsic configuration, usually using:
+     # instance_settings.set_value(k, v)   
+     print('Saving namespace')  
+     namespace = self._widget._svo_namespace
+     instance_settings.set_value('namespace', namespace)
+     pass
+# 
+  def restore_settings(self, plugin_settings, instance_settings):
+     # TODO restore intrinsic configuration, usually using:
+     # v = instance_settings.value(k)
+     namespace = instance_settings.value('namespace', 'default')
+     self._widget.topic_line_edit.setText(namespace)
+     pass
+
 #   def shutdown_plugin(self):
 #     # self._unregister_publisher()
 #     pass
