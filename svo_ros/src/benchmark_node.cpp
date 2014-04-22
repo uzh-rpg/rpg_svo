@@ -124,21 +124,20 @@ void BenchmarkNode::runBenchmark(const std::string& dataset_dir)
   dataset_reader.readAllEntries(dataset);
 
   // process dataset
+  int first_frame = vk::getParam<int>("svo/dataset_first_frame", 0);
   for(auto it = dataset.begin(); it != dataset.end() && ros::ok(); ++it, ++frame_count_)
   {
-    // Read image
+    if(frame_count_ < first_frame)
+      continue;
     std::string img_filename(dataset_dir + "/" + it->image_name_);
     cv::Mat img(cv::imread(img_filename, 0));
     if(img.empty()) {
       SVO_ERROR_STREAM("Reading image "<<img_filename<<" failed.");
       return;
     }
-
     vo_->addImage(img, it->timestamp_);
-
     visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
     visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
-
     if(vo_->stage() == svo::FrameHandlerMono::STAGE_DEFAULT_FRAME)
       tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->timestamp_);
   }
@@ -208,13 +207,14 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
       SVO_INFO_STREAM("Added "<<corners.size()<<" 3d pts to the reference frame.");
       vo_->setFirstFrame(frame_ref);
       SVO_INFO_STREAM("Set reference frame.");
-      continue;
     }
-
-    SVO_DEBUG_STREAM("Processing image "<<it->image_name_<<".");
-    vo_->addImage(img, it->timestamp_);
-    visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
-    visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
+    else
+    {
+      SVO_DEBUG_STREAM("Processing image "<<it->image_name_<<".");
+      vo_->addImage(img, it->timestamp_);
+      visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
+      visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
+    }
 
     if(vo_->stage() != svo::FrameHandlerMono::STAGE_DEFAULT_FRAME)
     {
