@@ -61,13 +61,23 @@ public:
   void setGridOccpuancy(const Vector2d& px);
 
 protected:
+  static const int border_ = 8; //!< no feature should be within 8px of border.
   const int cell_size_;
   const int n_pyr_levels_;
   const int grid_n_cols_;
   const int grid_n_rows_;
   vector<bool> grid_occupancy_;
+
   void resetGrid();
+
   void setExistingFeatures(const Features& fts);
+
+  inline int getCellIndex(int x, int y, int level)
+  {
+    const int scale = (1<<level);
+    return (scale*y)/cell_size_*grid_n_cols_ + (scale*x)/cell_size_;
+  }
+
 };
 typedef boost::shared_ptr<AbstractDetector> DetectorPtr;
 
