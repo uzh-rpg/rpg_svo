@@ -69,7 +69,9 @@ void getWarpMatrixAffine(
   A_cur_ref.col(1) = (px_dv - px_cur)/halfpatch_size;
 }
 
-int getBestSearchLevel(const Matrix2d& A_cur_ref, const int max_level)
+int getBestSearchLevel(
+    const Matrix2d& A_cur_ref,
+    const int max_level)
 {
   // Compute patch level in other image
   int level_cur = 0;
@@ -127,8 +129,7 @@ void warpAffine(
 
 } // namespace warp
 
-bool
-findMatchDirect(
+bool findMatchDirect(
     const Point& pt,
     const Frame& cur_frame,
     Vector2d& px_cur,
@@ -160,8 +161,7 @@ findMatchDirect(
   return success;
 }
 
-bool
-depthFromTriangulation(
+bool depthFromTriangulation(
     const SE3& T_search_ref,
     const Vector3d& f_ref,
     const Vector3d& f_cur,
@@ -176,8 +176,7 @@ depthFromTriangulation(
   return true;
 }
 
-bool
-findEpipolarMatchDirect(
+bool findEpipolarMatchDirect(
     const Frame& ref_frame,
     const Frame& cur_frame,
     const Feature& ref_ftr,
