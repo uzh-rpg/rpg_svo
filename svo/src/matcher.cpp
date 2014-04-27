@@ -101,7 +101,7 @@ void warpAffine(
     return;
   }
 
-  // Perform the Warp on a larger patch
+  // Perform the warp on a larger patch.
   uint8_t* ref_patch_ptr = ref_patch.patch_with_border;
   const Vector2f px_ref_pyr = px_ref.cast<float>() / (1<<level_ref);
   for (int y=0; y<patch_size; ++y)
@@ -118,6 +118,7 @@ void warpAffine(
     }
   }
 
+  // Remove border from large patch.
   ref_patch_ptr = ref_patch.patch;
   for(int y=1; y<g_patch_size+1; ++y, ref_patch_ptr += g_patch_size)
   {
