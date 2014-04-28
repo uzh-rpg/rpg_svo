@@ -34,7 +34,7 @@ namespace svo {
 int Seed::batch_counter = 0;
 int Seed::seed_counter = 0;
 
-Seed::Seed(Feature* ftr, float angle, float depth_mean, float depth_min) :
+Seed::Seed(Feature* ftr, float depth_mean, float depth_min) :
     batch_id(batch_counter),
     id(seed_counter++),
     ftr(ftr),
@@ -113,29 +113,22 @@ void DepthFilter::addKeyframe(FramePtr frame, double depth_mean, double depth_mi
 
 void DepthFilter::initializeSeeds(FramePtr frame)
 {
-  feature_detection::Corners corners;
-  feature_detector_->detect(frame->img_pyr_, frame->fts_, Config::triangMinCornerScore(), &corners);
+  Features new_features;
+  feature_detector_->setExistingFeatures(frame->fts_);
+  feature_detector_->detect(frame.get(), frame->img_pyr_,
+                            Config::triangMinCornerScore(), new_features);
 
   seeds_updating_halt_ = true;
   lock_t lock(seeds_mut_); // by locking the updateSeeds function stops
-  size_t new_seeds = 0;
   ++Seed::batch_counter;
 
-  // now for all maximum corners, initialize a new seed
-  for(feature_detection::Corners::iterator it=corners.begin(); it!=corners.end(); ++it)
-  {
-    // we must check again if the score is above the threshold because the Corners
-    // vector is initialized with dummy corners
-    if(it->score > Config::triangMinCornerScore())
-    {
-      Feature* new_feature(new Feature(frame.get(), Vector2d(it->x, it->y), it->level));
-      seeds_.push_back(Seed(new_feature, it->angle, new_keyframe_mean_depth_, new_keyframe_min_depth_));
-      ++new_seeds;
-    }
-  }
+  // initialize a seed for every new feature
+  std::for_each(new_features.begin(), new_features.end(), [&](Feature* ftr){
+    seeds_.push_back(Seed(ftr, new_keyframe_mean_depth_, new_keyframe_min_depth_));
+  });
 
   if(options_.verbose)
-    SVO_INFO_STREAM("DepthFilter: Initialized "<<new_seeds<<" new seeds");
+    SVO_INFO_STREAM("DepthFilter: Initialized "<<new_features.size()<<" new seeds");
 
   seeds_updating_halt_ = false;
 }

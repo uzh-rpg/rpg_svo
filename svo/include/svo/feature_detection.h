@@ -52,15 +52,19 @@ public:
   virtual ~AbstractDetector() {};
 
   virtual void detect(
+      Frame* frame,
       const ImgPyr& img_pyr,
-      const Features& fts,
       const double detection_threshold,
-      Corners* corners) = 0;
+      Features& fts) = 0;
 
-  /// Notify the detector that a cell already has a feature before detection.
+  /// Flag the grid cell as occupied
   void setGridOccpuancy(const Vector2d& px);
 
+  /// Set grid cells of existing features as occupied
+  void setExistingFeatures(const Features& fts);
+
 protected:
+
   static const int border_ = 8; //!< no feature should be within 8px of border.
   const int cell_size_;
   const int n_pyr_levels_;
@@ -70,14 +74,11 @@ protected:
 
   void resetGrid();
 
-  void setExistingFeatures(const Features& fts);
-
   inline int getCellIndex(int x, int y, int level)
   {
     const int scale = (1<<level);
     return (scale*y)/cell_size_*grid_n_cols_ + (scale*x)/cell_size_;
   }
-
 };
 typedef boost::shared_ptr<AbstractDetector> DetectorPtr;
 
@@ -94,10 +95,10 @@ public:
   virtual ~FastDetector() {}
 
   virtual void detect(
+      Frame* frame,
       const ImgPyr& img_pyr,
-      const Features& fts,
       const double detection_threshold,
-      Corners* corners);
+      Features& fts);
 };
 
 } // namespace feature_detection

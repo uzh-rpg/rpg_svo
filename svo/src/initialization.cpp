@@ -109,24 +109,19 @@ void detectFeatures(
     vector<cv::Point2f>& px_vec,
     vector<Vector3d>& f_vec)
 {
-  feature_detection::Corners corners;
+  Features new_features;
   feature_detection::FastDetector detector(
       frame->img().cols, frame->img().rows, Config::gridSize(), Config::nPyrLevels());
-  detector.detect(frame->img_pyr_, frame->fts_, Config::triangMinCornerScore(), &corners);
+  detector.detect(frame.get(), frame->img_pyr_, Config::triangMinCornerScore(), new_features);
 
   // now for all maximum corners, initialize a new seed
-  px_vec.clear(); px_vec.reserve(corners.size());
-  f_vec.clear(); f_vec.reserve(corners.size());
-  for(feature_detection::Corners::iterator it=corners.begin(); it!=corners.end(); ++it)
-  {
-    // we must check again if the score is above the threshold because the Corners
-    // vector is initialized with dummy corners
-    if(it->score > Config::triangMinCornerScore())
-    {
-      px_vec.push_back(cv::Point2f(it->x, it->y));
-      f_vec.push_back(frame->c2f(it->x, it->y));
-    }
-  }
+  px_vec.clear(); px_vec.reserve(new_features.size());
+  f_vec.clear(); f_vec.reserve(new_features.size());
+  std::for_each(new_features.begin(), new_features.end(), [&](Feature* ftr){
+    px_vec.push_back(cv::Point2f(ftr->px[0], ftr->px[1]));
+    f_vec.push_back(ftr->f);
+    delete ftr;
+  });
 }
 
 void trackKlt(

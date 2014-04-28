@@ -79,7 +79,7 @@ public:
   void removeKeyPoint(Feature* ftr);
 
   /// Return number of point observations.
-  size_t nObs() const;
+  inline size_t nObs() const { return fts_.size(); }
 
   /// Check if a point in (w)orld coordinate frame is visible in the image.
   bool isVisible(const Vector3d& xyz_w) const;

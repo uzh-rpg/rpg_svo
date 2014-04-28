@@ -46,7 +46,7 @@ struct Seed
   float z_range;               //!< Max range of the possible depth.
   float sigma2;                //!< Variance of normal distribution.
   Matrix2d patch_cov;          //!< Patch covariance in reference image.
-  Seed(Feature* ftr, float angle, float depth_mean, float depth_min);
+  Seed(Feature* ftr, float depth_mean, float depth_min);
 };
 
 /// Depth filter implements the Bayesian Update proposed in:

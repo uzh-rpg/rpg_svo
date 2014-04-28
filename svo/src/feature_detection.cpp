@@ -64,15 +64,12 @@ FastDetector::FastDetector(
 {}
 
 void FastDetector::detect(
+    Frame* frame,
     const ImgPyr& img_pyr,
-    const Features& existing_fts,
     const double detection_threshold,
-    Corners* corners)
+    Features& fts)
 {
-  setExistingFeatures(existing_fts);
-
-  // now, detect features and perform nonmax suppression
-  corners->resize(grid_n_cols_*grid_n_rows_, Corner(0,0,detection_threshold,0,0.0f));
+  Corners corners(grid_n_cols_*grid_n_rows_, Corner(0,0,detection_threshold,0,0.0f));
   for(int L=0; L<n_pyr_levels_; ++L)
   {
     const int scale = (1<<L);
@@ -102,10 +99,17 @@ void FastDetector::detect(
       if(grid_occupancy_[k])
         continue;
       const float score = vk::shiTomasiScore(img_pyr[L], xy.x, xy.y);
-      if(score > corners->at(k).score)
-        corners->at(k) = Corner(xy.x*scale, xy.y*scale, score, L, 0.0f);
+      if(score > corners.at(k).score)
+        corners.at(k) = Corner(xy.x*scale, xy.y*scale, score, L, 0.0f);
     }
   }
+
+  // Create feature for every corner that has high enough corner score
+  std::for_each(corners.begin(), corners.end(), [&](Corner& c) {
+    if(c.score > detection_threshold)
+      fts.push_back(new Feature(frame, Vector2d(c.x, c.y), c.level));
+  });
+
   resetGrid();
 }
 

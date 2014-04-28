@@ -97,20 +97,16 @@ void SparseImgAlignTest::testSequence(
           dataset_dir+"/depth/"+iter->image_name_+"_0.depth", *cam_, depthmap);
 
       // extract features, generate features with 3D points
-      svo::feature_detection::Corners corners;
       feature_detector->detect(
-          frame_ref_->img_pyr_, frame_ref_->fts_, svo::Config::triangMinCornerScore(), &corners);
-      for(svo::feature_detection::Corners::iterator corner=corners.begin(); corner!=corners.end(); ++corner)
-      {
-        svo::Feature* ftr = new svo::Feature(frame_ref_.get(), Eigen::Vector2d(corner->x, corner->y), corner->level);
-        Eigen::Vector3d pt_pos_cur = ftr->f*depthmap.at<float>(corner->y, corner->x);
+          frame_ref_.get(), frame_ref_->img_pyr_, svo::Config::triangMinCornerScore(), frame_ref_->fts_);
+      std::for_each(frame_ref_->fts_.begin(), frame_ref_->fts_.end(), [&](svo::Feature* i) {
+        Eigen::Vector3d pt_pos_cur = i->f*depthmap.at<float>(i->px[1], i->px[0]);
         Eigen::Vector3d pt_pos_w = frame_ref_->T_f_w_.inverse()*pt_pos_cur;
-        svo::Point* pt = new svo::Point(pt_pos_w);
-        ftr->point = pt;
-        frame_ref_->addFeature(ftr);
-      }
+        svo::Point* pt = new svo::Point(pt_pos_w, i);
+        i->point = pt;
+      });
 
-      printf("Added %zu 3d pts to the reference frame.\n", corners.size());
+      printf("Added %zu 3d pts to the reference frame.\n", frame_ref_->nObs());
       T_prev_w = frame_ref_->T_f_w_;
       T_prevgt_w = T_gt_w;
       continue;
