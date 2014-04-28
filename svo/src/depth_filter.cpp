@@ -118,18 +118,15 @@ void DepthFilter::initializeSeeds(FramePtr frame)
   feature_detector_->detect(frame.get(), frame->img_pyr_,
                             Config::triangMinCornerScore(), new_features);
 
+  // initialize a seed for every new feature
   seeds_updating_halt_ = true;
   lock_t lock(seeds_mut_); // by locking the updateSeeds function stops
   ++Seed::batch_counter;
-
-  // initialize a seed for every new feature
   std::for_each(new_features.begin(), new_features.end(), [&](Feature* ftr){
     seeds_.push_back(Seed(ftr, new_keyframe_mean_depth_, new_keyframe_min_depth_));
   });
 
-  if(options_.verbose)
-    SVO_INFO_STREAM("DepthFilter: Initialized "<<new_features.size()<<" new seeds");
-
+  SVO_DEBUG_STREAM("DepthFilter: Initialized "<<new_features.size()<<" new seeds");
   seeds_updating_halt_ = false;
 }
 
@@ -165,8 +162,7 @@ void DepthFilter::reset()
     frame_queue_.pop();
   seeds_updating_halt_ = false;
 
-  if(options_.verbose)
-    SVO_INFO_STREAM("DepthFilter: RESET.");
+  SVO_DEBUG_STREAM("DepthFilter: RESET.");
 }
 
 void DepthFilter::updateSeedsLoop()
@@ -228,8 +224,6 @@ void DepthFilter::updateSeeds(FramePtr frame)
     const Vector2d px(it->ftr->frame->f2c(xyz_f));
     if(!it->ftr->frame->cam_->isInFrame(px.cast<int>())) {
       ++it;
-      if(options_.verbose)
-    	SVO_DEBUG_STREAM("not visible");
       continue;
     }
 
@@ -241,8 +235,6 @@ void DepthFilter::updateSeeds(FramePtr frame)
         *it->ftr->frame, *frame, *it->ftr, 1.0/it->mu, 1.0/z_inv_min, 1.0/z_inv_max,
         options_.epi_search_1d, z, h_inv))
     {
-      if(options_.verbose)
-        SVO_INFO_STREAM("no match found");
       it->b++; // increase outlier probability when no match was found
       ++it;
       ++n_failed_matches;
@@ -253,12 +245,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
     {
       px_noise = fmax(2.0*options_.sigma_i_sq*h_inv, 1.0);
       px_error_angle = atan(px_noise/(2.0*focal_length))*2.0; // law of chord (sehnensatz)
-      if(options_.verbose)
-    	SVO_DEBUG_STREAM("Photometric disparity error "<<px_noise<<" px");
     }
-
-    if(options_.verbose)
-      SVO_DEBUG_STREAM("updated seed");
 
     // compute tau
     double tau = computeTau(T_ref_cur, it->ftr->f, z, px_error_angle);
@@ -275,8 +262,6 @@ void DepthFilter::updateSeeds(FramePtr frame)
       {
         Vector3d xyz_world(it->ftr->frame->T_f_w_.inverse() * (it->ftr->f * (1.0/it->mu)));
         seed_converged_cb_(*it, xyz_world);
-        if(options_.verbose)
-          SVO_DEBUG_STREAM("seed converged");
       }
       it = seeds_.erase(it);
     }
@@ -290,8 +275,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
   }
 }
 
-void DepthFilter::
-clearFrameQueue()
+void DepthFilter::clearFrameQueue()
 {
   while(!frame_queue_.empty())
     frame_queue_.pop();

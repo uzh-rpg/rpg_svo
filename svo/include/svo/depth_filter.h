@@ -83,8 +83,11 @@ public:
     {}
   } options_;
 
-  DepthFilter(feature_detection::DetectorPtr feature_detector, callback_t seed_converged_cb);
-  ~DepthFilter();
+  DepthFilter(
+      feature_detection::DetectorPtr feature_detector,
+      callback_t seed_converged_cb);
+
+  virtual ~DepthFilter();
 
   /// Start this thread when seed updating should be in a parallel thread.
   void startThread();
@@ -129,7 +132,7 @@ public:
       const double z,
       const double px_error_angle);
 
-private:
+protected:
   feature_detection::DetectorPtr feature_detector_;
   callback_t seed_converged_cb_;
   std::list<Seed, aligned_allocator<Seed> > seeds_;
@@ -149,7 +152,7 @@ private:
   void initializeSeeds(FramePtr frame);
 
   /// Update all seeds with a new measurement frame.
-  void updateSeeds(FramePtr frame);
+  virtual void updateSeeds(FramePtr frame);
 
   /// When a new keyframe arrives, the frame queue should be cleared.
   void clearFrameQueue();
