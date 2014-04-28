@@ -59,6 +59,7 @@ public:
   ros::Publisher pub_dense_;
   image_transport::Publisher pub_images_;
   tf::TransformBroadcaster br_;
+  SE3 T_world_from_vision_;
 
   Visualizer();
   ~Visualizer() {};

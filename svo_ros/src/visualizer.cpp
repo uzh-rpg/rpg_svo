@@ -43,7 +43,8 @@ Visualizer() :
     trace_id_(0),
     img_pub_level_(vk::getParam<int>("svo/image_publishing_level", 0)),
     img_pub_nth_(vk::getParam<int>("svo/publish_every_nth_img", 1)),
-    dense_pub_nth_(vk::getParam<int>("svo/publish_every_nth_dense_input", 1))
+    dense_pub_nth_(vk::getParam<int>("svo/publish_every_nth_dense_input", 1)),
+    T_world_from_vision_(Matrix3d::Identity(), Vector3d::Zero())
 {
   // Init ROS Marker Publishers
   pub_frames_ = pnh_.advertise<visualization_msgs::Marker>("keyframes", 10);
@@ -159,22 +160,27 @@ publishMinimal(const cv::Mat& img, const FramePtr& frame, const FrameHandlerMono
     pub_images_.publish(img_msg.toImageMsg());
   }
 
-  // publish pose (world in camera frame)
+  // publish pose (camera in world frame)
   if(pub_pose_.getNumSubscribers() > 0 && frame != NULL)
   {
+    // transform from vision-frame to world-frame
+    SE3 T_world_from_cam(T_world_from_vision_*frame->T_f_w_.inverse());
+    Quaterniond q_world_from_cam(T_world_from_cam.rotation_matrix()*T_world_from_vision_.rotation_matrix().transpose());
+    const Vector3d& p_cam_in_world(T_world_from_cam.translation());
+    Matrix<double,6,6> Cov_in_world = T_world_from_cam.Adj()*frame->Cov_*T_world_from_cam.inverse().Adj();
+
+    // publish message
     geometry_msgs::PoseWithCovarianceStampedPtr msg_pose(new geometry_msgs::PoseWithCovarianceStamped);
-    Quaterniond q(frame->T_f_w_.rotation_matrix());
-    Vector3d p(frame->T_f_w_.translation());
     msg_pose->header = header_msg;
-    msg_pose->pose.pose.position.x = p[0];
-    msg_pose->pose.pose.position.y = p[1];
-    msg_pose->pose.pose.position.z = p[2];
-    msg_pose->pose.pose.orientation.x = q.x();
-    msg_pose->pose.pose.orientation.y = q.y();
-    msg_pose->pose.pose.orientation.z = q.z();
-    msg_pose->pose.pose.orientation.w = q.w();
+    msg_pose->pose.pose.position.x = p_cam_in_world[0];
+    msg_pose->pose.pose.position.y = p_cam_in_world[1];
+    msg_pose->pose.pose.position.z = p_cam_in_world[2];
+    msg_pose->pose.pose.orientation.x = q_world_from_cam.x();
+    msg_pose->pose.pose.orientation.y = q_world_from_cam.y();
+    msg_pose->pose.pose.orientation.z = q_world_from_cam.z();
+    msg_pose->pose.pose.orientation.w = q_world_from_cam.w();
     for(size_t i=0; i<36; ++i)
-      msg_pose->pose.covariance[i] = frame->Cov_(i%6, i/6);
+      msg_pose->pose.covariance[i] = Cov_in_world(i%6, i/6);
     pub_pose_.publish(msg_pose);
   }
 }

@@ -63,9 +63,6 @@ public:
 
   virtual ~FrameHandlerBase();
 
-  /// Set initial pose of the camera.
-  void setInitialPose(const SE3& T_frame_from_world) { T_f_w_init_ = T_frame_from_world; }
-
   /// Get the current map.
   const Map& map() const { return map_; }
 
@@ -92,7 +89,6 @@ protected:
   bool set_reset_;              //!< Flag that the user can set. Will reset the system before the next iteration.
   bool set_start_;              //!< Flag the user can set to start the system when the next image is received.
   Map map_;                     //!< Map of keyframes created by the slam system.
-  SE3 T_f_w_init_;              //!< Initial pose of the camera.
   vk::Timer timer_;             //!< Stopwatch to measure time to process frame.
   vk::RingBuffer<double> acc_frame_timings_;    //!< Total processing time of the last 10 frames, used to give some user feedback on the performance.
   vk::RingBuffer<size_t> acc_num_obs_;          //!< Number of observed features of the last 10 frames, used to give some user feedback on the tracking performance.

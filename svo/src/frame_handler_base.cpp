@@ -120,14 +120,14 @@ int FrameHandlerBase::finishFrameProcessingCommon(
   num_obs_last_ = num_observations;
   SVO_STOP_TIMER("tot_time");
 
-  #ifdef SVO_TRACE
-    g_permon->writeToFile();
-    {
-      boost::unique_lock<boost::mutex> lock(map_.point_candidates_.mut_);
-      size_t n_candidates = map_.point_candidates_.candidates_.size();
-      SVO_LOG(n_candidates);
-    }
-  #endif
+#ifdef SVO_TRACE
+  g_permon->writeToFile();
+  {
+    boost::unique_lock<boost::mutex> lock(map_.point_candidates_.mut_);
+    size_t n_candidates = map_.point_candidates_.candidates_.size();
+    SVO_LOG(n_candidates);
+  }
+#endif
 
   // reset if failure or requested
   if(dropout == RESULT_FAILURE || set_reset_)
