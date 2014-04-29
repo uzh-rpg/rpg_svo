@@ -162,10 +162,9 @@ bool Reprojector::reprojectCell(Cell& cell, FramePtr frame)
       continue;
     }
 
-    int feature_level;
     bool found_match = true;
     if(options_.find_match_direct)
-      found_match = matcher::findMatchDirect(*it->pt, *frame, it->px, feature_level);
+      found_match = matcher_.findMatchDirect(*it->pt, *frame, it->px);
     if(!found_match)
     {
       it->pt->n_failed_reproj_++;
@@ -180,10 +179,18 @@ bool Reprojector::reprojectCell(Cell& cell, FramePtr frame)
     if(it->pt->type_ == Point::TYPE_UNKNOWN && it->pt->n_succeeded_reproj_ > 10)
       it->pt->type_ = Point::TYPE_GOOD;
 
-    Feature* new_feature = new Feature(frame.get(), it->px, feature_level);
+    Feature* new_feature = new Feature(frame.get(), it->px, matcher_.search_level_);
     frame->addFeature(new_feature);
+
+    // Here we add a reference in the feature to the 3D point, the other way
+    // round is only done if this frame is selected as keyframe.
     new_feature->point = it->pt;
-    // note, we add a reference to the point only if the frame is selected as a keyframe
+
+    if(matcher_.ref_ftr_->type == Feature::EDGELET)
+    {
+      new_feature->type = Feature::EDGELET;
+      new_feature->grad = matcher_.A_cur_ref_*matcher_.ref_ftr_->grad;
+    }
 
     // If the keyframe is selected and we reproject the rest, we don't have to
     // check this point anymore.

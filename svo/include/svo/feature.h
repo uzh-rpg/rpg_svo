@@ -46,7 +46,7 @@ struct Feature
     f(frame->cam_->cam2world(px)),
     level(_level),
     point(NULL),
-    grad(0.0,0.0)
+    grad(1.0,0.0)
   {}
 
   Feature(Frame* _frame, const Vector2d& _px, const Vector3d& _f, int _level) :
@@ -56,7 +56,7 @@ struct Feature
     f(_f),
     level(_level),
     point(NULL),
-    grad(0.0,0.0)
+    grad(1.0,0.0)
   {}
 
   Feature(Frame* _frame, Point* _point, const Vector2d& _px, const Vector3d& _f, int _level) :
@@ -66,7 +66,7 @@ struct Feature
     f(_f),
     level(_level),
     point(_point),
-    grad(0.0,0.0)
+    grad(1.0,0.0)
   {}
 };
 

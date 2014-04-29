@@ -82,6 +82,7 @@ class MatcherTest {
 
 void MatcherTest::testEpipolarSearchFullImg()
 {
+  svo::Matcher matcher;
   cv::Mat depthmap(frame_ref_->cam_->height(), frame_ref_->cam_->width(), CV_32FC1, cv::Scalar(0));
   cv::Mat error_map(depthmap.rows, depthmap.cols, CV_32FC1, cv::Scalar(0));
   cv::Mat mask(depthmap.rows, depthmap.cols, CV_8UC1, cv::Scalar(1));
@@ -95,10 +96,10 @@ void MatcherTest::testEpipolarSearchFullImg()
     {
       svo::Feature ftr(frame_ref_, Eigen::Vector2d(x,y), 0);
       double depth_gt = depth_ref_.at<float>(y, x);
-      double depth_estimate, h_inv;
-      int res = svo::matcher::findEpipolarMatchDirect(
-          *frame_ref_, *frame_cur_, ftr,
-          depth_gt, fmax(depth_gt-depth_range,0.0), depth_gt+depth_range, false, depth_estimate, h_inv);
+      double depth_estimate;
+      int res = matcher.findEpipolarMatchDirect(
+          *frame_ref_, *frame_cur_, ftr, depth_gt, fmax(depth_gt-depth_range,0.0),
+          depth_gt+depth_range, depth_estimate);
       if(res)
       {
         depthmap.at<float>(y,x) = depth_estimate;
@@ -148,21 +149,23 @@ void MatcherTest::testWarpAffine()
 {
   const int halfpatch_size = 15;
   const int patch_size=halfpatch_size*2;
-  svo::matcher::PatchData md(patch_size);
+  svo::Matcher matcher;
   double depth = 1.0;
 
   Sophus::SE3 T_cur_ref(frame_cur_->T_f_w_*frame_ref_->T_f_w_.inverse());
   Eigen::Vector2d px_cur(frame_cur_->cam_->world2cam(T_cur_ref*(ref_ftr_->f*depth)));
 
   // compute reference patch
-  cv::Mat ref_patch(patch_size, patch_size, CV_8U, md.patch_with_border);
+  cv::Mat ref_patch(matcher.halfpatch_size_+1, matcher.halfpatch_size_+1,
+                    CV_8U, matcher.patch_with_border_);
 
   Eigen::Matrix2d A_cur_ref;
-  svo::matcher::warp::getWarpMatrixAffine(
+  svo::warp::getWarpMatrixAffine(
       *cam_, *cam_, ref_ftr_->px, ref_ftr_->f, 1.0, T_cur_ref, ref_ftr_->level, A_cur_ref);
-  int level_cur = svo::matcher::warp::getBestSearchLevel(A_cur_ref, svo::Config::nPyrLevels()-1);
-  svo::matcher::warp::warpAffine(
-      A_cur_ref, ref_ftr_->frame->img_pyr_[ref_ftr_->level], ref_ftr_->px,  ref_ftr_->level, level_cur, md);
+  int level_cur = svo::warp::getBestSearchLevel(A_cur_ref, svo::Config::nPyrLevels()-1);
+  svo::warp::warpAffine(
+      A_cur_ref, ref_ftr_->frame->img_pyr_[ref_ftr_->level], ref_ftr_->px,
+      ref_ftr_->level, level_cur, matcher.halfpatch_size_+1, matcher.patch_with_border_);
 
   // copy current patch
   Eigen::Vector2i pxi(px_cur[0]/(1<<level_cur)+0.5, px_cur[1]/(1<<level_cur)+0.5);

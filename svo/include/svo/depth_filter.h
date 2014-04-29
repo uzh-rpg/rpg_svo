@@ -23,6 +23,7 @@
 #include <vikit/performance_monitor.h>
 #include <svo/global.h>
 #include <svo/feature_detection.h>
+#include <svo/matcher.h>
 
 namespace svo {
 
@@ -148,6 +149,7 @@ protected:
   double new_keyframe_min_depth_;       //!< Minimum depth in the new keyframe. Used for range in new seeds.
   double new_keyframe_mean_depth_;      //!< Maximum depth in the new keyframe. Used for range in new seeds.
   vk::PerformanceMonitor permon_;       //!< Separate performance monitor since the DepthFilter runs in a parallel thread.
+  Matcher matcher_;
 
   /// Initialize new seeds from a frame.
   void initializeSeeds(FramePtr frame);

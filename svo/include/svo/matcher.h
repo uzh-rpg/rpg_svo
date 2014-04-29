@@ -21,6 +21,9 @@
 
 namespace vk {
   class AbstractCamera;
+  namespace patch_score {
+    template<int HALF_PATCH_SIZE> class ZMSSD;
+  }
 }
 
 namespace svo {
@@ -28,22 +31,6 @@ namespace svo {
 class Point;
 class Frame;
 class Feature;
-
-/// Patch-matcher for reprojection-matching and epipolar search in triangulation.
-namespace matcher {
-
-const int g_halfpatch_size = 4; // do not change, because of sse instructions alignment.
-const int g_patch_size = 8;     // do not change, because of sse instructions alignment.
-
-/// Manages the aligned memory of a patch. Aligned for SIMD instructions.
-struct PatchData
-{
-  const int patch_size;
-  uint8_t*  patch;
-  uint8_t*  patch_with_border;
-  PatchData(int patch_size);
-  ~PatchData();
-};
 
 /// Warp a patch from the reference view to the current view.
 namespace warp {
@@ -68,38 +55,67 @@ void warpAffine(
     const Vector2d& px_ref,
     const int level_ref,
     const int level_cur,
-    PatchData& ref_patch);
+    const int halfpatch_size,
+    uint8_t* patch);
 
 } // namespace warp
 
-// TODO take function from vikit
-bool depthFromTriangulation(
-    const SE3& T_cur_ref,
-    const Vector3d& f_ref,
-    const Vector3d& f_cur,
-    double& depth);
+/// Patch-matcher for reprojection-matching and epipolar search in triangulation.
+class Matcher
+{
+public:
+  static const int halfpatch_size_ = 4;
+  static const int patch_size_ = 8;
 
-/// Find a match by directly applying subpix refinement.
-/// IMPORTANT! This function assumes that px_cur is already set to an estimate that is within ~2-3 pixel of the final result!
-bool findMatchDirect(
-    const Point& pt,
-    const Frame& frame,
-    Vector2d& px_cur,
-    int& level_cur);
+  typedef vk::patch_score::ZMSSD<halfpatch_size_> PatchScore;
 
-/// Find a match by searching along the epipolar line without using any features.
-bool findEpipolarMatchDirect(
-    const Frame& ref_frame,
-    const Frame& cur_frame,
-    const Feature& ref_ftr,
-    const double d_estimate,
-    const double d_min,
-    const double d_max,
-    const bool align_1d,
-    double& depth,
-    double& h_inv);
+  struct Options
+  {
+    bool align_1d;              //!< in epipolar search: align patch 1D along epipolar line
+    int align_max_iter;         //!< number of iterations for aligning the feature patches in gauss newton
+    double max_epi_length_optim;//!< max length of epipolar line to skip epipolar search and directly go to img align
+    size_t max_epi_search_steps;//!< max number of evaluations along epipolar line
+    bool subpix_refinement;     //!< do gauss newton feature patch alignment after epipolar search
+    Options() :
+      align_1d(false),
+      align_max_iter(10),
+      max_epi_length_optim(2.0),
+      max_epi_search_steps(1000),
+      subpix_refinement(true)
+    {}
+  } options_;
 
-} // namespace matcher
+  uint8_t* patch_;
+  uint8_t* patch_with_border_;
+  Matrix2d A_cur_ref_;          //!< affine warp matrix
+  double epi_length_;           //!< length of epipolar line segment in pixels (only used for epipolar search)
+  double h_inv_;                //!< hessian of 1d image alignment along epipolar line
+  int search_level_;
+  Feature* ref_ftr_;
+
+  Matcher();
+  ~Matcher();
+
+  /// Find a match by directly applying subpix refinement.
+  /// IMPORTANT! This function assumes that px_cur is already set to an estimate that is within ~2-3 pixel of the final result!
+  bool findMatchDirect(
+      const Point& pt,
+      const Frame& frame,
+      Vector2d& px_cur);
+
+  /// Find a match by searching along the epipolar line without using any features.
+  bool findEpipolarMatchDirect(
+      const Frame& ref_frame,
+      const Frame& cur_frame,
+      const Feature& ref_ftr,
+      const double d_estimate,
+      const double d_min,
+      const double d_max,
+      double& depth);
+
+  void createPatchFromPatchWithBorder();
+};
+
 } // namespace svo
 
 #endif // SVO_MATCHER_H_

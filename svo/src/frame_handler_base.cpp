@@ -41,7 +41,7 @@ FrameHandlerBase::FrameHandlerBase() :
   acc_frame_timings_(10),
   acc_num_obs_(10),
   num_obs_last_(0),
-  tracking_quality_(TRACKING_BAD)
+  tracking_quality_(TRACKING_INSUFFICIENT)
 {
 #ifdef SVO_TRACE
   // Initialize Performance Monitor
@@ -141,7 +141,7 @@ void FrameHandlerBase::resetCommon()
   stage_ = STAGE_PAUSED;
   set_reset_ = false;
   set_start_ = false;
-  tracking_quality_ = TRACKING_BAD;
+  tracking_quality_ = TRACKING_INSUFFICIENT;
   num_obs_last_ = 0;
   SVO_INFO_STREAM("RESET");
 }

@@ -229,10 +229,9 @@ void DepthFilter::updateSeeds(FramePtr frame)
     // we are using inverse depth coordinates
     float z_inv_min = it->mu + sqrt(it->sigma2);
     float z_inv_max = max(it->mu - sqrt(it->sigma2), 0.00000001f);
-    double z, h_inv = -1.0;
-    if(!matcher::findEpipolarMatchDirect(
-        *it->ftr->frame, *frame, *it->ftr, 1.0/it->mu, 1.0/z_inv_min, 1.0/z_inv_max,
-        options_.epi_search_1d, z, h_inv))
+    double z;
+    if(!matcher_.findEpipolarMatchDirect(
+        *it->ftr->frame, *frame, *it->ftr, 1.0/it->mu, 1.0/z_inv_min, 1.0/z_inv_max, z))
     {
       it->b++; // increase outlier probability when no match was found
       ++it;

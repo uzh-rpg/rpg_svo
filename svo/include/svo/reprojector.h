@@ -86,6 +86,7 @@ private:
   };
 
   Grid grid_;
+  Matcher matcher_;
   Map& map_;
 
   static bool pointQualityComparator(Candidate& lhs, Candidate& rhs);
