@@ -14,7 +14,7 @@ class SvoWidget(QWidget):
   _publisher = None
   _subscriber = None
   _num_received_msgs = 0
-  
+  _svo_namespace = None
   def __init__(self, svo_namespace='svo'):
     
     # Init QWidget
@@ -44,9 +44,9 @@ class SvoWidget(QWidget):
     
   @Slot(str)
   def _on_topic_changed(self, topic):
-    topic = str(topic)
+    self._svo_namespace = str(topic)
     self.unregister()
-    self.register(topic)
+    self.register(self._svo_namespace)
         
   def register(self, svo_namespace):
     # Load parameters
