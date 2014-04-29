@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef NSLAM_CONFIG_H_
-#define NSLAM_CONFIG_H_
+#ifndef SVO_CONFIG_H_
+#define SVO_CONFIG_H_
 
 #include <string>
 #include <stdint.h>
@@ -23,7 +23,7 @@
 
 namespace svo {
 
-using namespace std;
+using std::string;
 
 /// Global configuration file of SVO.
 /// Implements the Singleton design pattern to allow global access and to ensure
@@ -154,6 +154,6 @@ private:
   int quality_max_drop_fts;
 };
 
-} // namespace nslam
+} // namespace svo
 
-#endif // NSLAM_CONFIG_H_
+#endif // SVO_CONFIG_H_
