@@ -42,8 +42,7 @@ class FrameHandlerMono;
 
 typedef boost::shared_ptr<Frame> FramePtr;
 
-/// This class bundles all functions to publish visualisation messages,
-/// trace data and output debugging information.
+/// This class bundles all functions to publish visualisation messages.
 class Visualizer
 {
 public:
@@ -59,15 +58,30 @@ public:
   ros::Publisher pub_dense_;
   image_transport::Publisher pub_images_;
   tf::TransformBroadcaster br_;
+  bool publish_world_in_cam_frame_;
   SE3 T_world_from_vision_;
 
   Visualizer();
+
   ~Visualizer() {};
-  void visualizeMarkers(const FramePtr& frame, const set<FramePtr>& core_kfs, const Map& map);
-  void publishMinimal(const cv::Mat& img, const FramePtr& frame, const FrameHandlerMono& slam, const double timestamp);
+
+  void publishMinimal(
+      const cv::Mat& img,
+      const FramePtr& frame,
+      const FrameHandlerMono& slam,
+      const double timestamp);
+
+  void visualizeMarkers(
+      const FramePtr& frame,
+      const set<FramePtr>& core_kfs,
+      const Map& map);
+
   void publishMapRegion(set<FramePtr> frames);
+
   void removeDeletedPts(const Map& map);
+
   void displayKeyframeWithMps(const FramePtr& frame, int ts);
+
   void exportToDense(const FramePtr& frame);
 };
 
