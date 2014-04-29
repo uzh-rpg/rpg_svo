@@ -221,9 +221,8 @@ void DepthFilter::updateSeeds(FramePtr frame)
       ++it; // behind the camera
       continue;
     }
-    const Vector2d px(it->ftr->frame->f2c(xyz_f));
-    if(!it->ftr->frame->cam_->isInFrame(px.cast<int>())) {
-      ++it;
+    if(!it->ftr->frame->cam_->isInFrame(it->ftr->frame->f2c(xyz_f).cast<int>())) {
+      ++it; // point does not project in image
       continue;
     }
 
@@ -239,12 +238,6 @@ void DepthFilter::updateSeeds(FramePtr frame)
       ++it;
       ++n_failed_matches;
       continue;
-    }
-
-    if(options_.use_photometric_disparity_error && h_inv > 0)
-    {
-      px_noise = fmax(2.0*options_.sigma_i_sq*h_inv, 1.0);
-      px_error_angle = atan(px_noise/(2.0*focal_length))*2.0; // law of chord (sehnensatz)
     }
 
     // compute tau
