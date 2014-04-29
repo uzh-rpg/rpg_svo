@@ -58,25 +58,15 @@ class PoseOptimizerTest {
     vk::blender_utils::loadBlenderDepthmap(dataset_dir + "/depth/frame_000001_0.depth", *cam_, depthmap_);
 
     // detect features
-    feature_detection::Corners corners;
-    feature_detection::FastDetector detector;
-    detector.detect(frame_->img_pyr_, frame_->fts_, Config::gridSize(),
-                    Config::nPyrLevels(), Config::triangMinCornerScore(), &corners);
+    feature_detection::FastDetector detector(
+        cam_->width(), cam_->height(), Config::gridSize(), Config::nPyrLevels());
+    detector.detect(frame_.get(), frame_->img_pyr_, Config::triangMinCornerScore(), frame_->fts_);
     size_t n_fts = 0;
-    for(feature_detection::Corners::iterator it=corners.begin(); it!=corners.end(); ++it)
-    {
-      // we must check again if the score is above the threshold because the Corners
-      // vector is initialized with dummy corners
-      if(it->score > Config::triangMinCornerScore())
-      {
-        Feature* ftr(new Feature(frame_.get(), Vector2d(it->x, it->y), it->level));
-        Point* point(new Point(frame_->f2w(ftr->f*depthmap_.at<float>(it->y, it->x))));
-        ftr->point = point;
-        ftr->frame = frame_.get();
-        frame_->addFeature(ftr);
-        ++n_fts;
-      }
-    }
+    std::for_each(frame_->fts_.begin(), frame_->fts_.end(), [&](Feature* i){
+      Point* point(new Point(frame_->f2w(i->f*depthmap_.at<float>(i->px[1], i->px[0])), i));
+      i->point = point;
+      ++n_fts;
+    });
     printf("Added %zu features to frame.\n", n_fts);
   }
 

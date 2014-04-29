@@ -137,13 +137,6 @@ void Frame::removeKeyPoint(Feature* ftr)
     setKeyPoints();
 }
 
-size_t Frame::nObs() const
-{
-  size_t n=0;
-  std::for_each(fts_.begin(), fts_.end(), [&](Feature* i){if(i->point != NULL) ++n; });
-  return n;
-}
-
 bool Frame::isVisible(const Vector3d& xyz_w) const
 {
   Vector3d xyz_f = T_f_w_*xyz_w;

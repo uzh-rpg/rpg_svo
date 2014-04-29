@@ -24,7 +24,7 @@ namespace svo {
 
 int Point::point_counter_ = 0;
 
-Point::Point(Vector3d pos) :
+Point::Point(const Vector3d& pos) :
   id_(point_counter_++),
   pos_(pos),
   normal_(Vector3d::Zero()),
@@ -37,6 +37,22 @@ Point::Point(Vector3d pos) :
   n_succeeded_reproj_(0),
   last_structure_optim_(0)
 {}
+
+Point::Point(const Vector3d& pos, Feature* ftr) :
+  id_(point_counter_++),
+  pos_(pos),
+  normal_(Vector3d::Zero()),
+  n_obs_(1),
+  v_pt_(NULL),
+  last_published_ts_(0),
+  last_projected_kf_id_(-1),
+  type_(TYPE_UNKNOWN),
+  n_failed_reproj_(0),
+  n_succeeded_reproj_(0),
+  last_structure_optim_(0)
+{
+  obs_.push_front(ftr);
+}
 
 Point::~Point()
 {}

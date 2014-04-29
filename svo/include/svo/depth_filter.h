@@ -46,7 +46,7 @@ struct Seed
   float z_range;               //!< Max range of the possible depth.
   float sigma2;                //!< Variance of normal distribution.
   Matrix2d patch_cov;          //!< Patch covariance in reference image.
-  Seed(Feature* ftr, float angle, float depth_mean, float depth_min);
+  Seed(Feature* ftr, float depth_mean, float depth_min);
 };
 
 /// Depth filter implements the Bayesian Update proposed in:
@@ -64,7 +64,8 @@ public:
   typedef boost::function<void ( const Seed&, const Vector3d& )> callback_t;
 
   /// Depth-filter config parameters
-  struct Options {
+  struct Options
+  {
     bool check_ftr_angle;                       //!< gradient features are only updated if the epipolar line is orthogonal to the gradient.
     bool epi_search_1d;                         //!< restrict Gauss Newton in the epipolar search to the epipolar line.
     bool verbose;                               //!< display output.
@@ -83,8 +84,11 @@ public:
     {}
   } options_;
 
-  DepthFilter(feature_detection::DetectorPtr feature_detector, callback_t seed_converged_cb);
-  ~DepthFilter();
+  DepthFilter(
+      feature_detection::DetectorPtr feature_detector,
+      callback_t seed_converged_cb);
+
+  virtual ~DepthFilter();
 
   /// Start this thread when seed updating should be in a parallel thread.
   void startThread();
@@ -129,7 +133,7 @@ public:
       const double z,
       const double px_error_angle);
 
-private:
+protected:
   feature_detection::DetectorPtr feature_detector_;
   callback_t seed_converged_cb_;
   std::list<Seed, aligned_allocator<Seed> > seeds_;
@@ -149,7 +153,7 @@ private:
   void initializeSeeds(FramePtr frame);
 
   /// Update all seeds with a new measurement frame.
-  void updateSeeds(FramePtr frame);
+  virtual void updateSeeds(FramePtr frame);
 
   /// When a new keyframe arrives, the frame queue should be cleared.
   void clearFrameQueue();

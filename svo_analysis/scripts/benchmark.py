@@ -29,18 +29,28 @@ def run_experiment(dataset, params):
     algo_params = yaml.load(open(algo_params_file,'r'))
     
     # combine all parameters
-    if dataset_params['rig_size'] == 1:
+    if 'rig_size' not in dataset_params or dataset_params['rig_size'] == 1:
         params = dict(params.items() + algo_params.items() + dataset_params['cam0'].items())
     else:
         params = dict(params.items() + algo_params.items() + dataset_params.items())
     if 'dataset_is_blender' in dataset_params:
-        params['dataset_is_blender'] = True
+        params['dataset_is_blender'] = dataset_params['dataset_is_blender']
+    params['dataset_first_frame'] = dataset_params['dataset_first_frame']
     
     # dump experiment params to file and copy the other parameter files:
     params_dump_file = os.path.join(params['trace_dir'],'params.yaml')
     with open(params_dump_file,'w') as outfile:
         outfile.write(yaml.dump(params, default_flow_style=False))
-    shutil.copyfile(dataset_params_file, os.path.join(params['trace_dir'], 'dataset_params.yaml'))
+    shutil.copyfile(dataset_params_file,
+                    os.path.join(params['trace_dir'], 'dataset_params.yaml'))
+    
+    # copy the groundtruth trajectory to the trace dir for later evaluation
+    if params['dataset_is_blender']:
+        shutil.copyfile(os.path.join(params['dataset_directory'], 'trajectory.txt'),
+                        os.path.join(params['trace_dir'], 'groundtruth_matched.txt'))
+    else:
+        shutil.copyfile(os.path.join(params['dataset_directory'], 'groundtruth_matched.txt'),
+                        os.path.join(params['trace_dir'], 'groundtruth_matched.txt'))
     
     # execute ros node
     node = ros_node.RosNode(args.version, args.executable)

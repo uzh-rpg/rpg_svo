@@ -124,20 +124,20 @@ void BenchmarkNode::runBenchmark(const std::string& dataset_dir)
   dataset_reader.readAllEntries(dataset);
 
   // process dataset
+  int first_frame = vk::getParam<int>("svo/dataset_first_frame", 0);
   for(auto it = dataset.begin(); it != dataset.end() && ros::ok(); ++it, ++frame_count_)
   {
-    // Read image
+    if(frame_count_ < first_frame)
+      continue;
     std::string img_filename(dataset_dir + "/" + it->image_name_);
     cv::Mat img(cv::imread(img_filename, 0));
     if(img.empty()) {
       SVO_ERROR_STREAM("Reading image "<<img_filename<<" failed.");
       return;
     }
-
     vo_->addImage(img, it->timestamp_);
-
     visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
-
+    visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
     if(vo_->stage() == svo::FrameHandlerMono::STAGE_DEFAULT_FRAME)
       tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->timestamp_);
   }
@@ -188,32 +188,26 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
           dataset_dir+"/depth/"+it->image_name_+"_0.depth", *cam_, depthmap);
 
       // extract features, generate features with 3D points
-      svo::feature_detection::FastDetector detector;
-      svo::feature_detection::Corners corners;
-      detector.detect(frame_ref->img_pyr_, frame_ref->fts_, svo::Config::gridSize(),
-                      svo::Config::nPyrLevels(), svo::Config::triangMinCornerScore(), &corners);
-      for(auto corner=corners.begin(); corner!=corners.end(); ++corner)
-      {
-        if(corner->score < Config::triangMinCornerScore())
-          continue;
-        svo::Feature* ftr = new svo::Feature(frame_ref.get(), Eigen::Vector2d(corner->x, corner->y), corner->level);
-        Eigen::Vector3d pt_pos_cur = ftr->f*depthmap.at<float>(corner->y, corner->x);
+      svo::feature_detection::FastDetector detector(
+          cam_->width(), cam_->height(), svo::Config::gridSize(), svo::Config::nPyrLevels());
+      detector.detect(frame_ref.get(), frame_ref->img_pyr_, svo::Config::triangMinCornerScore(), frame_ref->fts_);
+      std::for_each(frame_ref->fts_.begin(), frame_ref->fts_.end(), [&](Feature* ftr) {
+        Eigen::Vector3d pt_pos_cur = ftr->f*depthmap.at<float>(ftr->px[1], ftr->px[0]);
         Eigen::Vector3d pt_pos_world = frame_ref->T_f_w_.inverse()*pt_pos_cur;
-        svo::Point* point = new svo::Point(pt_pos_world);
+        svo::Point* point = new svo::Point(pt_pos_world, ftr);
         ftr->point = point;
-        ftr->point->addFrameRef(ftr);
-        frame_ref->addFeature(ftr);
-      }
-      SVO_INFO_STREAM("Added "<<corners.size()<<" 3d pts to the reference frame.");
+      });
+      SVO_INFO_STREAM("Added "<<frame_ref->nObs()<<" 3d pts to the reference frame.");
       vo_->setFirstFrame(frame_ref);
       SVO_INFO_STREAM("Set reference frame.");
-      continue;
     }
-
-    SVO_DEBUG_STREAM("Processing image "<<it->image_name_<<".");
-    vo_->addImage(img, it->timestamp_);
-    visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
-    visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
+    else
+    {
+      SVO_DEBUG_STREAM("Processing image "<<it->image_name_<<".");
+      vo_->addImage(img, it->timestamp_);
+      visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, it->timestamp_);
+      visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
+    }
 
     if(vo_->stage() != svo::FrameHandlerMono::STAGE_DEFAULT_FRAME)
     {

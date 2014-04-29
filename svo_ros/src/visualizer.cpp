@@ -43,7 +43,9 @@ Visualizer() :
     trace_id_(0),
     img_pub_level_(vk::getParam<int>("svo/image_publishing_level", 0)),
     img_pub_nth_(vk::getParam<int>("svo/publish_every_nth_img", 1)),
-    dense_pub_nth_(vk::getParam<int>("svo/publish_every_nth_dense_input", 1))
+    dense_pub_nth_(vk::getParam<int>("svo/publish_every_nth_dense_input", 1)),
+    T_world_from_vision_(Matrix3d::Identity(), Vector3d::Zero()),
+    publish_world_in_cam_frame_(vk::getParam<bool>("svo/publish_world_in_cam_frame", true))
 {
   // Init ROS Marker Publishers
   pub_frames_ = pnh_.advertise<visualization_msgs::Marker>("keyframes", 10);
@@ -57,25 +59,11 @@ Visualizer() :
   pub_images_ = it.advertise("image", 10);
 }
 
-void Visualizer::
-visualizeMarkers(const FramePtr& frame, const set<FramePtr>& core_kfs, const Map& map)
-{
-  if(frame != NULL)
-  {
-    // publish camera pose tf
-    vk::output_helper::publishTfTransform(frame->T_f_w_, ros::Time(frame->timestamp_), "cam_pos", "world", br_);
-    if(pub_frames_.getNumSubscribers() > 0 || pub_points_.getNumSubscribers() > 0)
-    {
-      vk::output_helper::publishHexacopterMarker(pub_frames_, "cam_pos", "cams", ros::Time(frame->timestamp_), 1, 0, 0.3, Vector3d(0.,0.,1.));
-      vk::output_helper::publishPointMarker(pub_points_, frame->pos(), "trajectory", ros::Time::now(), trace_id_, 0, 0.006, Vector3d(0.,0.,0.5));
-      publishMapRegion(core_kfs);
-      removeDeletedPts(map);
-    }
-  }
-}
-
-void Visualizer::
-publishMinimal(const cv::Mat& img, const FramePtr& frame, const FrameHandlerMono& slam, const double timestamp)
+void Visualizer::publishMinimal(
+    const cv::Mat& img,
+    const FramePtr& frame,
+    const FrameHandlerMono& slam,
+    const double timestamp)
 {
   ++trace_id_;
   std_msgs::Header header_msg;
@@ -83,7 +71,7 @@ publishMinimal(const cv::Mat& img, const FramePtr& frame, const FrameHandlerMono
   header_msg.seq = trace_id_;
   header_msg.stamp = ros::Time(timestamp);
 
-  // publish svo info msgs
+  // publish info msg.
   if(pub_info_.getNumSubscribers() > 0)
   {
     svo_msgs::Info msg_info;
@@ -101,17 +89,31 @@ publishMinimal(const cv::Mat& img, const FramePtr& frame, const FrameHandlerMono
     pub_info_.publish(msg_info);
   }
 
-  // publish pyramid-image every nth-frame
-  if(frame != NULL && img_pub_nth_ > 0
-      && trace_id_%img_pub_nth_ == 0 && pub_images_.getNumSubscribers() > 0)
+  if(frame == 0)
+  {
+    if(pub_images_.getNumSubscribers() > 0 && slam.stage() == FrameHandlerBase::STAGE_PAUSED)
+    {
+      // Display image when slam is not running.
+      cv_bridge::CvImage img_msg;
+      img_msg.header.stamp = ros::Time::now();
+      img_msg.header.frame_id = "/image";
+      img_msg.image = img;
+      img_msg.encoding = sensor_msgs::image_encodings::MONO8;
+      pub_images_.publish(img_msg.toImageMsg());
+    }
+    return;
+  }
+
+  // Publish pyramid-image every nth-frame.
+  if(img_pub_nth_ > 0 && trace_id_%img_pub_nth_ == 0 && pub_images_.getNumSubscribers() > 0)
   {
     const int scale = (1<<img_pub_level_);
     cv::Mat img_rgb(frame->img_pyr_[img_pub_level_].size(), CV_8UC3);
     cv::cvtColor(frame->img_pyr_[img_pub_level_], img_rgb, CV_GRAY2RGB);
 
-    // during initialization, draw lines
     if(slam.stage() == FrameHandlerBase::STAGE_SECOND_FRAME)
     {
+      // During initialization, draw lines.
       const vector<cv::Point2f>& px_ref(slam.initFeatureTrackRefPx());
       const vector<cv::Point2f>& px_cur(slam.initFeatureTrackCurPx());
       for(vector<cv::Point2f>::const_iterator it_ref=px_ref.begin(), it_cur=px_cur.begin();
@@ -121,7 +123,6 @@ publishMinimal(const cv::Mat& img, const FramePtr& frame, const FrameHandlerMono
                  cv::Point2f(it_ref->x/scale, it_ref->y/scale), cv::Scalar(0,255,0), 2);
     }
 
-    // draw features on frame
     if(img_pub_level_ == 0)
       for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it)
         cv::rectangle(img_rgb,
@@ -141,30 +142,35 @@ publishMinimal(const cv::Mat& img, const FramePtr& frame, const FrameHandlerMono
                       cv::Point2f((*it)->px[0]/scale, (*it)->px[1]/scale),
                       cv::Scalar(0,255,0), CV_FILLED);
 
-    // publish image
     cv_bridge::CvImage img_msg;
     img_msg.header = header_msg;
     img_msg.image = img_rgb;
     img_msg.encoding = sensor_msgs::image_encodings::BGR8;
     pub_images_.publish(img_msg.toImageMsg());
   }
-  else if(frame == NULL && pub_images_.getNumSubscribers() > 0 && slam.stage() == FrameHandlerBase::STAGE_PAUSED)
-  {
-    // display image when slam is not running
-    cv_bridge::CvImage img_msg;
-    img_msg.header.stamp = ros::Time::now();
-    img_msg.header.frame_id = "/image";
-    img_msg.image = img;
-    img_msg.encoding = sensor_msgs::image_encodings::MONO8;
-    pub_images_.publish(img_msg.toImageMsg());
-  }
 
-  // publish pose (world in camera frame)
-  if(pub_pose_.getNumSubscribers() > 0 && frame != NULL)
+  if(pub_pose_.getNumSubscribers() > 0)
   {
+    Quaterniond q;
+    Vector3d p;
+    Matrix<double,6,6> Cov;
+    if(publish_world_in_cam_frame_)
+    {
+      // publish world in cam frame
+      SE3 T_cam_from_world(frame->T_f_w_* T_world_from_vision_);
+      q = Quaterniond(T_cam_from_world.rotation_matrix());
+      p = T_cam_from_world.translation();
+      Cov = frame->Cov_;
+    }
+    else
+    {
+      // publish cam in world frame
+      SE3 T_world_from_cam(T_world_from_vision_*frame->T_f_w_.inverse());
+      q = Quaterniond(T_world_from_cam.rotation_matrix()*T_world_from_vision_.rotation_matrix().transpose());
+      p = T_world_from_cam.translation();
+      Cov = T_world_from_cam.Adj()*frame->Cov_*T_world_from_cam.inverse().Adj();
+    }
     geometry_msgs::PoseWithCovarianceStampedPtr msg_pose(new geometry_msgs::PoseWithCovarianceStamped);
-    Quaterniond q(frame->T_f_w_.rotation_matrix());
-    Vector3d p(frame->T_f_w_.translation());
     msg_pose->header = header_msg;
     msg_pose->pose.pose.position.x = p[0];
     msg_pose->pose.pose.position.y = p[1];
@@ -174,13 +180,36 @@ publishMinimal(const cv::Mat& img, const FramePtr& frame, const FrameHandlerMono
     msg_pose->pose.pose.orientation.z = q.z();
     msg_pose->pose.pose.orientation.w = q.w();
     for(size_t i=0; i<36; ++i)
-      msg_pose->pose.covariance[i] = frame->Cov_(i%6, i/6);
+      msg_pose->pose.covariance[i] = Cov(i%6, i/6);
     pub_pose_.publish(msg_pose);
   }
 }
 
-void Visualizer::
-publishMapRegion(set<FramePtr> frames)
+void Visualizer::visualizeMarkers(
+    const FramePtr& frame,
+    const set<FramePtr>& core_kfs,
+    const Map& map)
+{
+  if(frame != NULL)
+  {
+    vk::output_helper::publishTfTransform(
+        frame->T_f_w_*T_world_from_vision_.inverse(),
+        ros::Time(frame->timestamp_), "cam_pos", "world", br_);
+    if(pub_frames_.getNumSubscribers() > 0 || pub_points_.getNumSubscribers() > 0)
+    {
+      vk::output_helper::publishHexacopterMarker(
+          pub_frames_, "cam_pos", "cams", ros::Time(frame->timestamp_),
+          1, 0, 0.3, Vector3d(0.,0.,1.));
+      vk::output_helper::publishPointMarker(
+          pub_points_, T_world_from_vision_*frame->pos(), "trajectory",
+          ros::Time::now(), trace_id_, 0, 0.006, Vector3d(0.,0.,0.5));
+      publishMapRegion(core_kfs);
+      removeDeletedPts(map);
+    }
+  }
+}
+
+void Visualizer::publishMapRegion(set<FramePtr> frames)
 {
   if(pub_points_.getNumSubscribers() > 0)
   {
@@ -190,8 +219,7 @@ publishMapRegion(set<FramePtr> frames)
   }
 }
 
-void Visualizer::
-removeDeletedPts(const Map& map)
+void Visualizer::removeDeletedPts(const Map& map)
 {
   if(pub_points_.getNumSubscribers() > 0)
   {
@@ -200,11 +228,13 @@ removeDeletedPts(const Map& map)
   }
 }
 
-void Visualizer::
-displayKeyframeWithMps(const FramePtr& frame, int ts)
+void Visualizer::displayKeyframeWithMps(const FramePtr& frame, int ts)
 {
   // publish keyframe
-  vk::output_helper::publishFrameMarker(pub_frames_, frame->T_f_w_.inverse().rotation_matrix(), frame->pos(), "kfs", ros::Time::now(), frame->id_*10, 0, 0.015);
+  SE3 T_world_cam(T_world_from_vision_*frame->T_f_w_.inverse());
+  vk::output_helper::publishFrameMarker(
+      pub_frames_, T_world_cam.rotation_matrix(),
+      T_world_cam.translation(), "kfs", ros::Time::now(), frame->id_*10, 0, 0.015);
 
   // publish point cloud and links
   for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it)
@@ -215,13 +245,14 @@ displayKeyframeWithMps(const FramePtr& frame, int ts)
     if((*it)->point->last_published_ts_ == ts)
       continue;
 
-    vk::output_helper::publishPointMarker(pub_points_, (*it)->point->pos_, "pts", ros::Time::now(), (*it)->point->id_, 0, 0.005, Vector3d(1.0, 0., 1.0));
+    vk::output_helper::publishPointMarker(
+        pub_points_, T_world_from_vision_*(*it)->point->pos_, "pts",
+        ros::Time::now(), (*it)->point->id_, 0, 0.005, Vector3d(1.0, 0., 1.0));
     (*it)->point->last_published_ts_ = ts;
   }
 }
 
-void Visualizer::
-exportToDense(const FramePtr& frame)
+void Visualizer::exportToDense(const FramePtr& frame)
 {
   // publish air_ground_msgs
   if(frame != NULL && dense_pub_nth_ > 0
@@ -246,8 +277,8 @@ exportToDense(const FramePtr& frame)
       if((*it)->point==NULL)
         continue;
       Vector3d pos = frame->T_f_w_*(*it)->point->pos_;
-      min_z = min(pos[2], min_z);
-      max_z = max(pos[2], max_z);
+      min_z = fmin(pos[2], min_z);
+      max_z = fmax(pos[2], max_z);
     }
     msg.min_depth = (float) min_z;
     msg.max_depth = (float) max_z;

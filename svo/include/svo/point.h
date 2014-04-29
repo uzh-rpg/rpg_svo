@@ -56,7 +56,8 @@ public:
   int                         n_succeeded_reproj_;      //!< Number of succeeded reprojections. Used to assess the quality of the point.
   int                         last_structure_optim_;    //!< Timestamp of last point optimization
 
-  Point(Vector3d pos);
+  Point(const Vector3d& pos);
+  Point(const Vector3d& pos, Feature* ftr);
   ~Point();
 
   /// Add a reference to a frame.

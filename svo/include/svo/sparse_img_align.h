@@ -51,6 +51,10 @@ public:
       FramePtr ref_frame,
       FramePtr cur_frame);
 
+  /// Return fisher information matrix, i.e. the Hessian of the log-likelihood
+  /// at the converged state.
+  Matrix<double, 6, 6> getFisherInformation();
+
 protected:
   FramePtr ref_frame_;            //!< reference frame, has depth for gradient pixels.
   FramePtr cur_frame_;            //!< only the image is known!

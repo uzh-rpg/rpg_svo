@@ -34,7 +34,7 @@ namespace svo {
 int Seed::batch_counter = 0;
 int Seed::seed_counter = 0;
 
-Seed::Seed(Feature* ftr, float angle, float depth_mean, float depth_min) :
+Seed::Seed(Feature* ftr, float depth_mean, float depth_min) :
     batch_id(batch_counter),
     id(seed_counter++),
     ftr(ftr),
@@ -113,32 +113,20 @@ void DepthFilter::addKeyframe(FramePtr frame, double depth_mean, double depth_mi
 
 void DepthFilter::initializeSeeds(FramePtr frame)
 {
-  feature_detection::Corners corners;
-  feature_detector_->detect(frame->img_pyr_, frame->fts_, svo::Config::gridSize(),
-                            svo::Config::nPyrLevels(), Config::triangMinCornerScore(),
-                            &corners);
+  Features new_features;
+  feature_detector_->setExistingFeatures(frame->fts_);
+  feature_detector_->detect(frame.get(), frame->img_pyr_,
+                            Config::triangMinCornerScore(), new_features);
 
+  // initialize a seed for every new feature
   seeds_updating_halt_ = true;
   lock_t lock(seeds_mut_); // by locking the updateSeeds function stops
-  size_t new_seeds = 0;
   ++Seed::batch_counter;
+  std::for_each(new_features.begin(), new_features.end(), [&](Feature* ftr){
+    seeds_.push_back(Seed(ftr, new_keyframe_mean_depth_, new_keyframe_min_depth_));
+  });
 
-  // now for all maximum corners, initialize a new seed
-  for(feature_detection::Corners::iterator it=corners.begin(); it!=corners.end(); ++it)
-  {
-    // we must check again if the score is above the threshold because the Corners
-    // vector is initialized with dummy corners
-    if(it->score > Config::triangMinCornerScore())
-    {
-      Feature* new_feature(new Feature(frame.get(), Vector2d(it->x, it->y), it->level));
-      seeds_.push_back(Seed(new_feature, it->angle, new_keyframe_mean_depth_, new_keyframe_min_depth_));
-      ++new_seeds;
-    }
-  }
-
-  if(options_.verbose)
-    SVO_INFO_STREAM("DepthFilter: Initialized "<<new_seeds<<" new seeds");
-
+  SVO_DEBUG_STREAM("DepthFilter: Initialized "<<new_features.size()<<" new seeds");
   seeds_updating_halt_ = false;
 }
 
@@ -174,8 +162,7 @@ void DepthFilter::reset()
     frame_queue_.pop();
   seeds_updating_halt_ = false;
 
-  if(options_.verbose)
-    SVO_INFO_STREAM("DepthFilter: RESET.");
+  SVO_DEBUG_STREAM("DepthFilter: RESET.");
 }
 
 void DepthFilter::updateSeedsLoop()
@@ -234,11 +221,8 @@ void DepthFilter::updateSeeds(FramePtr frame)
       ++it; // behind the camera
       continue;
     }
-    const Vector2d px(it->ftr->frame->f2c(xyz_f));
-    if(!it->ftr->frame->cam_->isInFrame(px.cast<int>())) {
-      ++it;
-      if(options_.verbose)
-    	SVO_DEBUG_STREAM("not visible");
+    if(!it->ftr->frame->cam_->isInFrame(it->ftr->frame->f2c(xyz_f).cast<int>())) {
+      ++it; // point does not project in image
       continue;
     }
 
@@ -250,24 +234,11 @@ void DepthFilter::updateSeeds(FramePtr frame)
         *it->ftr->frame, *frame, *it->ftr, 1.0/it->mu, 1.0/z_inv_min, 1.0/z_inv_max,
         options_.epi_search_1d, z, h_inv))
     {
-      if(options_.verbose)
-        SVO_INFO_STREAM("no match found");
       it->b++; // increase outlier probability when no match was found
       ++it;
       ++n_failed_matches;
       continue;
     }
-
-    if(options_.use_photometric_disparity_error && h_inv > 0)
-    {
-      px_noise = fmax(2.0*options_.sigma_i_sq*h_inv, 1.0);
-      px_error_angle = atan(px_noise/(2.0*focal_length))*2.0; // law of chord (sehnensatz)
-      if(options_.verbose)
-    	SVO_DEBUG_STREAM("Photometric disparity error "<<px_noise<<" px");
-    }
-
-    if(options_.verbose)
-      SVO_DEBUG_STREAM("updated seed");
 
     // compute tau
     double tau = computeTau(T_ref_cur, it->ftr->f, z, px_error_angle);
@@ -284,8 +255,6 @@ void DepthFilter::updateSeeds(FramePtr frame)
       {
         Vector3d xyz_world(it->ftr->frame->T_f_w_.inverse() * (it->ftr->f * (1.0/it->mu)));
         seed_converged_cb_(*it, xyz_world);
-        if(options_.verbose)
-          SVO_DEBUG_STREAM("seed converged");
       }
       it = seeds_.erase(it);
     }
@@ -299,8 +268,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
   }
 }
 
-void DepthFilter::
-clearFrameQueue()
+void DepthFilter::clearFrameQueue()
 {
   while(!frame_queue_.empty())
     frame_queue_.pop();

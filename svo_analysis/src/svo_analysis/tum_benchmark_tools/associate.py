@@ -108,7 +108,6 @@ if __name__ == '__main__':
     ''')
     parser.add_argument('first_file', help='first text file (format: timestamp data)')
     parser.add_argument('second_file', help='second text file (format: timestamp data)')
-    parser.add_argument('--first_only', help='only output associated lines from first file', action='store_true')
     parser.add_argument('--offset', help='time offset added to the timestamps of the second file (default: 0.0)',default=0.0)
     parser.add_argument('--max_difference', help='maximally allowed time difference for matching entries (default: 0.02)',default=0.02)
     args = parser.parse_args()
@@ -117,12 +116,15 @@ if __name__ == '__main__':
     second_list = read_file_list(args.second_file)
 
     matches = associate(first_list, second_list,float(args.offset),float(args.max_difference))    
-
-    if args.first_only:
-        for a,b in matches:
-            print("%f %s"%(a," ".join(first_list[a])))
-    else:
-        for a,b in matches:
-            print("%f %s %f %s"%(a," ".join(first_list[a]),b-float(args.offset)," ".join(second_list[b])))
-            
+    
+    filename = 'groundtruth_matched.txt' 
+    associates_file = open(filename, 'w')                             
+    for a,b in matches:
+      img = first_list[a]
+      pos = second_list[b]
+      associates_file.write('%.6f %s %s %s %s %s %s %s %s\n' %
+                           (a, img[0],
+                            pos[0], pos[1], pos[2],
+                            pos[3], pos[4], pos[5], pos[6])) 
+    print('Wrote matches to file: ' + filename)
         
