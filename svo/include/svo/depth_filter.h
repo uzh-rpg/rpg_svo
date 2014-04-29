@@ -64,7 +64,8 @@ public:
   typedef boost::function<void ( const Seed&, const Vector3d& )> callback_t;
 
   /// Depth-filter config parameters
-  struct Options {
+  struct Options
+  {
     bool check_ftr_angle;                       //!< gradient features are only updated if the epipolar line is orthogonal to the gradient.
     bool epi_search_1d;                         //!< restrict Gauss Newton in the epipolar search to the epipolar line.
     bool verbose;                               //!< display output.
