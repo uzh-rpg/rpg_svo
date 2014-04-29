@@ -32,7 +32,7 @@ def plot_rotation_error(timestamps, rotation_error, results_dir):
     fig.tight_layout()
     fig.savefig(results_dir+'/orientation_error.pdf')
 
-def analyse_trajectory(results_dir, n_align_frames = 20, use_hand_eye_calib = True):
+def analyse_trajectory(results_dir, n_align_frames = 200, use_hand_eye_calib = True):
   
     if not os.path.isfile(os.path.join(results_dir, 'translation_error.txt')):
                 
@@ -91,6 +91,9 @@ def analyse_trajectory(results_dir, n_align_frames = 20, use_hand_eye_calib = Tr
         else:
             for i in range(np.shape(p_es)[0]):
                 p_es_aligned[i,:] = scale*rot.dot(p_es[i,:]) + trans
+            # plot position error (drift)
+            translation_error = (p_gt-p_es_aligned)
+            plot_translation_error(t_es, translation_error, results_dir)
       
         # plot trajectory
         fig = plt.figure()
