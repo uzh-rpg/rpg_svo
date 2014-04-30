@@ -36,10 +36,16 @@ FrameHandlerMono::FrameHandlerMono(vk::AbstractCamera* cam) :
   reprojector_(cam_, map_),
   depth_filter_(NULL)
 {
-  // create depth filter and set callback
+  initialize();
+}
+
+void FrameHandlerMono::initialize()
+{
   feature_detection::DetectorPtr feature_detector(
-      new feature_detection::FastDetector(cam_->width(), cam_->height(), Config::gridSize(), Config::nPyrLevels()));
-  DepthFilter::callback_t depth_filter_cb = boost::bind(&MapPointCandidates::newCandidatePoint, &map_.point_candidates_, _1, _2);
+      new feature_detection::FastDetector(
+          cam_->width(), cam_->height(), Config::gridSize(), Config::nPyrLevels()));
+  DepthFilter::callback_t depth_filter_cb = boost::bind(
+      &MapPointCandidates::newCandidatePoint, &map_.point_candidates_, _1, _2);
   depth_filter_ = new DepthFilter(feature_detector, depth_filter_cb);
   depth_filter_->startThread();
 }

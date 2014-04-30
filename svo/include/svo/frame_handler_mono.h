@@ -29,7 +29,7 @@ class FrameHandlerMono : public FrameHandlerBase
 {
 public:
   FrameHandlerMono(vk::AbstractCamera* cam);
-  ~FrameHandlerMono();
+  virtual ~FrameHandlerMono();
 
   /// Provide an image.
   void addImage(const cv::Mat& img, double timestamp);
@@ -60,21 +60,25 @@ protected:
   initialization::KltHomographyInit klt_homography_init_; //!< Used to estimate pose of the first two keyframes by estimating a homography.
   DepthFilter* depth_filter_;                   //!< Depth estimation algorithm runs in a parallel thread and is used to initialize new 3D points.
 
+  /// Initialize the visual odometry algorithm.
+  virtual void initialize();
+
   /// Processes the first frame and sets it as a keyframe.
-  UpdateResult processFirstFrame();
+  virtual UpdateResult processFirstFrame();
 
   /// Processes all frames after the first frame until a keyframe is selected.
-  UpdateResult processSecondFrame();
+  virtual UpdateResult processSecondFrame();
 
   /// Processes all frames after the first two keyframes.
-  UpdateResult processFrame();
+  virtual UpdateResult processFrame();
 
   /// Reset the frame handler. Implement in derived class.
   virtual void resetAll();
 
-  void setCoreKfs(size_t n_closest);
+  /// Keyframe selection criterion.
+  virtual bool needNewKf(double scene_depth_mean);
 
-  bool needNewKf(double scene_depth_mean);
+  void setCoreKfs(size_t n_closest);
 };
 
 } // namespace svo
