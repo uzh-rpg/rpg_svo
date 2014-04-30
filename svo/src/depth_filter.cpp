@@ -197,7 +197,6 @@ void DepthFilter::updateSeeds(FramePtr frame)
   // update only a limited number of seeds, because we don't have time to do it
   // for all the seeds in every frame!
   size_t n_updates=0, n_failed_matches=0, n_seeds = seeds_.size();
-  double reproj_thresh = Config::lobaThresh() / frame->cam_->errorMultiplier2();
   lock_t lock(seeds_mut_);
   list<Seed>::iterator it=seeds_.begin();
 
