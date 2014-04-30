@@ -120,12 +120,12 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processSecondFrame()
   ba::twoViewBA(new_frame_.get(), map_.lastKeyframe().get(), Config::lobaThresh(), map_);
 #endif
 
+  new_frame_->setKeyframe();
   double depth_mean, depth_min;
   frame_utils::getSceneDepth(*new_frame_, depth_mean, depth_min);
   depth_filter_->addKeyframe(new_frame_, depth_mean, 0.5*depth_min);
 
   // add frame to map
-  new_frame_->setKeyframe();
   map_.addKeyframe(new_frame_);
   stage_ = STAGE_DEFAULT_FRAME;
   klt_homography_init_.reset();
