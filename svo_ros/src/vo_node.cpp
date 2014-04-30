@@ -37,9 +37,6 @@
 
 namespace svo {
 
-using namespace std;
-using namespace vk;
-
 /// SVO Interface
 class VoNode
 {
@@ -50,7 +47,7 @@ public:
   bool publish_dense_input_;
   vk::UserInputThread* user_input_thread_;
   ros::Subscriber sub_remote_key_;
-  string remote_input_;
+  std::string remote_input_;
   vk::AbstractCamera* cam_;
   bool quit_;
   VoNode();
@@ -60,8 +57,7 @@ public:
   void remoteKeyCb(const std_msgs::StringConstPtr& key_input);
 };
 
-VoNode::
-VoNode() :
+VoNode::VoNode() :
   vo_(NULL),
   publish_markers_(vk::getParam<bool>("svo/publish_markers", true)),
   publish_dense_input_(vk::getParam<bool>("svo/publish_dense_input", false)),
@@ -88,16 +84,14 @@ VoNode() :
   vo_->start();
 }
 
-VoNode::
-~VoNode()
+VoNode::~VoNode()
 {
   delete vo_;
   delete user_input_thread_;
   delete cam_;
 }
 
-void VoNode::
-imgCb(const sensor_msgs::ImageConstPtr& msg)
+void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg)
 {
   cv::Mat img;
   try {
@@ -116,7 +110,7 @@ imgCb(const sensor_msgs::ImageConstPtr& msg)
     visualizer_.exportToDense(vo_->lastFrame());
 
   if(vo_->stage() == FrameHandlerMono::STAGE_PAUSED)
-    usleep(100000); // avoid busy loop when paused
+    usleep(100000);
 }
 
 void VoNode::processUserActions()
@@ -132,15 +126,15 @@ void VoNode::processUserActions()
   {
     case 'q':
       quit_ = true;
-      printf("Svo User Input: QUIT\n");
+      printf("SVO user input: QUIT\n");
       break;
     case 'r':
       vo_->reset();
-      printf("Svo User Input: RESET\n");
+      printf("SVO user input: RESET\n");
       break;
     case 's':
       vo_->start();
-      printf("Svo User Input: START\n");
+      printf("SVO user input: START\n");
       break;
     default: ;
   }
@@ -175,6 +169,6 @@ int main(int argc, char **argv)
     // TODO check when last image was processed. when too long ago. publish warning that no msgs are received!
   }
 
-  printf("Svo terminated.\n");
+  printf("SVO terminated.\n");
   return 0;
 }
