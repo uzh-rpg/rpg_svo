@@ -190,6 +190,7 @@ bool Reprojector::reprojectCell(Cell& cell, FramePtr frame)
     {
       new_feature->type = Feature::EDGELET;
       new_feature->grad = matcher_.A_cur_ref_*matcher_.ref_ftr_->grad;
+      new_feature->grad.normalize();
     }
 
     // If the keyframe is selected and we reproject the rest, we don't have to
