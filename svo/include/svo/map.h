@@ -48,7 +48,7 @@ public:
   ~MapPointCandidates();
 
   /// Add a candidate point.
-  void newCandidatePoint(const Seed& seed, const Vector3d& xyz_world);
+  void newCandidatePoint(Point* point, double depth_sigma2);
 
   /// Adds the feature to the frame and deletes candidate from list.
   void addCandidatePointToFrame(FramePtr frame);

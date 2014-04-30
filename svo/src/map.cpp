@@ -18,7 +18,6 @@
 #include <svo/point.h>
 #include <svo/frame.h>
 #include <svo/feature.h>
-#include <svo/depth_filter.h>
 #include <boost/bind.hpp>
 
 namespace svo {
@@ -193,17 +192,11 @@ MapPointCandidates::~MapPointCandidates()
   reset();
 }
 
-void MapPointCandidates::newCandidatePoint(const Seed& seed, const Vector3d& xyz_world)
+void MapPointCandidates::newCandidatePoint(Point* point, double depth_sigma2)
 {
-  // initalize a new point
-  Point* point = new Point(xyz_world);
-  point->addFrameRef(seed.ftr);
   point->type_ = Point::TYPE_CANDIDATE;
-  seed.ftr->point = point;
-
-  // add candidate to list
   boost::unique_lock<boost::mutex> lock(mut_);
-  candidates_.push_back(PointCandidate(point, seed.ftr));
+  candidates_.push_back(PointCandidate(point, point->obs_.front()));
 }
 
 void MapPointCandidates::addCandidatePointToFrame(FramePtr frame)

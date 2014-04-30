@@ -178,13 +178,17 @@ void DepthFilter::updateSeedsLoop()
       {
         new_keyframe_set_ = false;
         clearFrameQueue();
-        initializeSeeds(new_keyframe_);
-        continue;
+        frame = new_keyframe_;
       }
-      frame = frame_queue_.front();
-      frame_queue_.pop();
+      else
+      {
+        frame = frame_queue_.front();
+        frame_queue_.pop();
+      }
     }
     updateSeeds(frame);
+    if(frame->isKeyframe())
+      initializeSeeds(frame);
   }
 }
 
@@ -247,13 +251,30 @@ void DepthFilter::updateSeeds(FramePtr frame)
     updateSeed(1./z, tau_inverse*tau_inverse, &*it);
     ++n_updates;
 
+    if(frame->isKeyframe())
+    {
+      // The feature detector should not initialize new seeds close to this location
+      feature_detector_->setGridOccpuancy(matcher_.px_cur_);
+    }
+
     // if the seed has converged, we initialize a new candidate point and remove the seed
     if(sqrt(it->sigma2) < it->z_range/options_.seed_convergence_sigma2_thresh)
     {
-      if(it->ftr->point == NULL)
+      assert(it->ftr->point == NULL); // TODO this should not happen anymore
+      Vector3d xyz_world(it->ftr->frame->T_f_w_.inverse() * (it->ftr->f * (1.0/it->mu)));
+      Point* point = new Point(xyz_world, it->ftr);
+      it->ftr->point = point;
+      if(frame->isKeyframe())
       {
-        Vector3d xyz_world(it->ftr->frame->T_f_w_.inverse() * (it->ftr->f * (1.0/it->mu)));
-        seed_converged_cb_(*it, xyz_world);
+        Feature* ftr = new Feature(frame.get(), matcher_.px_cur_, matcher_.search_level_);
+        ftr->point = point;
+        point->addFrameRef(ftr);
+        frame->addFeature(ftr);
+        it->ftr->frame->addFeature(it->ftr);
+      }
+      else
+      {
+        seed_converged_cb_(point, it->sigma2); // put in candidate list
       }
       it = seeds_.erase(it);
     }

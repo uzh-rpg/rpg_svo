@@ -49,7 +49,7 @@ class DepthFilterTest {
  public:
   DepthFilterTest();
   virtual ~DepthFilterTest();
-  void depthFilterCb(const svo::Seed& seed, const Eigen::Vector3d& xyz_world);
+  void depthFilterCb(svo::Point* point, double depth_sigma2);
   void testReconstruction(std::string dataset_dir, std::string experiment_name);
 
   std::list<ConvergedSeed> results_;
@@ -76,15 +76,16 @@ DepthFilterTest::~DepthFilterTest()
   delete cam_;
 }
 
-void DepthFilterTest::depthFilterCb(
-    const svo::Seed& seed,
-    const Eigen::Vector3d& xyz_world)
+void DepthFilterTest::depthFilterCb(svo::Point* point, double depth_sigma2)
 {
-  double depth = (frame_ref_->pos() - xyz_world).norm();
-  double error = fabs(depth - depth_ref_.at<float>(seed.ftr->px[1], seed.ftr->px[0]));
-  results_.push_back(ConvergedSeed(seed.ftr->px[0], seed.ftr->px[1], depth, error));
+  double depth = (frame_ref_->pos() - point->pos_).norm();
+  double error = fabs(depth - depth_ref_.at<float>(point->obs_.front()->px[1],
+                                                   point->obs_.front()->px[0]));
+  results_.push_back(ConvergedSeed(
+      point->obs_.front()->px[0], point->obs_.front()->px[1], depth, error));
   errors_.push_back(error);
-  delete seed.ftr;
+  delete point->obs_.front();
+  delete point;
   ++n_converged_seeds_;
 }
 

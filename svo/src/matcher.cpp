@@ -213,8 +213,8 @@ bool Matcher::findEpipolarMatchDirect(
 
   if(epi_length_ < 2.0)
   {
-    Vector2d px = (px_A+px_B)/2.0;
-    Vector2d px_scaled(px/(1<<search_level_));
+    px_cur_ = (px_A+px_B)/2.0;
+    Vector2d px_scaled(px_cur_/(1<<search_level_));
     bool res;
     if(options_.align_1d)
       res = feature_alignment::align1D(
@@ -226,8 +226,8 @@ bool Matcher::findEpipolarMatchDirect(
           options_.align_max_iter, px_scaled);
     if(res)
     {
-      px = px_scaled*(1<<search_level_);
-      if(depthFromTriangulation(T_cur_ref, ref_ftr.f, cur_frame.cam_->cam2world(px), depth))
+      px_cur_ = px_scaled*(1<<search_level_);
+      if(depthFromTriangulation(T_cur_ref, ref_ftr.f, cur_frame.cam_->cam2world(px_cur_), depth))
         return true;
     }
     return false;
@@ -282,8 +282,8 @@ bool Matcher::findEpipolarMatchDirect(
   {
     if(options_.subpix_refinement)
     {
-      Vector2d px(cur_frame.cam_->world2cam(uv_best));
-      Vector2d px_scaled(px/(1<<search_level_));
+      px_cur_ = cur_frame.cam_->world2cam(uv_best);
+      Vector2d px_scaled(px_cur_/(1<<search_level_));
       bool res;
       if(options_.align_1d)
         res = feature_alignment::align1D(
@@ -295,13 +295,13 @@ bool Matcher::findEpipolarMatchDirect(
             options_.align_max_iter, px_scaled);
       if(res)
       {
-        px = px_scaled*(1<<search_level_);
-        if(depthFromTriangulation(T_cur_ref, ref_ftr.f, cur_frame.cam_->cam2world(px), depth))
+        px_cur_ = px_scaled*(1<<search_level_);
+        if(depthFromTriangulation(T_cur_ref, ref_ftr.f, cur_frame.cam_->cam2world(px_cur_), depth))
           return true;
       }
       return false;
     }
-
+    px_cur_ = cur_frame.cam_->world2cam(uv_best);
     if(depthFromTriangulation(T_cur_ref, ref_ftr.f, vk::unproject2d(uv_best).normalized(), depth))
       return true;
   }

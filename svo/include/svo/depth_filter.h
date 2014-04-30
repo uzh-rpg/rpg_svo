@@ -62,7 +62,7 @@ public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   typedef boost::unique_lock<boost::mutex> lock_t;
-  typedef boost::function<void ( const Seed&, const Vector3d& )> callback_t;
+  typedef boost::function<void ( Point*, double )> callback_t;
 
   /// Depth-filter config parameters
   struct Options
