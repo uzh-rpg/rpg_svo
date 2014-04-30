@@ -127,7 +127,6 @@ void DepthFilter::initializeSeeds(FramePtr frame)
   });
 
   SVO_DEBUG_STREAM("DepthFilter: Initialized "<<new_features.size()<<" new seeds");
-  seeds_updating_halt_ = false;
 }
 
 void DepthFilter::removeKeyframe(FramePtr frame)
@@ -147,7 +146,6 @@ void DepthFilter::removeKeyframe(FramePtr frame)
       ++it;
   }
   seeds_updating_halt_ = false;
-  //printf("Vogiatzis: removed %zu seeds belonging to old keyframe\n", n_removed);
 }
 
 void DepthFilter::reset()
@@ -177,6 +175,7 @@ void DepthFilter::updateSeedsLoop()
       if(new_keyframe_set_)
       {
         new_keyframe_set_ = false;
+        seeds_updating_halt_ = false;
         clearFrameQueue();
         frame = new_keyframe_;
       }
@@ -216,9 +215,8 @@ void DepthFilter::updateSeeds(FramePtr frame)
       continue;
     }
 
-    SE3 T_ref_cur = it->ftr->frame->T_f_w_ * frame->T_f_w_.inverse();
-
     // check if point is visible in the current image
+    SE3 T_ref_cur = it->ftr->frame->T_f_w_ * frame->T_f_w_.inverse();
     const Vector3d xyz_f(T_ref_cur.inverse()*(1.0/it->mu * it->ftr->f) );
     if(xyz_f.z() < 0.0)  {
       ++it; // behind the camera
