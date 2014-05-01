@@ -170,9 +170,22 @@ bool Matcher::findMatchDirect(
 
   // px_cur should be set
   Vector2d px_scaled(px_cur/(1<<search_level_));
-  bool success = feature_alignment::align2D(
+
+  bool success = false;
+  if(ref_ftr_->type == Feature::EDGELET)
+  {
+    Vector2d dir_cur(A_cur_ref_*ref_ftr_->grad);
+    dir_cur.normalize();
+    success = feature_alignment::align1D(
+          cur_frame.img_pyr_[search_level_], dir_cur.cast<float>(),
+          patch_with_border_, patch_, options_.align_max_iter, px_scaled, h_inv_);
+  }
+  else
+  {
+    success = feature_alignment::align2D(
       cur_frame.img_pyr_[search_level_], patch_with_border_, patch_,
       options_.align_max_iter, px_scaled);
+  }
   px_cur = px_scaled * (1<<search_level_);
   return success;
 }
