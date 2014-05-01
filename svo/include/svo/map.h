@@ -105,6 +105,8 @@ public:
   /// Return the keyframe which is furthest apart from pos.
   FramePtr getFurthestKeyframe(const Vector3d& pos) const;
 
+  bool getKeyframeById(const int id, FramePtr& frame) const;
+
   /// Transform the whole map with rotation R, translation t and scale s.
   void transform(const Matrix3d& R, const Vector3d& t, const double& s);
 

@@ -129,9 +129,17 @@ int FrameHandlerBase::finishFrameProcessingCommon(
   }
 #endif
 
-  // reset if failure or requested
-  if(dropout == RESULT_FAILURE || set_reset_)
+  if(dropout == RESULT_FAILURE &&
+      (stage_ == STAGE_DEFAULT_FRAME || stage_ == STAGE_RELOCALIZING ))
+  {
+    stage_ = STAGE_RELOCALIZING;
+    tracking_quality_ = TRACKING_INSUFFICIENT;
+  }
+  else if (dropout == RESULT_FAILURE)
     resetAll();
+  if(set_reset_)
+    resetAll();
+
   return 0;
 }
 

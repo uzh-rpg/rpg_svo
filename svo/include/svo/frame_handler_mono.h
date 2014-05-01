@@ -50,6 +50,13 @@ public:
   /// Access the depth filter.
   DepthFilter* depthFilter() const { return depth_filter_; }
 
+  /// An external place recognition module may know where to relocalize.
+  bool relocalizeFrameAtPose(
+      const int keyframe_id,
+      const SE3& T_kf_f,
+      const cv::Mat& img,
+      const double timestamp);
+
 protected:
   vk::AbstractCamera* cam_;                     //!< Camera model, can be ATAN, Pinhole or Ocam (see vikit).
   Reprojector reprojector_;                     //!< Projects points from other keyframes into the current frame
@@ -71,6 +78,11 @@ protected:
 
   /// Processes all frames after the first two keyframes.
   virtual UpdateResult processFrame();
+
+  /// Try relocalizing the frame at relative position to provided keyframe.
+  virtual UpdateResult relocalizeFrame(
+      const SE3& T_cur_ref,
+      FramePtr ref_keyframe);
 
   /// Reset the frame handler. Implement in derived class.
   virtual void resetAll();

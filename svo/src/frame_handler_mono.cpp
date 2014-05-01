@@ -77,6 +77,9 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
     res = processSecondFrame();
   else if(stage_ == STAGE_FIRST_FRAME)
     res = processFirstFrame();
+  else if(stage_ == STAGE_RELOCALIZING)
+    res = relocalizeFrame(SE3(Matrix3d::Identity(), Vector3d::Zero()),
+                          map_.getClosestKeyframe(last_frame_));
 
   // set last frame
   last_frame_ = new_frame_;
@@ -84,15 +87,6 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
 
   // finish processing
   finishFrameProcessingCommon(last_frame_->id_, res, last_frame_->nObs());
-}
-
-void FrameHandlerMono::setFirstFrame(const FramePtr& first_frame)
-{
-  resetAll();
-  last_frame_ = first_frame;
-  last_frame_->setKeyframe();
-  map_.addKeyframe(last_frame_);
-  stage_ = STAGE_DEFAULT_FRAME;
 }
 
 FrameHandlerMono::UpdateResult FrameHandlerMono::processFirstFrame()
@@ -155,7 +149,7 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   const size_t repr_n_mps = reprojector_.n_trials_;
   SVO_LOG2(repr_n_mps, repr_n_new_references);
   SVO_DEBUG_STREAM("Reprojection:\t nPoints = "<<repr_n_mps<<"\t \t nMatches = "<<repr_n_new_references);
-  if(repr_n_new_references == 0) {
+  if(repr_n_new_references < 20) {
     SVO_ERROR_STREAM("Not enough matched features.");
     return RESULT_FAILURE;
   }
@@ -171,7 +165,7 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   SVO_LOG4(sfba_thresh, sfba_error_init, sfba_error_final, sfba_n_edges_final);
   SVO_DEBUG_STREAM("PoseOptimizer:\t ErrInit = "<<sfba_error_init<<"px\t thresh = "<<sfba_thresh);
   SVO_DEBUG_STREAM("PoseOptimizer:\t ErrFin. = "<<sfba_error_final<<"px\t nObsFin. = "<<sfba_n_edges_final);
-  if(sfba_n_edges_final < 10)
+  if(sfba_n_edges_final < 20)
     return RESULT_FAILURE;
 
   // structure optimization
@@ -235,6 +229,48 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   return RESULT_IS_KEYFRAME;
 }
 
+FrameHandlerMono::UpdateResult FrameHandlerMono::relocalizeFrame(
+    const SE3& T_cur_ref,
+    FramePtr ref_keyframe)
+{
+  SVO_WARN_STREAM_THROTTLE(0.5, "Relocalizing frame");
+  SparseImgAlign img_align(Config::kltMaxLevel(), Config::kltMinLevel(),
+                           30, SparseImgAlign::GaussNewton, false, false);
+  size_t img_align_n_tracked = img_align.run(ref_keyframe, new_frame_);
+  if(img_align_n_tracked > 30)
+  {
+    last_frame_ = ref_keyframe;
+    FrameHandlerMono::UpdateResult res = processFrame();
+    if(res != RESULT_FAILURE)
+    {
+      stage_ = STAGE_DEFAULT_FRAME;
+      SVO_INFO_STREAM("Relocalization successful.");
+    }
+    else
+      new_frame_->T_f_w_ = ref_keyframe->T_f_w_;
+    return res;
+  }
+  return RESULT_FAILURE;
+}
+
+bool FrameHandlerMono::relocalizeFrameAtPose(
+    const int keyframe_id,
+    const SE3& T_f_kf,
+    const cv::Mat& img,
+    const double timestamp)
+{
+  FramePtr ref_keyframe;
+  if(!map_.getKeyframeById(keyframe_id, ref_keyframe))
+    return false;
+  new_frame_.reset(new Frame(cam_, img.clone(), timestamp));
+  UpdateResult res = relocalizeFrame(T_f_kf, ref_keyframe);
+  if(res != RESULT_FAILURE) {
+    last_frame_ = new_frame_;
+    return true;
+  }
+  return false;
+}
+
 void FrameHandlerMono::resetAll()
 {
   resetCommon();
@@ -243,6 +279,15 @@ void FrameHandlerMono::resetAll()
   core_kfs_.clear();
   overlap_kfs_.clear();
   depth_filter_->reset();
+}
+
+void FrameHandlerMono::setFirstFrame(const FramePtr& first_frame)
+{
+  resetAll();
+  last_frame_ = first_frame;
+  last_frame_->setKeyframe();
+  map_.addKeyframe(last_frame_);
+  stage_ = STAGE_DEFAULT_FRAME;
 }
 
 bool FrameHandlerMono::needNewKf(double scene_depth_mean)

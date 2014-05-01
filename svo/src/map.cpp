@@ -155,6 +155,18 @@ FramePtr Map::getFurthestKeyframe(const Vector3d& pos) const
   return furthest_kf;
 }
 
+bool Map::getKeyframeById(const int id, FramePtr& frame) const
+{
+  bool found = false;
+  for(auto it=keyframes_.begin(), ite=keyframes_.end(); it!=ite; ++it)
+    if((*it)->id_ == id) {
+      found = true;
+      frame = *it;
+      break;
+    }
+  return found;
+}
+
 void Map::transform(const Matrix3d& R, const Vector3d& t, const double& s)
 {
   for(auto it=keyframes_.begin(), ite=keyframes_.end(); it!=ite; ++it)
