@@ -131,7 +131,7 @@ void Visualizer::publishMinimal(
           cv::line(img_rgb,
                    cv::Point2f((*it)->px[0]+3*(*it)->grad[1], (*it)->px[1]-3*(*it)->grad[0]),
                    cv::Point2f((*it)->px[0]-3*(*it)->grad[1], (*it)->px[1]+3*(*it)->grad[0]),
-                   cv::Scalar(255,255,0), 2);
+                   cv::Scalar(255,0,255), 2);
         else
           cv::rectangle(img_rgb,
                         cv::Point2f((*it)->px[0]-2, (*it)->px[1]-2),
