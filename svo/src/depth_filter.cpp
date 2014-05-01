@@ -261,6 +261,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
       Vector3d xyz_world(it->ftr->frame->T_f_w_.inverse() * (it->ftr->f * (1.0/it->mu)));
       Point* point = new Point(xyz_world, it->ftr);
       it->ftr->point = point;
+      /* FIXME it is not threadsafe to add a feature to the frame here.
       if(frame->isKeyframe())
       {
         Feature* ftr = new Feature(frame.get(), matcher_.px_cur_, matcher_.search_level_);
@@ -270,6 +271,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
         it->ftr->frame->addFeature(it->ftr);
       }
       else
+      */
       {
         seed_converged_cb_(point, it->sigma2); // put in candidate list
       }
