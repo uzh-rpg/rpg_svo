@@ -124,11 +124,21 @@ void Visualizer::publishMinimal(
     }
 
     if(img_pub_level_ == 0)
+    {
       for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it)
-        cv::rectangle(img_rgb,
-                      cv::Point2f((*it)->px[0]-2, (*it)->px[1]-2),
-                      cv::Point2f((*it)->px[0]+2, (*it)->px[1]+2),
-                      cv::Scalar(0,255,0), CV_FILLED);
+      {
+        if((*it)->type == Feature::EDGELET)
+          cv::line(img_rgb,
+                   cv::Point2f((*it)->px[0]+3*(*it)->grad[1], (*it)->px[1]-3*(*it)->grad[0]),
+                   cv::Point2f((*it)->px[0]-3*(*it)->grad[1], (*it)->px[1]+3*(*it)->grad[0]),
+                   cv::Scalar(255,255,0), 2);
+        else
+          cv::rectangle(img_rgb,
+                        cv::Point2f((*it)->px[0]-2, (*it)->px[1]-2),
+                        cv::Point2f((*it)->px[0]+2, (*it)->px[1]+2),
+                        cv::Scalar(0,255,0), CV_FILLED);
+      }
+    }
     if(img_pub_level_ == 1)
       for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it)
         cv::rectangle(img_rgb,
