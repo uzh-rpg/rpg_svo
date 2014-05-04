@@ -14,6 +14,7 @@
 
   <!-- Dependencies needed to compile this package. -->
   <build_depend>roscpp</build_depend>
+  <build_depend>cmake_modules</build_depend> <!-- for FindEigen.cmake module -->
   <build_depend>nav_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>visualization_msgs</build_depend>

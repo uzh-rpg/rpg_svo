@@ -14,7 +14,19 @@ ENDIF()
 
 # Add catkin and required ROS packages
 FIND_PACKAGE(catkin REQUIRED COMPONENTS 
-  roscpp nav_msgs std_msgs visualization_msgs sensor_msgs image_transport cv_bridge tf svo svo_msgs vikit_common vikit_ros
+  roscpp
+  cmake_modules
+  nav_msgs
+  std_msgs
+  visualization_msgs
+  sensor_msgs
+  image_transport
+  cv_bridge
+  tf
+  svo
+  svo_msgs
+  vikit_common
+  vikit_ros
 )
 
 # Add plain cmake packages 

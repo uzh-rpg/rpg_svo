@@ -49,7 +49,7 @@ ELSE()
 ENDIF()
 
 # Add catkin and required ROS packages
-FIND_PACKAGE(catkin REQUIRED COMPONENTS roscpp roslib vikit_common vikit_ros)
+FIND_PACKAGE(catkin REQUIRED COMPONENTS roscpp roslib cmake_modules vikit_common vikit_ros)
 
 # Add plain cmake packages 
 FIND_PACKAGE(G2O REQUIRED)
