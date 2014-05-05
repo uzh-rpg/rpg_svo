@@ -82,29 +82,6 @@ Matrix<double, 6, 6> SparseImgAlign::getFisherInformation()
   return I;
 }
 
-// TODO take jacobian from Frame Class!
-void frameJac(const Vector3d & xyz, Matrix<double,2,6> & J)
-{
-  const double x = xyz[0];
-  const double y = xyz[1];
-  const double z_inv = 1./xyz[2];
-  const double z_inv_2 = z_inv*z_inv;
-
-  J(0,0) = z_inv;               // 1/z
-  J(0,1) = 0.0;                 // 0
-  J(0,2) = -x*z_inv_2;          // -x/z^2
-  J(0,3) =  J(0,2)*y;           // -x*y/z^2
-  J(0,4) = 1.0 - J(0,2)*x;      // 1.0 + x^2/z^2
-  J(0,5) = -y*z_inv;            // -y/z
-
-  J(1,0) = 0.0;                 // 0
-  J(1,1) = z_inv;               // 1/z
-  J(1,2) = -y*z_inv_2;          // -y/z^2
-  J(1,3) = -1.0 + J(1,2)*y;     // -1.0 - y^2/z^2
-  J(1,4) = -J(0,3);             // x*y/^2
-  J(1,5) = x*z_inv;             // x/z
-}
-
 void SparseImgAlign::precomputeReferencePatches()
 {
   const int border = patch_halfsize_+1;
@@ -157,11 +134,11 @@ void SparseImgAlign::precomputeReferencePatches()
 
         // evaluate jacobian and cache
         Matrix<double,2,6> frame_jac;
-        frameJac(xyz_ref, frame_jac);
+        Frame::jacobian_xyz2uv(xyz_ref, frame_jac);
 
         // cache the jacobian
         jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter) =
-           - (dx*frame_jac.row(0) + dy*frame_jac.row(1))*(focal_length / (1<<level_));
+            (dx*frame_jac.row(0) + dy*frame_jac.row(1))*(focal_length / (1<<level_));
       }
     }
   }

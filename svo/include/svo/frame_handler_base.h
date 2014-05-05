@@ -112,10 +112,10 @@ protected:
   virtual void resetAll() { resetCommon(); }
 
   /// Set the tracking quality based on the number of tracked features.
-  void setTrackingQuality(const size_t num_observations);
+  virtual void setTrackingQuality(const size_t num_observations);
 
   /// Optimize some of the observed 3D points.
-  void optimizeStructure(FramePtr frame, size_t max_n_pts, int max_iter);
+  virtual void optimizeStructure(FramePtr frame, size_t max_n_pts, int max_iter);
 };
 
 } // namespace nslam

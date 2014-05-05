@@ -37,7 +37,6 @@ void optimizeGaussNewton(
 {
   // init
   double chi2(0.0);
-  Vector2d focal_length(1,1);
   vector<double> chi2_vec_init, chi2_vec_final;
   vk::robust_cost::TukeyWeightFunction weight_function;
   SE3 T_old(frame->T_f_w_);
@@ -79,9 +78,10 @@ void optimizeGaussNewton(
     {
       if((*it)->point == NULL)
         continue;
-      Matrix26d J = frameJac(frame->T_f_w_, (*it)->point->pos_, focal_length);
-      Vector2d e = vk::project2d((*it)->f)
-                 - vk::project2d(frame->T_f_w_ * (*it)->point->pos_);
+      Matrix26d J;
+      Vector3d xyz_f(frame->T_f_w_ * (*it)->point->pos_);
+      Frame::jacobian_xyz2uv(xyz_f, J);
+      Vector2d e = vk::project2d((*it)->f) - vk::project2d(xyz_f);
       double sqrt_inv_cov = 1.0 / (1<<(*it)->level);
       e *= sqrt_inv_cov;
       if(iter == 0)

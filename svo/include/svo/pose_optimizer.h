@@ -34,33 +34,6 @@ class Point;
 /// Motion-only bundle adjustment. Minimize the reprojection error of a single frame.
 namespace pose_optimizer {
 
-inline Matrix26d
-frameJac(const SE3 & T,
-         const Vector3d & xyz,
-         const Vector2d & focal_length)
-{
-  const Vector3d & xyz_trans = T*xyz;
-  double x = xyz_trans[0];
-  double y = xyz_trans[1];
-  double z = xyz_trans[2];
-  double z_2 = z*z;
-  Matrix26d frame_jac;
-  frame_jac(0,0) = -1./z *focal_length[0];
-  frame_jac(0,1) = 0;
-  frame_jac(0,2) = x/z_2 *focal_length[0];
-  frame_jac(0,3) =  x*y/z_2 * focal_length[0];
-  frame_jac(0,4) = -(1+(x*x/z_2)) *focal_length[0];
-  frame_jac(0,5) = y/z *focal_length[0];
-
-  frame_jac(1,0) = 0;
-  frame_jac(1,1) = -1./z *focal_length[1];
-  frame_jac(1,2) = y/z_2 *focal_length[1];
-  frame_jac(1,3) = (1+y*y/z_2) *focal_length[1];
-  frame_jac(1,4) = -x*y/z_2 *focal_length[1];
-  frame_jac(1,5) = -x/z *focal_length[1];
-  return frame_jac;
-}
-
 void optimizeGaussNewton(
     const double reproj_thresh,
     const size_t n_iter,

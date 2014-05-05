@@ -106,23 +106,6 @@ bool Point::getCloseViewObs(const Vector3d& framepos, Feature*& ftr) const
   return true;
 }
 
-void Point::pointJacobian(
-    const Vector3d& p_in_f,
-    const Matrix3d& R_f_w,
-    Matrix23d& point_jac) const
-{
-  // we work on the unit plane, therefore focal lenght = 1
-  const double z_inv = 1.0/p_in_f[2];
-  const double z_inv_sq = z_inv*z_inv;
-  point_jac(0, 0) = z_inv;
-  point_jac(0, 1) = 0.0;
-  point_jac(0, 2) = -p_in_f[0] * z_inv_sq;
-  point_jac(1, 0) = 0.0;
-  point_jac(1, 1) = z_inv;
-  point_jac(1, 2) = -p_in_f[1] * z_inv_sq;
-  point_jac = - point_jac * R_f_w;
-}
-
 void Point::optimize(const size_t n_iter)
 {
   Vector3d old_point = pos_;
@@ -141,7 +124,7 @@ void Point::optimize(const size_t n_iter)
     {
       Matrix23d J;
       const Vector3d p_in_f((*it)->frame->T_f_w_ * pos_);
-      pointJacobian(p_in_f, (*it)->frame->T_f_w_.rotation_matrix(), J);
+      Point::jacobian_xyz2uv(p_in_f, (*it)->frame->T_f_w_.rotation_matrix(), J);
       const Vector2d e(vk::project2d((*it)->f) - vk::project2d(p_in_f));
       new_chi2 += e.squaredNorm();
       A.noalias() += J.transpose() * J;

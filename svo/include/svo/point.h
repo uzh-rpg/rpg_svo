@@ -75,11 +75,25 @@ public:
   /// Get number of observations.
   inline size_t nRefs() const { return obs_.size(); }
 
-  /// Point jacobian w.r.t frame f.
-  void pointJacobian(const Vector3d& p_in_f, const Matrix3d& R_f_w, Matrix23d& point_jac) const;
-
   /// Optimize point position through minimizing the reprojection error.
   void optimize(const size_t n_iter);
+
+  /// Jacobian of point projection on unit plane (focal length = 1) in frame (f).
+  inline static void jacobian_xyz2uv(
+      const Vector3d& p_in_f,
+      const Matrix3d& R_f_w,
+      Matrix23d& point_jac)
+  {
+    const double z_inv = 1.0/p_in_f[2];
+    const double z_inv_sq = z_inv*z_inv;
+    point_jac(0, 0) = z_inv;
+    point_jac(0, 1) = 0.0;
+    point_jac(0, 2) = -p_in_f[0] * z_inv_sq;
+    point_jac(1, 0) = 0.0;
+    point_jac(1, 1) = z_inv;
+    point_jac(1, 2) = -p_in_f[1] * z_inv_sq;
+    point_jac = - point_jac * R_f_w;
+  }
 };
 
 } // namespace svo
