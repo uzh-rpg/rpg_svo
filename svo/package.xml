@@ -13,6 +13,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <!-- Dependencies needed to compile this package. -->
+  <build_depend>cmake_modules</build_depend> <!-- for FindEigen.cmake -->
   <build_depend>roscpp</build_depend>
   <build_depend>roslib</build_depend>
   <build_depend>vikit_common</build_depend>
