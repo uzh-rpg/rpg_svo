@@ -94,10 +94,17 @@ Clone it into your catkin workspace
     git clone https://github.com/uzh-rpg/rpg_svo.git
 
 If you installed g2o then set `HAVE_G2O` in `svo/CMakeLists.txt` to TRUE.
-Then build
+
+Install missing ros dependencies. Sometimes `cmake-modules` is missing (required for including Eigen in ROS Indigo):
+
+    sudo apt-get install ros-hydro-cmake-modules
+
+(replace `hydro` with your distribution).
+
+Finally, build:
 
     catkin_make
-
+    
 
 Run SVO on a Dataset
 -------------------------
