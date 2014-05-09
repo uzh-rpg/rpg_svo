@@ -206,12 +206,25 @@ bool Matcher::findEpipolarMatchDirect(
   // Compute start and end of epipolar line in old_kf for match search, on unit plane!
   Vector2d A = vk::project2d(T_cur_ref * (ref_ftr.f*d_min));
   Vector2d B = vk::project2d(T_cur_ref * (ref_ftr.f*d_max));
-  Vector2d epi_dir = A - B;
+  epi_dir_ = A - B;
 
   // Compute affine warp matrix
   warp::getWarpMatrixAffine(
       *ref_frame.cam_, *cur_frame.cam_, ref_ftr.px, ref_ftr.f,
       d_estimate, T_cur_ref, ref_ftr.level, A_cur_ref_);
+
+  // feature pre-selection
+  reject_ = false;
+  if(ref_ftr.type == Feature::EDGELET && options_.epi_search_edgelet_filtering)
+  {
+    const Vector2d grad_cur = (A_cur_ref_ * ref_ftr.grad).normalized();
+    const double cosangle = fabs(grad_cur.dot(epi_dir_.normalized()));
+    if(cosangle < options_.epi_search_edgelet_max_angle) {
+      reject_ = true;
+      return false;
+    }
+  }
+
   search_level_ = warp::getBestSearchLevel(A_cur_ref_, Config::nPyrLevels()-1);
 
   // Find length of search range on epipolar line
@@ -247,7 +260,7 @@ bool Matcher::findEpipolarMatchDirect(
   }
 
   size_t n_steps = epi_length_/0.7; // one step per pixel
-  Vector2d step = epi_dir/n_steps;
+  Vector2d step = epi_dir_/n_steps;
 
   if(n_steps > options_.max_epi_search_steps)
   {

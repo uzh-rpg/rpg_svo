@@ -76,21 +76,27 @@ public:
     double max_epi_length_optim;//!< max length of epipolar line to skip epipolar search and directly go to img align
     size_t max_epi_search_steps;//!< max number of evaluations along epipolar line
     bool subpix_refinement;     //!< do gauss newton feature patch alignment after epipolar search
+    bool epi_search_edgelet_filtering;
+    double epi_search_edgelet_max_angle;
     Options() :
       align_1d(false),
       align_max_iter(10),
       max_epi_length_optim(2.0),
       max_epi_search_steps(1000),
-      subpix_refinement(true)
+      subpix_refinement(true),
+      epi_search_edgelet_filtering(true),
+      epi_search_edgelet_max_angle(0.7)
     {}
   } options_;
 
   uint8_t* patch_;
   uint8_t* patch_with_border_;
   Matrix2d A_cur_ref_;          //!< affine warp matrix
+  Vector2d epi_dir_;
   double epi_length_;           //!< length of epipolar line segment in pixels (only used for epipolar search)
   double h_inv_;                //!< hessian of 1d image alignment along epipolar line
   int search_level_;
+  bool reject_;
   Feature* ref_ftr_;
   Vector2d px_cur_;
 
