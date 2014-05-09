@@ -60,7 +60,6 @@ size_t SparseImgAlign::run(FramePtr ref_frame, FramePtr cur_frame)
 
   for(level_=max_level_; level_>=min_level_; --level_)
   {
-    setInitialChi2(1.0);
     mu_ = 0.1;
     jacobian_cache_.setZero();
     have_ref_patch_cache_ = false;
@@ -227,8 +226,8 @@ double SparseImgAlign::computeResiduals(
         {
           // compute Jacobian, weighted Hessian and weighted "steepest descend images" (times error)
           const Vector6d J(jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter));
-          H_ += J*J.transpose()*weight;
-          Jres_ -= J*res*weight;
+          H_.noalias() += J*J.transpose()*weight;
+          Jres_.noalias() -= J*res*weight;
           if(display_)
             resimg_.at<float>((int) v_cur+y-patch_halfsize_, (int) u_cur+x-patch_halfsize_) = res/255.0;
         }

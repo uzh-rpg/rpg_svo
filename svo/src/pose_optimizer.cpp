@@ -138,7 +138,7 @@ void optimizeGaussNewton(
     chi2_vec_final.push_back(e.squaredNorm());
     if(e.norm() > reproj_thresh_scaled)
     {
-      // (*it)->point->deleteFrameRef(frame);
+      // we don't need to delete a reference in the point since it was not created yet
       (*it)->point = NULL;
       ++n_deleted_refs;
     }
