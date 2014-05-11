@@ -45,7 +45,7 @@ public:
   static int                  point_counter_;           //!< Counts the number of created points. Used to set the unique id.
   int                         id_;                      //!< Unique ID of the point.
   Vector3d                    pos_;                     //!< 3d pos of the point in the world coordinate frame.
-  Vector3d                    normal_;                  //!< Normal of the point
+  Matrix3d                    R_w_p_;                   //!< Orientation of surface patch. Z-axis is the normal. Rotation from (p)oint frame to (w)orld frame.
   list<Feature*>              obs_;                     //!< References to keyframes which observe the point.
   size_t                      n_obs_;                   //!< Number of obervations: Keyframes AND successful reprojections in intermediate frames.
   g2oPoint*                   v_pt_;                    //!< Temporary pointer to the point-vertex in g2o during bundle adjustment.
