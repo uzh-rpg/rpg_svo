@@ -27,6 +27,7 @@ int Point::point_counter_ = 0;
 Point::Point(const Vector3d& pos) :
   id_(point_counter_++),
   pos_(pos),
+  normal_set_(false),
   n_obs_(0),
   v_pt_(NULL),
   last_published_ts_(0),
@@ -40,6 +41,7 @@ Point::Point(const Vector3d& pos) :
 Point::Point(const Vector3d& pos, Feature* ftr) :
   id_(point_counter_++),
   pos_(pos),
+  normal_set_(false),
   n_obs_(1),
   v_pt_(NULL),
   last_published_ts_(0),
@@ -80,6 +82,15 @@ bool Point::deleteFrameRef(Frame* frame)
     }
   }
   return false;
+}
+
+void Point::initNormal()
+{
+  assert(!obs_.empty());
+  const Feature* ftr = obs_.back();
+  assert(ftr->frame != NULL);
+  normal_ = ftr->frame->T_f_w_.rotation_matrix().transpose()*(-ftr->f);
+  normal_set_ = true;
 }
 
 bool Point::getCloseViewObs(const Vector3d& framepos, Feature*& ftr) const
