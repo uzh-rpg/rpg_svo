@@ -1,0 +1,14 @@
+comparison_name: speed
+experiment_sets:
+- label: 'old'
+  experiments:
+  - 20140415_1028_svo_ros_synthetic_speed_1404150920_plane_straight_speed4
+  - 20140415_1028_svo_ros_synthetic_speed_1404150928_plane_straight_speed5
+  - 20140415_1028_svo_ros_synthetic_speed_1404150935_plane_straight_speed6
+  - 20140415_1028_svo_ros_synthetic_speed_1404150940_plane_straight_speed7
+- label: 'new'
+  experiments:
+  - 20140513_0949_svo_ros_synthetic_speed_1404150920_plane_straight_speed4
+  - 20140513_0949_svo_ros_synthetic_speed_1404150928_plane_straight_speed5
+  - 20140513_0949_svo_ros_synthetic_speed_1404150935_plane_straight_speed6
+  - 20140513_0949_svo_ros_synthetic_speed_1404150940_plane_straight_speed7

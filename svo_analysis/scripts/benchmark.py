@@ -51,7 +51,7 @@ def run_experiment(dataset, params):
     
     # copy the groundtruth trajectory to the trace dir for later evaluation
     if params['dataset_is_blender']:
-        shutil.copyfile(os.path.join(params['dataset_directory'], 'trajectory.txt'),
+        shutil.copyfile(os.path.join(params['dataset_directory'], 'trajectory_nominal.txt'),
                         os.path.join(params['trace_dir'], 'groundtruth_matched.txt'))
     else:
         shutil.copyfile(os.path.join(params['dataset_directory'], 'groundtruth_matched.txt'),
