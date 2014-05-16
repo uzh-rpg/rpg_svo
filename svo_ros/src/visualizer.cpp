@@ -41,7 +41,7 @@ Visualizer::
 Visualizer() :
     pnh_("~"),
     trace_id_(0),
-    img_pub_level_(vk::getParam<int>("svo/image_publishing_level", 0)),
+    img_pub_level_(vk::getParam<int>("svo/publish_img_pyr_level", 0)),
     img_pub_nth_(vk::getParam<int>("svo/publish_every_nth_img", 1)),
     dense_pub_nth_(vk::getParam<int>("svo/publish_every_nth_dense_input", 1)),
     publish_world_in_cam_frame_(vk::getParam<bool>("svo/publish_world_in_cam_frame", true)),
