@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import yaml
 import argparse
+import svo_analysis.analyse_depth as analyse_depth
 from matplotlib import rc
 
 # tell matplotlib to use latex font
@@ -43,6 +44,7 @@ def compare_results(comp_params, results_dir, comparison_dir):
     print('run comparison: '+comp_params['comparison_name'])
            
     line_styles = ['-','--',':']
+    line_colors = ['b','g','r','m','c']
     
     # -------------------------------------------------------------------------
     # plot trajectory:
@@ -57,9 +59,8 @@ def compare_results(comp_params, results_dir, comparison_dir):
                 base_plot, = ax.plot(data[:,1], data[:,2], label=exp_set['label'], linestyle=line_styles[np.mod(i, len(line_styles))])
             else:
                 ax.plot(data[:,1], data[:,2], color=base_plot.get_color(), linestyle= line_styles[np.mod(i, len(line_styles))])
-    ax.legend(loc='upper left', ncol=2)
+    ax.legend(loc='upper left', ncol=3)
     save_figure(fig, 'trajectory', comparison_dir)
-    
     
     # -------------------------------------------------------------------------
     # plot translation error:
@@ -93,8 +94,27 @@ def compare_results(comp_params, results_dir, comparison_dir):
             else:
                 ax.plot(distances, e*1000, color=base_plot.get_color(), linestyle= line_styles[np.mod(i, len(line_styles))])
                 
-    ax.legend(loc='upper left', ncol=2)
+    ax.legend(loc='upper left', ncol=3)
     save_figure(fig, 'translation_error', comparison_dir)
+    
+    # -------------------------------------------------------------------------
+    # plot depth estimation error:
+    fig = plt.figure(figsize=(6,5))
+    ax = fig.add_subplot(111, xlabel='Error [m]', ylabel='Precision [\%]')
+    for k, exp_set in enumerate(comp_params['experiment_sets']):
+        print('plot depth error for experiment: ' + exp_set['label'])
+        
+        for i, exp in enumerate(exp_set['experiments']):
+            
+            D = np.loadtxt(os.path.join(results_dir, exp, 'depth_error.txt'), delimiter=' ')
+            D = D[np.logical_and(D[:,0] > 1, D[:,0] < D[-1,0]/4),:]
+            errors = np.abs(D[:,1])
+            if i == 0:
+                base_plot = analyse_depth.precision_plot(ax, errors, 0.05, line_colors[k], line_styles[np.mod(i, len(line_styles))])
+            else: 
+                base_plot = analyse_depth.precision_plot(ax, errors, 0.05, base_plot.get_color(), line_styles[np.mod(i, len(line_styles))])
+                
+    save_figure(fig, 'depth_error', comparison_dir)
   
 if __name__ == '__main__':
   

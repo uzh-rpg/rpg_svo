@@ -100,7 +100,7 @@ def analyse_trajectory(results_dir, n_align_frames = 200, use_hand_eye_calib = T
         ax = fig.add_subplot(111, title='trajectory', aspect='equal', xlabel='x [m]', ylabel='y [m]')
         ax.plot(p_es_aligned[:,0], p_es_aligned[:,1], 'b-', label='estimate')
         ax.plot(p_gt[:,0], p_gt[:,1], 'r-', label='groundtruth')
-        #ax.plot(p_es_aligned[0:n_align_frames,0], p_es_aligned[0:n_align_frames,1], 'g-', linewidth=2, label='aligned')
+        ax.plot(p_es_aligned[0:n_align_frames,0], p_es_aligned[0:n_align_frames,1], 'g-', linewidth=2, label='aligned')
         ax.legend()
         fig.tight_layout()
         fig.savefig(results_dir+'/trajectory.pdf')

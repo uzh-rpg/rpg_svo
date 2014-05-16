@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import yaml
 import numpy as np
 import matplotlib.pyplot as plt
   
@@ -10,10 +11,7 @@ def analyse_logs(D, trace_dir):
   is_kf = np.argwhere( (D['dropout'] == 1) & (D['repr_n_mps'] >= 0))
   is_frame = np.argwhere(D['repr_n_mps'] >= 0)
   is_nokf = np.argwhere( (D['dropout'] == 0) & (D['repr_n_mps'] >= 0))
-  n_frames = len(is_frame)
-  n_kfs = len(is_kf)
-  n_nokf = len(is_nokf)
-  
+   
   # set initial time to zero
   D['timestamp'] = D['timestamp'] - D['timestamp'][0]
   
@@ -65,4 +63,12 @@ def analyse_logs(D, trace_dir):
   ax.plot(D['timestamp'][is_frame], D['sfba_thresh'][is_frame], 'r-', label='Threshold')
   fig.tight_layout()
   fig.savefig(os.path.join(trace_dir,'optimization_thresh.pdf'), bbox_inches="tight")
+  
+  # ----------------------------------------------------------------------------
+  # write other statistics to file
+  stat = {'num_frames': len(is_frame), 
+          'num_kfs': len(is_kf),
+          'reproj_error_avg_improvement': float(init_error_avg - opt1_avg)}
+  with open(os.path.join(trace_dir,'dataset_stats.yaml'),'w') as outfile:          
+    outfile.write(yaml.dump(stat, default_flow_style=False))
 
