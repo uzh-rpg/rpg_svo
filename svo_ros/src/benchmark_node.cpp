@@ -119,9 +119,9 @@ void BenchmarkNode::traceDepthError(const FramePtr& frame, const cv::Mat& depthm
     if(ftr->point != NULL)
     {
       double depth_estimated = (ftr->point->pos_-frame->pos()).norm();
-      double depth_measured = depthmap.at<float>((int) ftr->px[1], (int) ftr->px[0]);
+      double depth_true = depthmap.at<float>((int) ftr->px[1], (int) ftr->px[0]);
       trace_depth_error_ << frame->id_ << " "
-                         << depth_estimated-depth_estimated << std::endl;
+                         << depth_estimated-depth_true << std::endl;
     }
   });
 }
