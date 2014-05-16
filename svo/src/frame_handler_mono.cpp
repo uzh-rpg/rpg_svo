@@ -174,6 +174,7 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   SVO_STOP_TIMER("point_optimizer");
 
   // select keyframe
+  core_kfs_.insert(new_frame_);
   setTrackingQuality(sfba_n_edges_final);
   if(tracking_quality_ == TRACKING_INSUFFICIENT)
     return RESULT_FAILURE;
@@ -194,7 +195,6 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   map_.point_candidates_.addCandidatePointToFrame(new_frame_);
 
   // optional bundle adjustment
-  core_kfs_.insert(new_frame_);
 #ifdef USE_BUNDLE_ADJUSTMENT
   if(Config::lobaNumIter() > 0)
   {

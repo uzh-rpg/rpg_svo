@@ -44,8 +44,10 @@ Visualizer() :
     img_pub_level_(vk::getParam<int>("svo/image_publishing_level", 0)),
     img_pub_nth_(vk::getParam<int>("svo/publish_every_nth_img", 1)),
     dense_pub_nth_(vk::getParam<int>("svo/publish_every_nth_dense_input", 1)),
-    T_world_from_vision_(Matrix3d::Identity(), Vector3d::Zero()),
-    publish_world_in_cam_frame_(vk::getParam<bool>("svo/publish_world_in_cam_frame", true))
+    publish_world_in_cam_frame_(vk::getParam<bool>("svo/publish_world_in_cam_frame", true)),
+    publish_map_every_frame_(vk::getParam<bool>("svo/publish_map_every_frame", false)),
+    publish_points_display_time_(vk::getParam<double>("svo/publish_point_display_time", 0)),
+    T_world_from_vision_(Matrix3d::Identity(), Vector3d::Zero())
 {
   // Init ROS Marker Publishers
   pub_frames_ = pnh_.advertise<visualization_msgs::Marker>("keyframes", 10);
@@ -89,7 +91,7 @@ void Visualizer::publishMinimal(
     pub_info_.publish(msg_info);
   }
 
-  if(frame == 0)
+  if(frame == NULL)
   {
     if(pub_images_.getNumSubscribers() > 0 && slam.stage() == FrameHandlerBase::STAGE_PAUSED)
     {
@@ -200,22 +202,24 @@ void Visualizer::visualizeMarkers(
     const set<FramePtr>& core_kfs,
     const Map& map)
 {
-  if(frame != NULL)
+  if(frame == NULL)
+    return;
+
+  vk::output_helper::publishTfTransform(
+      frame->T_f_w_*T_world_from_vision_.inverse(),
+      ros::Time(frame->timestamp_), "cam_pos", "world", br_);
+
+  if(pub_frames_.getNumSubscribers() > 0 || pub_points_.getNumSubscribers() > 0)
   {
-    vk::output_helper::publishTfTransform(
-        frame->T_f_w_*T_world_from_vision_.inverse(),
-        ros::Time(frame->timestamp_), "cam_pos", "world", br_);
-    if(pub_frames_.getNumSubscribers() > 0 || pub_points_.getNumSubscribers() > 0)
-    {
-      vk::output_helper::publishHexacopterMarker(
-          pub_frames_, "cam_pos", "cams", ros::Time(frame->timestamp_),
-          1, 0, 0.3, Vector3d(0.,0.,1.));
-      vk::output_helper::publishPointMarker(
-          pub_points_, T_world_from_vision_*frame->pos(), "trajectory",
-          ros::Time::now(), trace_id_, 0, 0.006, Vector3d(0.,0.,0.5));
+    vk::output_helper::publishHexacopterMarker(
+        pub_frames_, "cam_pos", "cams", ros::Time(frame->timestamp_),
+        1, 0, 0.3, Vector3d(0.,0.,1.));
+    vk::output_helper::publishPointMarker(
+        pub_points_, T_world_from_vision_*frame->pos(), "trajectory",
+        ros::Time::now(), trace_id_, 0, 0.006, Vector3d(0.,0.,0.5));
+    if(frame->isKeyframe() || publish_map_every_frame_)
       publishMapRegion(core_kfs);
-      removeDeletedPts(map);
-    }
+    removeDeletedPts(map);
   }
 }
 
@@ -257,7 +261,8 @@ void Visualizer::displayKeyframeWithMps(const FramePtr& frame, int ts)
 
     vk::output_helper::publishPointMarker(
         pub_points_, T_world_from_vision_*(*it)->point->pos_, "pts",
-        ros::Time::now(), (*it)->point->id_, 0, 0.005, Vector3d(1.0, 0., 1.0));
+        ros::Time::now(), (*it)->point->id_, 0, 0.005, Vector3d(1.0, 0., 1.0),
+        publish_points_display_time_);
     (*it)->point->last_published_ts_ = ts;
   }
 }

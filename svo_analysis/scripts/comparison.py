@@ -42,6 +42,7 @@ def distances_along_trajectory(traj):
 def compare_results(comp_params, results_dir, comparison_dir):
     print('run comparison: '+comp_params['comparison_name'])
            
+    line_styles = ['-','--',':']
     
     # -------------------------------------------------------------------------
     # plot trajectory:
@@ -53,10 +54,10 @@ def compare_results(comp_params, results_dir, comparison_dir):
         for i, exp in enumerate(exp_set['experiments']):
             data = np.loadtxt(os.path.join(results_dir, exp, 'traj_estimate.txt'))
             if i == 0:
-                base_plot, = ax.plot(data[:,1], data[:,2], label=exp_set['label'])
+                base_plot, = ax.plot(data[:,1], data[:,2], label=exp_set['label'], linestyle=line_styles[np.mod(i, len(line_styles))])
             else:
-                ax.plot(data[:,1], data[:,2], color=base_plot.get_color())
-    ax.legend(loc='upper left')
+                ax.plot(data[:,1], data[:,2], color=base_plot.get_color(), linestyle= line_styles[np.mod(i, len(line_styles))])
+    ax.legend(loc='upper left', ncol=2)
     save_figure(fig, 'trajectory', comparison_dir)
     
     
@@ -81,15 +82,18 @@ def compare_results(comp_params, results_dir, comparison_dir):
                       +str(np.shape(e)[0]-np.shape(distances)[0]))
                 e = e[0:np.shape(distances)[0]]
                 
-            distances = distances[0:np.shape(e)[0]+1]
-           
+            distances = distances[0:np.shape(e)[0]]
+            
+            print '--'
+            print np.shape(e)
+            print np.shape(distances)
             
             if i == 0:
-                base_plot, = ax.plot(distances, e*1000, label=exp_set['label'])
+                base_plot, = ax.plot(distances, e*1000, label=exp_set['label'], linestyle= line_styles[np.mod(i, len(line_styles))])
             else:
-                ax.plot(distances, e*1000, color=base_plot.get_color())
+                ax.plot(distances, e*1000, color=base_plot.get_color(), linestyle= line_styles[np.mod(i, len(line_styles))])
                 
-    ax.legend(loc='upper left')
+    ax.legend(loc='upper left', ncol=2)
     save_figure(fig, 'translation_error', comparison_dir)
   
 if __name__ == '__main__':

@@ -46,6 +46,7 @@ class BenchmarkNode
   std::ofstream trace_est_pose_;
   std::ofstream trace_trans_error_;
   std::ofstream trace_rot_error_;
+  std::ofstream trace_depth_error_;
   vk::AbstractCamera* cam_;
 
 public:
@@ -53,6 +54,7 @@ public:
   ~BenchmarkNode();
   void tracePose(const SE3& T_w_f, const double timestamp);
   void tracePoseError(const SE3& T_f_gt, const double timestamp);
+  void traceDepthError(const FramePtr& frame, const cv::Mat& depthmap);
   void runBenchmark(const std::string& dataset_dir);
   void runBlenderBenchmark(const std::string& dataset_dir);
 };
@@ -91,7 +93,7 @@ void BenchmarkNode::tracePose(const SE3& T_w_f, const double timestamp)
   trace_est_pose_ << timestamp << " ";
   trace_est_pose_.precision(6);
   trace_est_pose_ << p.x() << " " << p.y() << " " << p.z() << " "
-                  << q.x() << " " << q.y() << " " << q.z() << " " << q.w() << endl;
+                  << q.x() << " " << q.y() << " " << q.z() << " " << q.w() << std::endl;
 }
 
 void BenchmarkNode::tracePoseError(const SE3& T_f_gt, const double timestamp)
@@ -101,13 +103,27 @@ void BenchmarkNode::tracePoseError(const SE3& T_f_gt, const double timestamp)
   trace_trans_error_.setf(std::ios::fixed, std::ios::floatfield );
   trace_trans_error_ << timestamp << " ";
   trace_trans_error_.precision(6);
-  trace_trans_error_ << et.x() << " " << et.y() << " " << et.z() << " " << endl;
+  trace_trans_error_ << et.x() << " " << et.y() << " " << et.z() << " " << std::endl;
   Vector3d er(vk::dcm2rpy(T_f_gt.rotation_matrix())); // rotation error in roll-pitch-yaw
   trace_rot_error_.precision(15);
   trace_rot_error_.setf(std::ios::fixed, std::ios::floatfield );
   trace_rot_error_ << timestamp << " ";
   trace_rot_error_.precision(6);
-  trace_rot_error_ << er.x() << " " << er.y() << " " << er.z() << " " << endl;
+  trace_rot_error_ << er.x() << " " << er.y() << " " << er.z() << " " << std::endl;
+}
+
+void BenchmarkNode::traceDepthError(const FramePtr& frame, const cv::Mat& depthmap)
+{
+  trace_depth_error_.precision(6);
+  std::for_each(frame->fts_.begin(), frame->fts_.end(), [&](Feature* ftr){
+    if(ftr->point != NULL)
+    {
+      double depth_estimated = (ftr->point->pos_-frame->pos()).norm();
+      double depth_measured = depthmap.at<float>((int) ftr->px[1], (int) ftr->px[0]);
+      trace_depth_error_ << frame->id_ << " "
+                         << depth_estimated-depth_estimated << std::endl;
+    }
+  });
 }
 
 void BenchmarkNode::runBenchmark(const std::string& dataset_dir)
@@ -156,23 +172,26 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
   std::vector<vk::blender_utils::file_format::ImageNameAndPose> dataset;
   dataset_reader.readAllEntries(dataset);
 
+  // create tracefiles
   trace_trans_error_.open(Config::traceDir() + "/translation_error.txt");
   trace_rot_error_.open(Config::traceDir() + "/orientation_error.txt");
-  if(trace_trans_error_.fail() || trace_rot_error_.fail())
+  trace_depth_error_.open(Config::traceDir() + "/depth_error.txt");
+  if(trace_trans_error_.fail() || trace_rot_error_.fail() || trace_depth_error_.fail())
     throw std::runtime_error("Could not create tracefile. Does folder exist?");
 
   // process dataset
   for(auto it = dataset.begin(); it != dataset.end() && ros::ok(); ++it, ++frame_count_)
   {
-    // Read image
+    // Read image, ground-truth depth-map and ground-truth pose
     std::string img_filename(dataset_dir + "/img/" + it->image_name_ + "_0.png");
     cv::Mat img(cv::imread(img_filename, 0));
     if(img.empty()) {
       SVO_ERROR_STREAM("Reading image "<<img_filename<<" failed.");
       return;
     }
-
-    // Read ground-truth pose
+    cv::Mat depthmap;
+    vk::blender_utils::loadBlenderDepthmap(
+        dataset_dir+"/depth/"+it->image_name_+"_0.depth", *cam_, depthmap);
     Sophus::SE3 T_w_gt(it->q_, it->t_);
 
     // Set reference frame with depth
@@ -181,11 +200,6 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
       // set reference frame at ground-truth pose
       FramePtr frame_ref(new Frame(cam_, img, it->timestamp_));
       frame_ref->T_f_w_ = T_w_gt.inverse();
-
-      // load ground-truth depth
-      cv::Mat depthmap;
-      vk::blender_utils::loadBlenderDepthmap(
-          dataset_dir+"/depth/"+it->image_name_+"_0.depth", *cam_, depthmap);
 
       // extract features, generate features with 3D points
       svo::feature_detection::FastDetector detector(
@@ -219,6 +233,7 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
     Sophus::SE3 T_f_gt(vo_->lastFrame()->T_f_w_*T_w_gt);
     tracePoseError(T_f_gt, it->timestamp_);
     tracePose(vo_->lastFrame()->T_f_w_.inverse(), it->timestamp_);
+    traceDepthError(vo_->lastFrame(), depthmap);
   }
 }
 
