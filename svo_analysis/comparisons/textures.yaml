@@ -1,0 +1,22 @@
+comparison_name: textures
+experiment_sets:
+- label: 'T1'
+  experiments:
+  - 20140516_1449_svo_ros_synthetic_all_str_tex1_h1_v6_d
+  - 20140516_1449_svo_ros_synthetic_all_str_tex1_h1_v9_d
+  - 20140516_1449_svo_ros_synthetic_all_str_tex1_h1_v12_d
+- label: 'T2'
+  experiments:
+  - 20140516_1449_svo_ros_synthetic_all_str_tex2_h1_v6_d
+  - 20140516_1449_svo_ros_synthetic_all_str_tex2_h1_v9_d
+  - 20140516_1449_svo_ros_synthetic_all_str_tex2_h1_v12_d
+- label: 'T3'
+  experiments:
+  - 20140516_1449_svo_ros_synthetic_all_str_tex3_h1_v6_d
+  - 20140516_1449_svo_ros_synthetic_all_str_tex3_h1_v9_d
+  - 20140516_1449_svo_ros_synthetic_all_str_tex3_h1_v12_d
+# - label: 'T4'
+#   experiments:
+#   - 20140516_1449_svo_ros_synthetic_all_str_tex4_h1_v6_d
+#   - 20140516_1449_svo_ros_synthetic_all_str_tex4_h1_v9_d
+#   - 20140516_1449_svo_ros_synthetic_all_str_tex4_h1_v12_d
