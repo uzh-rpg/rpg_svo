@@ -1,13 +1,9 @@
 #!/usr/bin/python
 
 import os
-import yaml
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
-import svo_analysis.tum_benchmark_tools.associate as associate
-import vikit_py.transformations as transformations
-import vikit_py.align_trajectory as align_trajectory
 from matplotlib import rc
 
 rc('font',**{'family':'serif','serif':['Cardo']})
