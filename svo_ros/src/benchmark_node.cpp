@@ -26,6 +26,7 @@
 #include <vikit/camera_loader.h>
 #include <vikit/abstract_camera.h>
 #include <vikit/blender_utils.h>
+#include <vikit/sample.h>
 #include <svo/config.h>
 #include <svo/frame.h>
 #include <svo/feature.h>
@@ -48,6 +49,7 @@ class BenchmarkNode
   std::ofstream trace_rot_error_;
   std::ofstream trace_depth_error_;
   vk::AbstractCamera* cam_;
+  double img_noise_sigma_;
 
 public:
   BenchmarkNode(ros::NodeHandle& nh);
@@ -55,13 +57,15 @@ public:
   void tracePose(const SE3& T_w_f, const double timestamp);
   void tracePoseError(const SE3& T_f_gt, const double timestamp);
   void traceDepthError(const FramePtr& frame, const cv::Mat& depthmap);
+  void addNoiseToImage(cv::Mat& img, double sigma);
   void runBenchmark(const std::string& dataset_dir);
   void runBlenderBenchmark(const std::string& dataset_dir);
 };
 
 BenchmarkNode::BenchmarkNode(ros::NodeHandle& nh) :
     vo_(NULL),
-    frame_count_(0)
+    frame_count_(0),
+    img_noise_sigma_(vk::getParam<double>("svo/dataset_noise_sigma", 0.0))
 {
   // Create Camera
   if(!vk::camera_loader::loadFromRosNs("svo", cam_))
@@ -159,6 +163,18 @@ void BenchmarkNode::runBenchmark(const std::string& dataset_dir)
   }
 }
 
+void BenchmarkNode::addNoiseToImage(cv::Mat& img, double sigma)
+{
+  uint8_t* p = (uint8_t*) img.data;
+  uint8_t* p_end = img.ptr<uint8_t>(img.rows, img.cols);
+  while(p != p_end)
+  {
+    int val = *p + vk::Sample::gaussian(sigma) + 0.5;
+    *p = std::max(std::min(val, 255), 0);
+    ++p;
+  }
+}
+
 void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
 {
   // create image reader and load dataset
@@ -189,6 +205,8 @@ void BenchmarkNode::runBlenderBenchmark(const std::string& dataset_dir)
       SVO_ERROR_STREAM("Reading image "<<img_filename<<" failed.");
       return;
     }
+    if(img_noise_sigma_ > 0)
+      addNoiseToImage(img, img_noise_sigma_);
     cv::Mat depthmap;
     vk::blender_utils::loadBlenderDepthmap(
         dataset_dir+"/depth/"+it->image_name_+"_0.depth", *cam_, depthmap);
