@@ -32,33 +32,35 @@ def analyse_depth(results_dir):
     fig.tight_layout()
     fig.savefig(os.path.join(results_dir,'depth_error.pdf'), bbox_inches="tight")
     
-def analyse_depth_over_time(results_dir):
+
+def plot_depth_over_time(results_dir, ax, x_axis_data, color, label=''):
     D = np.loadtxt(os.path.join(results_dir, 'depth_error.txt'), delimiter=' ')
     D = D[D[:,0] > 1,:]
-
-    fig = plt.figure(figsize=(6,5))
-    ax = fig.add_subplot(111, xlabel='Measurement', ylabel='Scale-Drift')
-    
     idxs = np.unique(D[:,0])
-    percentile_20 = np.zeros(len(idxs))
+    percentile_10 = np.zeros(len(idxs))
     percentile_50 = np.zeros(len(idxs))
-    percentile_80 = np.zeros(len(idxs))
+    percentile_90 = np.zeros(len(idxs))
     for i in range(len(idxs)):
         errors = np.abs(D[D[:,0]==idxs[i],1])
-        percentile_20[i] = np.percentile(errors, 20)
+        percentile_10[i] = np.percentile(errors, 10)
         percentile_50[i] = np.percentile(errors, 50)
-        percentile_80[i] = np.percentile(errors, 80)
-
-    base_plot, = ax.plot(idxs, percentile_50, linewidth=2)
-    ax.fill_between(idxs, percentile_20, percentile_80, alpha=0.25, color=base_plot.get_color())
-    fig.tight_layout()
-    fig.savefig(os.path.join(results_dir,'scale_drift.pdf'), bbox_inches="tight")
-    
-    
-        
+        percentile_90[i] = np.percentile(errors, 90)
+    if len(x_axis_data) == 0:
+        x_axis_data = idxs
+    print np.shape(x_axis_data)
+    print np.shape(idxs)
+    print '--'
+    ax.plot(x_axis_data, percentile_50, linewidth=2, color=color, label=label)
+    ax.plot(x_axis_data, percentile_10, linewidth=0.5, color=color, alpha=0.5)
+    ax.plot(x_axis_data, percentile_90, linewidth=0.5, color=color, alpha=0.5)
+    ax.fill_between(x_axis_data, percentile_10, percentile_90, color=color, alpha=0.1)
+     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Analyse depth estimate')
     parser.add_argument('results_dir', help='folder with the results')
     args = parser.parse_args()
     analyse_depth(args.results_dir)
-    analyse_depth_over_time(args.results_dir)
+    
+    fig = plt.figure(figsize=(6,5))
+    ax = fig.add_subplot(111, xlabel='Measurement', ylabel='Scale-Drift')
+    plot_depth_over_time(args.results_dir, [], ax)

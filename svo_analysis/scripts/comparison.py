@@ -40,6 +40,13 @@ def distances_along_trajectory(traj):
         distances.append(sum)
     return distances
     
+def get_distance_from_start(gt):
+    distances = np.diff(gt[:,1:4],axis=0)
+    distances = np.sqrt(np.sum(np.multiply(distances,distances),1))
+    distances = np.cumsum(distances)
+    distances = np.concatenate(([0], distances))
+    return distances
+    
 def compare_results(comp_params, results_dir, comparison_dir):
     print('run comparison: '+comp_params['comparison_name'])
            
@@ -71,10 +78,7 @@ def compare_results(comp_params, results_dir, comparison_dir):
         
         for i, exp in enumerate(exp_set['experiments']):
             gt = np.loadtxt(os.path.join(results_dir, exp, 'groundtruth_matched.txt'))
-            distances = np.diff(gt[:,1:4],axis=0)
-            distances = np.sqrt(np.sum(np.multiply(distances,distances),1))
-            distances = np.cumsum(distances)
-            distances = np.concatenate(([0], distances))
+            distances = get_distance_from_start(gt)
             data = np.loadtxt(os.path.join(results_dir, exp, 'translation_error.txt'))
             e = np.sqrt(np.sum(np.multiply(data[:,1:4],data[:,1:4]),1))
             
@@ -100,21 +104,30 @@ def compare_results(comp_params, results_dir, comparison_dir):
     # -------------------------------------------------------------------------
     # plot depth estimation error:
     fig = plt.figure(figsize=(6,5))
-    ax = fig.add_subplot(111, xlabel='Error [m]', ylabel='Precision [\%]')
+    ax = fig.add_subplot(111, xlabel='Travelled distance [m]', ylabel='Error [m]')
     for k, exp_set in enumerate(comp_params['experiment_sets']):
-        print('plot depth error for experiment: ' + exp_set['label'])
-        
-        for i, exp in enumerate(exp_set['experiments']):
-            
-            D = np.loadtxt(os.path.join(results_dir, exp, 'depth_error.txt'), delimiter=' ')
-            D = D[np.logical_and(D[:,0] > 1, D[:,0] < D[-1,0]/4),:]
-            errors = np.abs(D[:,1])
-            if i == 0:
-                base_plot = analyse_depth.precision_plot(ax, errors, 0.05, line_colors[k], line_styles[np.mod(i, len(line_styles))])
-            else: 
-                base_plot = analyse_depth.precision_plot(ax, errors, 0.05, base_plot.get_color(), line_styles[np.mod(i, len(line_styles))])
-                
-    save_figure(fig, 'depth_error', comparison_dir)
+        print('plot depth error for experiment: ' + exp)
+        exp = exp_set['experiments'][0]
+        gt = np.loadtxt(os.path.join(results_dir, exp, 'groundtruth_matched.txt'))
+        x_axis_data = get_distance_from_start(gt)
+        analyse_depth.plot_depth_over_time(os.path.join(results_dir, exp), ax,
+                                           x_axis_data[1:], line_colors[k], exp_set['label'])
+        ax.legend(loc='upper left', ncol=3)
+    save_figure(fig, 'depth_error_textures', comparison_dir)
+    
+    fig = plt.figure(figsize=(6,5))
+    ax = fig.add_subplot(111, xlabel='Travelled distance [m]', ylabel='Error [m]')
+    exp_set = comp_params['experiment_sets'][0]
+    for i, exp in enumerate(exp_set['experiments']):
+        print('plot depth error for speed: ' + exp)
+        gt = np.loadtxt(os.path.join(results_dir, exp, 'groundtruth_matched.txt'))
+        x_axis_data = get_distance_from_start(gt)
+        params = yaml.load(open(os.path.join(results_dir, exp, 'dataset_params.yaml')))
+        analyse_depth.plot_depth_over_time(os.path.join(results_dir, exp), ax,
+                                           x_axis_data[1:], line_colors[i],
+                                           str(params['trajectory_modifiers']['speed'])+' m/s')
+    ax.legend(loc='upper left', ncol=3)
+    save_figure(fig, 'depth_error_speed', comparison_dir)
   
 if __name__ == '__main__':
   
