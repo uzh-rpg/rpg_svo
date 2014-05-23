@@ -149,8 +149,11 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   const size_t repr_n_mps = reprojector_.n_trials_;
   SVO_LOG2(repr_n_mps, repr_n_new_references);
   SVO_DEBUG_STREAM("Reprojection:\t nPoints = "<<repr_n_mps<<"\t \t nMatches = "<<repr_n_new_references);
-  if(repr_n_new_references < 20) {
-    SVO_ERROR_STREAM("Not enough matched features.");
+  if(repr_n_new_references < Config::qualityMinFts())
+  {
+    SVO_WARN_STREAM_THROTTLE(1.0, "Not enough matched features.");
+    new_frame_->T_f_w_ = last_frame_->T_f_w_; // reset to avoid crazy pose jumps
+    tracking_quality_ = TRACKING_INSUFFICIENT;
     return RESULT_FAILURE;
   }
 
@@ -177,7 +180,10 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   core_kfs_.insert(new_frame_);
   setTrackingQuality(sfba_n_edges_final);
   if(tracking_quality_ == TRACKING_INSUFFICIENT)
+  {
+    new_frame_->T_f_w_ = last_frame_->T_f_w_; // reset to avoid crazy pose jumps
     return RESULT_FAILURE;
+  }
   double depth_mean, depth_min;
   frame_utils::getSceneDepth(*new_frame_, depth_mean, depth_min);
   if(!needNewKf(depth_mean) || tracking_quality_ == TRACKING_BAD)
@@ -233,12 +239,13 @@ FrameHandlerMono::UpdateResult FrameHandlerMono::relocalizeFrame(
     const SE3& T_cur_ref,
     FramePtr ref_keyframe)
 {
-  SVO_WARN_STREAM_THROTTLE(0.5, "Relocalizing frame");
+  SVO_WARN_STREAM_THROTTLE(1.0, "Relocalizing frame");
   SparseImgAlign img_align(Config::kltMaxLevel(), Config::kltMinLevel(),
                            30, SparseImgAlign::GaussNewton, false, false);
   size_t img_align_n_tracked = img_align.run(ref_keyframe, new_frame_);
   if(img_align_n_tracked > 30)
   {
+    SE3 T_f_w_last = last_frame_->T_f_w_;
     last_frame_ = ref_keyframe;
     FrameHandlerMono::UpdateResult res = processFrame();
     if(res != RESULT_FAILURE)
@@ -247,7 +254,7 @@ FrameHandlerMono::UpdateResult FrameHandlerMono::relocalizeFrame(
       SVO_INFO_STREAM("Relocalization successful.");
     }
     else
-      new_frame_->T_f_w_ = ref_keyframe->T_f_w_;
+      new_frame_->T_f_w_ = T_f_w_last; // reset to last well localized pose
     return res;
   }
   return RESULT_FAILURE;

@@ -160,17 +160,12 @@ void FrameHandlerBase::setTrackingQuality(const size_t num_observations)
   if(num_observations < Config::qualityMinFts())
   {
     SVO_WARN_STREAM_THROTTLE(0.5, "Tracking less than "<< Config::qualityMinFts() <<" features!");
-    tracking_quality_ = TRACKING_BAD;
+    tracking_quality_ = TRACKING_INSUFFICIENT;
   }
-  const int feature_drop = static_cast<int>(num_obs_last_) - num_observations;
+  const int feature_drop = static_cast<int>(std::min(num_obs_last_, Config::maxFts())) - num_observations;
   if(feature_drop > Config::qualityMaxFtsDrop())
   {
     SVO_WARN_STREAM("Lost "<< feature_drop <<" features!");
-    tracking_quality_ = TRACKING_BAD;
-  }
-  if(num_observations < 20)
-  {
-    SVO_ERROR_STREAM("Tracking less than 20 features!");
     tracking_quality_ = TRACKING_INSUFFICIENT;
   }
 }
