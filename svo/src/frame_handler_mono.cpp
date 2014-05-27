@@ -111,7 +111,7 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processSecondFrame()
 
   // two-frame bundle adjustment
 #ifdef USE_BUNDLE_ADJUSTMENT
-  ba::twoViewBA(new_frame_.get(), map_.lastKeyframe().get(), Config::lobaThresh(), map_);
+  ba::twoViewBA(new_frame_.get(), map_.lastKeyframe().get(), Config::lobaThresh(), &map_);
 #endif
 
   new_frame_->setKeyframe();
@@ -207,10 +207,10 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
     SVO_START_TIMER("local_ba");
     setCoreKfs(Config::coreNKfs());
     size_t loba_n_erredges_init, loba_n_erredges_fin;
-    double loba_err_init, ba_final_error;
+    double loba_err_init, loba_err_fin;
     ba::localBA(new_frame_.get(), &core_kfs_, &map_,
-                loba_n_erredges_init, ba_incorrect_edges_2,
-                ba_init_error, loba_err_fin);
+                loba_n_erredges_init, loba_n_erredges_fin,
+                loba_err_init, loba_err_fin);
     SVO_STOP_TIMER("local_ba");
     SVO_LOG4(loba_n_erredges_init, loba_n_erredges_fin, loba_err_init, loba_err_fin);
     SVO_DEBUG_STREAM("Local BA:\t RemovedEdges {"<<loba_n_erredges_init<<", "<<loba_n_erredges_fin<<"} \t "

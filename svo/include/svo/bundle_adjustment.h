@@ -22,16 +22,22 @@
 namespace g2o {
 class EdgeProjectXYZ2UV;
 class SparseOptimizer;
+class VertexSE3Expmap;
+class VertexSBAPointXYZ;
 }
-typedef g2o::EdgeProjectXYZ2UV g2oEdgeSE3;
 
 namespace svo {
 
+typedef g2o::EdgeProjectXYZ2UV g2oEdgeSE3;
+typedef g2o::VertexSE3Expmap g2oFrameSE3;
+typedef g2o::VertexSBAPointXYZ g2oPoint;
+
+class Frame;
 class Point;
 class Feature;
 class Map;
 
-/// Local, global and 2-view bundle adjustment with g2o.
+/// Local, global and 2-view bundle adjustment with g2o
 namespace ba {
 
 /// Temporary container to hold the g2o edge with reference to frame and point.

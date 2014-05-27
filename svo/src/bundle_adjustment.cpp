@@ -28,6 +28,7 @@
 #include <g2o/solvers/structure_only/structure_only_solver.h>
 #include <svo/bundle_adjustment.h>
 #include <svo/frame.h>
+#include <svo/feature.h>
 #include <svo/point.h>
 #include <svo/config.h>
 #include <svo/map.h>
@@ -37,10 +38,11 @@
 namespace svo {
 namespace ba {
 
-void
-twoViewBA(Frame* frame1, Frame* frame2,
-          double reproj_thresh,
-          Map* map)
+void twoViewBA(
+    Frame* frame1,
+    Frame* frame2,
+    double reproj_thresh,
+    Map* map)
 {
   // scale reprojection threshold in pixels to unit plane
   reproj_thresh /= frame1->cam_->errorMultiplier2();
@@ -104,12 +106,12 @@ twoViewBA(Frame* frame1, Frame* frame2,
   const double reproj_thresh_squared = reproj_thresh*reproj_thresh;
   size_t n_incorrect_edges = 0;
   for(list<EdgeContainerSE3>::iterator it_e = edges.begin(); it_e != edges.end(); ++it_e)
-    if(it_e->edge_->chi2() > reproj_thresh_squared)
+    if(it_e->edge->chi2() > reproj_thresh_squared)
     {
-      if(it_e->feature_->point != NULL)
+      if(it_e->feature->point != NULL)
       {
-        map->safeDeletePoint(it_e->feature_->point);
-        it_e->feature_->point = NULL;
+        map->safeDeletePoint(it_e->feature->point);
+        it_e->feature->point = NULL;
       }
       ++n_incorrect_edges;
     }
@@ -117,14 +119,14 @@ twoViewBA(Frame* frame1, Frame* frame2,
   printf("2-View BA: Wrong edges =  %zu\n", n_incorrect_edges);
 }
 
-void
-localBA(Frame* center_kf,
-        set<FramePtr>* core_kfs,
-        Map* map,
-        size_t& n_incorrect_edges_1,
-        size_t& n_incorrect_edges_2,
-        double& init_error,
-        double& final_error)
+void localBA(
+    Frame* center_kf,
+    set<FramePtr>* core_kfs,
+    Map* map,
+    size_t& n_incorrect_edges_1,
+    size_t& n_incorrect_edges_2,
+    double& init_error,
+    double& final_error)
 {
 
   // init g2o
@@ -170,7 +172,7 @@ localBA(Frame* center_kf,
     ++n_mps;
 
     // Add edges
-    Observations::iterator it_obs=(*it_pt)->obs_.begin();
+    list<Feature*>::iterator it_obs=(*it_pt)->obs_.begin();
     while(it_obs!=(*it_pt)->obs_.end())
     {
       Vector2d error = vk::project2d((*it_obs)->f) - vk::project2d((*it_obs)->frame->w2f((*it_pt)->pos_));
@@ -236,9 +238,9 @@ localBA(Frame* center_kf,
   double reproj_thresh_2_squared = reproj_thresh_2*reproj_thresh_2;
   for(list<EdgeContainerSE3>::iterator it = edges.begin(); it != edges.end(); ++it)
   {
-    if(it->edge_->chi2() > reproj_thresh_2_squared) //*(1<<it->feature_->level))
+    if(it->edge->chi2() > reproj_thresh_2_squared) //*(1<<it->feature_->level))
     {
-      map->removePtFrameRef(it->frame_, it->feature_);
+      map->removePtFrameRef(it->frame, it->feature);
       ++n_incorrect_edges_2;
     }
   }
@@ -248,8 +250,7 @@ localBA(Frame* center_kf,
   final_error = sqrt(final_error)*center_kf->cam_->errorMultiplier2();
 }
 
-void
-globalBA(Map* map)
+void globalBA(Map* map)
 {
   // init g2o
   g2o::SparseOptimizer optimizer;
@@ -334,15 +335,14 @@ globalBA(Map* map)
   double reproj_thresh_2_squared = reproj_thresh_2*reproj_thresh_2;
   for(list<EdgeContainerSE3>::iterator it = edges.begin(); it != edges.end(); ++it)
   {
-    if(it->edge_->chi2() > reproj_thresh_2_squared)
+    if(it->edge->chi2() > reproj_thresh_2_squared)
     {
-      map->removePtFrameRef(it->frame_, it->feature_);
+      map->removePtFrameRef(it->frame, it->feature);
     }
   }
 }
 
-void
-setupG2o(g2o::SparseOptimizer * optimizer)
+void setupG2o(g2o::SparseOptimizer * optimizer)
 {
   // TODO: What's happening with all this HEAP stuff? Memory Leak?
   optimizer->setVerbose(false);
