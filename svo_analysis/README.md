@@ -16,6 +16,7 @@ Source your new `.bashrc` script, go to the new dataset folder and download the 
     cd ${SVO_DATASET_DIR}
     wget http://rpg.ifi.uzh.ch/datasets/flying_room_1_rig_1.tar.gz -O - | tar -xz
 
+TODO: replace this dataset with new ones.
 
 #### Run Benchmark
 

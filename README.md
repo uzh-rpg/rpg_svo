@@ -85,6 +85,14 @@ vikit is a catkin project, therefore, download it into your catkin workspace sou
     cd catkin_ws/src
     git clone https://github.com/uzh-rpg/rpg_vikit.git
 
+#### ROS dependencies
+
+Sometimes `cmake-modules` is missing (required for including Eigen in ROS Indigo):
+
+    sudo apt-get install ros-hydro-cmake-modules
+
+(replace `hydro` with your distribution).
+
 #### SVO
 
 Now we are ready to build SVO.
@@ -94,12 +102,6 @@ Clone it into your catkin workspace
     git clone https://github.com/uzh-rpg/rpg_svo.git
 
 If you installed g2o then set `HAVE_G2O` in `svo/CMakeLists.txt` to TRUE.
-
-Install missing ros dependencies. Sometimes `cmake-modules` is missing (required for including Eigen in ROS Indigo):
-
-    sudo apt-get install ros-hydro-cmake-modules
-
-(replace `hydro` with your distribution).
 
 Finally, build:
 
@@ -159,6 +161,14 @@ Parameter Settings
 ------------------
 
 A description of all parameters which can be set via the launchfile is provided in `svo/include/config.h`. The default parameters can be viewed in `svo/src/config.cpp`. Moreover, some additional parameters (mainly rostopic names etc.) are read from the ros parameter server in `svo_ros/vo_node.cpp`.
+
+#### Forward motions
+
+The current keyframe selection criterion is designed for downward looking cameras. This is one reason why SVO does not work well for forward motions (e.g., to be used on a car).
+
+#### Image resolution
+
+The current parameters are tuned for WVGA resolution. If you use a higher resolution camera, then the pyramid levels should be increased as well as the reprojection error thresholds.
 
 
 Contributing
