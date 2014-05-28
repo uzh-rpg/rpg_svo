@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>svo: svo::matcher::PatchData Struct Reference</title>
+<title>svo: svo::Matcher::Options Struct Reference</title>
 
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
@@ -93,8 +93,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><a class="el" href="namespacesvo.html">svo</a>      </li>
-      <li class="navelem"><a class="el" href="namespacesvo_1_1matcher.html">matcher</a>      </li>
-      <li class="navelem"><a class="el" href="structsvo_1_1matcher_1_1PatchData.html">PatchData</a>      </li>
+      <li class="navelem"><a class="el" href="classsvo_1_1Matcher.html">Matcher</a>      </li>
+      <li class="navelem"><a class="el" href="structsvo_1_1Matcher_1_1Options.html">Options</a>      </li>
     </ul>
   </div>
 </div>
@@ -103,56 +103,42 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a>  </div>
   <div class="headertitle">
-<div class="title">svo::matcher::PatchData Struct Reference</div>  </div>
+<div class="title">svo::Matcher::Options Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<!-- doxytag: class="svo::matcher::PatchData" -->
-<p>Manages the aligned memory of a patch. Aligned for SIMD instructions.  
- <a href="structsvo_1_1matcher_1_1PatchData.html#details">More...</a></p>
-
+<!-- doxytag: class="svo::Matcher::Options" -->
 <p><code>#include &lt;<a class="el" href="matcher_8h_source.html">matcher.h</a>&gt;</code></p>
 
-<p><a href="structsvo_1_1matcher_1_1PatchData-members.html">List of all members.</a></p>
+<p><a href="structsvo_1_1Matcher_1_1Options-members.html">List of all members.</a></p>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1matcher_1_1PatchData.html#af0d39e991a57c05b0703444a08541545">PatchData</a> (int <a class="el" href="structsvo_1_1matcher_1_1PatchData.html#a8ee6000ad91fc1e68f08a4c227974880">patch_size</a>)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1matcher_1_1PatchData.html#a2f277af5a0598d9c8e43c8e2f75715c3">~PatchData</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Matcher_1_1Options.html#a816c4abfa63a8ae98be901591730a5b3">Options</a> ()</td></tr>
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1matcher_1_1PatchData.html#a8ee6000ad91fc1e68f08a4c227974880">patch_size</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1matcher_1_1PatchData.html#a11be50cce013f521f839143cf6ee530c">patch</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1matcher_1_1PatchData.html#a4e0662e7e45e47798bef98eea0762fa8">patch_with_border</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Matcher_1_1Options.html#a162577038ffdb370a7f366ced6c15e71">align_1d</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">in epipolar search: align patch 1D along epipolar line  <a href="#a162577038ffdb370a7f366ced6c15e71"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Matcher_1_1Options.html#a209da4bf99c795453f20278efe16126e">align_max_iter</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">number of iterations for aligning the feature patches in gauss newton  <a href="#a209da4bf99c795453f20278efe16126e"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Matcher_1_1Options.html#a73ab9ec912bd083c25e594f451208b81">max_epi_length_optim</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">max length of epipolar line to skip epipolar search and directly go to img align  <a href="#a73ab9ec912bd083c25e594f451208b81"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Matcher_1_1Options.html#a02d8425fefcbd1205027dbcca80cb22b">max_epi_search_steps</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">max number of evaluations along epipolar line  <a href="#a02d8425fefcbd1205027dbcca80cb22b"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Matcher_1_1Options.html#a28337eefd24e5ca13f42c234245090cb">subpix_refinement</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">do gauss newton feature patch alignment after epipolar search  <a href="#a28337eefd24e5ca13f42c234245090cb"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Matcher_1_1Options.html#a5fecd2773a09734cb404120ded74cd94">epi_search_edgelet_filtering</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Matcher_1_1Options.html#acd2d1ea6dd68a243bcc69751c3b7d71c">epi_search_edgelet_max_angle</a></td></tr>
 </table>
-<hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
-<div class="textblock"><p>Manages the aligned memory of a patch. Aligned for SIMD instructions. </p>
-</div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="af0d39e991a57c05b0703444a08541545"></a><!-- doxytag: member="svo::matcher::PatchData::PatchData" ref="af0d39e991a57c05b0703444a08541545" args="(int patch_size)" -->
+<hr/><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a816c4abfa63a8ae98be901591730a5b3"></a><!-- doxytag: member="svo::Matcher::Options::Options" ref="a816c4abfa63a8ae98be901591730a5b3" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structsvo_1_1matcher_1_1PatchData.html#af0d39e991a57c05b0703444a08541545">svo::matcher::PatchData::PatchData</a> </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>patch_size</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a2f277af5a0598d9c8e43c8e2f75715c3"></a><!-- doxytag: member="svo::matcher::PatchData::~PatchData" ref="a2f277af5a0598d9c8e43c8e2f75715c3" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structsvo_1_1matcher_1_1PatchData.html#a2f277af5a0598d9c8e43c8e2f75715c3">svo::matcher::PatchData::~PatchData</a> </td>
+          <td class="memname"><a class="el" href="structsvo_1_1Matcher_1_1Options.html#a816c4abfa63a8ae98be901591730a5b3">svo::Matcher::Options::Options</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td><code> [inline]</code></td>
         </tr>
       </table>
 </div>
@@ -161,12 +147,42 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/><h2>Member Data Documentation</h2>
-<a class="anchor" id="a11be50cce013f521f839143cf6ee530c"></a><!-- doxytag: member="svo::matcher::PatchData::patch" ref="a11be50cce013f521f839143cf6ee530c" args="" -->
+<a class="anchor" id="a162577038ffdb370a7f366ced6c15e71"></a><!-- doxytag: member="svo::Matcher::Options::align_1d" ref="a162577038ffdb370a7f366ced6c15e71" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t* <a class="el" href="structsvo_1_1matcher_1_1PatchData.html#a11be50cce013f521f839143cf6ee530c">svo::matcher::PatchData::patch</a></td>
+          <td class="memname">bool <a class="el" href="structsvo_1_1Matcher_1_1Options.html#a162577038ffdb370a7f366ced6c15e71">svo::Matcher::Options::align_1d</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>in epipolar search: align patch 1D along epipolar line </p>
+
+</div>
+</div>
+<a class="anchor" id="a209da4bf99c795453f20278efe16126e"></a><!-- doxytag: member="svo::Matcher::Options::align_max_iter" ref="a209da4bf99c795453f20278efe16126e" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="structsvo_1_1Matcher_1_1Options.html#a209da4bf99c795453f20278efe16126e">svo::Matcher::Options::align_max_iter</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>number of iterations for aligning the feature patches in gauss newton </p>
+
+</div>
+</div>
+<a class="anchor" id="a5fecd2773a09734cb404120ded74cd94"></a><!-- doxytag: member="svo::Matcher::Options::epi_search_edgelet_filtering" ref="a5fecd2773a09734cb404120ded74cd94" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="structsvo_1_1Matcher_1_1Options.html#a5fecd2773a09734cb404120ded74cd94">svo::Matcher::Options::epi_search_edgelet_filtering</a></td>
         </tr>
       </table>
 </div>
@@ -174,12 +190,12 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a8ee6000ad91fc1e68f08a4c227974880"></a><!-- doxytag: member="svo::matcher::PatchData::patch_size" ref="a8ee6000ad91fc1e68f08a4c227974880" args="" -->
+<a class="anchor" id="acd2d1ea6dd68a243bcc69751c3b7d71c"></a><!-- doxytag: member="svo::Matcher::Options::epi_search_edgelet_max_angle" ref="acd2d1ea6dd68a243bcc69751c3b7d71c" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const int <a class="el" href="structsvo_1_1matcher_1_1PatchData.html#a8ee6000ad91fc1e68f08a4c227974880">svo::matcher::PatchData::patch_size</a></td>
+          <td class="memname">double <a class="el" href="structsvo_1_1Matcher_1_1Options.html#acd2d1ea6dd68a243bcc69751c3b7d71c">svo::Matcher::Options::epi_search_edgelet_max_angle</a></td>
         </tr>
       </table>
 </div>
@@ -187,16 +203,48 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a4e0662e7e45e47798bef98eea0762fa8"></a><!-- doxytag: member="svo::matcher::PatchData::patch_with_border" ref="a4e0662e7e45e47798bef98eea0762fa8" args="" -->
+<a class="anchor" id="a73ab9ec912bd083c25e594f451208b81"></a><!-- doxytag: member="svo::Matcher::Options::max_epi_length_optim" ref="a73ab9ec912bd083c25e594f451208b81" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t* <a class="el" href="structsvo_1_1matcher_1_1PatchData.html#a4e0662e7e45e47798bef98eea0762fa8">svo::matcher::PatchData::patch_with_border</a></td>
+          <td class="memname">double <a class="el" href="structsvo_1_1Matcher_1_1Options.html#a73ab9ec912bd083c25e594f451208b81">svo::Matcher::Options::max_epi_length_optim</a></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
+
+<p>max length of epipolar line to skip epipolar search and directly go to img align </p>
+
+</div>
+</div>
+<a class="anchor" id="a02d8425fefcbd1205027dbcca80cb22b"></a><!-- doxytag: member="svo::Matcher::Options::max_epi_search_steps" ref="a02d8425fefcbd1205027dbcca80cb22b" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t <a class="el" href="structsvo_1_1Matcher_1_1Options.html#a02d8425fefcbd1205027dbcca80cb22b">svo::Matcher::Options::max_epi_search_steps</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>max number of evaluations along epipolar line </p>
+
+</div>
+</div>
+<a class="anchor" id="a28337eefd24e5ca13f42c234245090cb"></a><!-- doxytag: member="svo::Matcher::Options::subpix_refinement" ref="a28337eefd24e5ca13f42c234245090cb" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="structsvo_1_1Matcher_1_1Options.html#a28337eefd24e5ca13f42c234245090cb">svo::Matcher::Options::subpix_refinement</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>do gauss newton feature patch alignment after epipolar search </p>
 
 </div>
 </div>
@@ -221,7 +269,7 @@ Public Attributes</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

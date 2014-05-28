@@ -84,7 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="textblock">Here are the classes, structs, unions and interfaces with brief descriptions:</div><table>
   <tr><td class="indexkey"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html">svo::feature_detection::AbstractDetector</a></td><td class="indexvalue">All detectors should derive from this abstract class </td></tr>
-  <tr><td class="indexkey"><a class="el" href="structsvo_1_1reprojection_1_1Candidate.html">svo::reprojection::Candidate</a></td><td class="indexvalue">A candidate is a point that projects into the image plane and for which we will search a maching feature in the image </td></tr>
+  <tr><td class="indexkey"><a class="el" href="structsvo_1_1Reprojector_1_1Candidate.html">svo::Reprojector::Candidate</a></td><td class="indexvalue">A candidate is a point that projects into the image plane and for which we will search a maching feature in the image </td></tr>
   <tr><td class="indexkey"><a class="el" href="classsvo_1_1Config.html">svo::Config</a></td><td class="indexvalue">Global configuration file of SVO </td></tr>
   <tr><td class="indexkey"><a class="el" href="structsvo_1_1feature__detection_1_1Corner.html">svo::feature_detection::Corner</a></td><td class="indexvalue">Temporary container used for corner detection. Features are initialized from these </td></tr>
   <tr><td class="indexkey"><a class="el" href="classsvo_1_1DepthFilter.html">svo::DepthFilter</a></td><td class="indexvalue">Depth filter implements the Bayesian Update proposed in: "Video-based, Real-Time Multi View Stereo" by G </td></tr>
@@ -94,13 +94,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <tr><td class="indexkey"><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td class="indexvalue">A frame saves the image, the associated features and the estimated pose </td></tr>
   <tr><td class="indexkey"><a class="el" href="classsvo_1_1FrameHandlerBase.html">svo::FrameHandlerBase</a></td><td class="indexvalue">Base class for various VO pipelines. Manages the map and the state machine </td></tr>
   <tr><td class="indexkey"><a class="el" href="classsvo_1_1FrameHandlerMono.html">svo::FrameHandlerMono</a></td><td class="indexvalue">Monocular Visual Odometry Pipeline as described in the SVO paper </td></tr>
-  <tr><td class="indexkey"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html">svo::reprojection::Grid</a></td><td class="indexvalue">The grid stores a set of candidate matches. For every grid cell we try to find one match </td></tr>
+  <tr><td class="indexkey"><a class="el" href="structsvo_1_1Reprojector_1_1Grid.html">svo::Reprojector::Grid</a></td><td class="indexvalue">The grid stores a set of candidate matches. For every grid cell we try to find one match </td></tr>
   <tr><td class="indexkey"><a class="el" href="classsvo_1_1initialization_1_1KltHomographyInit.html">svo::initialization::KltHomographyInit</a></td><td class="indexvalue">Tracks features using Lucas-Kanade tracker and then estimates a homography </td></tr>
   <tr><td class="indexkey"><a class="el" href="classsvo_1_1Map.html">svo::Map</a></td><td class="indexvalue"><a class="el" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a> object which saves all keyframes which are in a map </td></tr>
   <tr><td class="indexkey"><a class="el" href="classsvo_1_1MapPointCandidates.html">svo::MapPointCandidates</a></td><td class="indexvalue">Container for converged 3D points that are not already assigned to two keyframes </td></tr>
+  <tr><td class="indexkey"><a class="el" href="classsvo_1_1Matcher.html">svo::Matcher</a></td><td class="indexvalue">Patch-matcher for reprojection-matching and epipolar search in triangulation </td></tr>
+  <tr><td class="indexkey"><a class="el" href="structsvo_1_1Matcher_1_1Options.html">svo::Matcher::Options</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><a class="el" href="structsvo_1_1DepthFilter_1_1Options.html">svo::DepthFilter::Options</a></td><td class="indexvalue">Depth-filter config parameters </td></tr>
-  <tr><td class="indexkey"><a class="el" href="structsvo_1_1matcher_1_1PatchData.html">svo::matcher::PatchData</a></td><td class="indexvalue">Manages the aligned memory of a patch. Aligned for SIMD instructions </td></tr>
-  <tr><td class="indexkey"><a class="el" href="classsvo_1_1Point.html">svo::Point</a></td><td class="indexvalue">A 3D point that was triangulated from at least two corresponding image features </td></tr>
+  <tr><td class="indexkey"><a class="el" href="structsvo_1_1Reprojector_1_1Options.html">svo::Reprojector::Options</a></td><td class="indexvalue"><a class="el" href="classsvo_1_1Reprojector.html" title="Project points from the map into the image and find the corresponding feature (corner).">Reprojector</a> config parameters </td></tr>
+  <tr><td class="indexkey"><a class="el" href="classsvo_1_1Point.html">svo::Point</a></td><td class="indexvalue">A 3D point on the surface of the scene </td></tr>
+  <tr><td class="indexkey"><a class="el" href="classsvo_1_1Reprojector.html">svo::Reprojector</a></td><td class="indexvalue">Project points from the map into the image and find the corresponding feature (corner) </td></tr>
   <tr><td class="indexkey"><a class="el" href="structsvo_1_1Seed.html">svo::Seed</a></td><td class="indexvalue">A seed is a probabilistic depth estimate for a single pixel </td></tr>
   <tr><td class="indexkey"><a class="el" href="classsvo_1_1SparseImgAlign.html">svo::SparseImgAlign</a></td><td class="indexvalue">Optimize the pose of the frame by minimizing the photometric error of feature patches </td></tr>
 </table>
@@ -122,7 +125,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

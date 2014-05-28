@@ -106,52 +106,81 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00024"></a>00024 
 <a name="l00026"></a><a class="code" href="namespacesvo_1_1feature__detection.html">00026</a> <span class="keyword">namespace </span>feature_detection {
 <a name="l00027"></a>00027 
-<a name="l00029"></a>00029 <span class="comment">// TODO: why not use feature struct?</span>
-<a name="l00030"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html">00030</a> <span class="keyword">struct </span><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html" title="Temporary container used for corner detection. Features are initialized from these.">Corner</a>
-<a name="l00031"></a>00031 {
-<a name="l00032"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a511758cfa60038f0316df4e9c3470f3f">00032</a>   <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a511758cfa60038f0316df4e9c3470f3f" title="x-coordinate of corner in the image.">x</a>;        
-<a name="l00033"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a1a656ced5135207ac20b6c249045ef7f">00033</a>   <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a1a656ced5135207ac20b6c249045ef7f" title="y-coordinate of corner in the image.">y</a>;        
-<a name="l00034"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aa5b03ce71c1599819a65bd5b4213e82a">00034</a>   <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aa5b03ce71c1599819a65bd5b4213e82a" title="pyramid level of the corner.">level</a>;    
-<a name="l00035"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#adabee3d19de98058e350700be92c9f9c">00035</a>   <span class="keywordtype">float</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#adabee3d19de98058e350700be92c9f9c" title="shi-tomasi score of the corner.">score</a>;  
-<a name="l00036"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aee4a574b6cb2642cf76a36e2aaa24eb7">00036</a>   <span class="keywordtype">float</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aee4a574b6cb2642cf76a36e2aaa24eb7" title="for gradient-features: dominant gradient angle.">angle</a>;  
-<a name="l00037"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a848a54912518f6505ca4896f12e584c9">00037</a>   <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a848a54912518f6505ca4896f12e584c9">Corner</a>(<span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a511758cfa60038f0316df4e9c3470f3f" title="x-coordinate of corner in the image.">x</a>, <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a1a656ced5135207ac20b6c249045ef7f" title="y-coordinate of corner in the image.">y</a>, <span class="keywordtype">float</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#adabee3d19de98058e350700be92c9f9c" title="shi-tomasi score of the corner.">score</a>, <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aa5b03ce71c1599819a65bd5b4213e82a" title="pyramid level of the corner.">level</a>, <span class="keywordtype">float</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aee4a574b6cb2642cf76a36e2aaa24eb7" title="for gradient-features: dominant gradient angle.">angle</a>) :
-<a name="l00038"></a>00038     x(x), y(y), level(level), score(score), angle(angle)
-<a name="l00039"></a>00039   {}
-<a name="l00040"></a>00040 };
-<a name="l00041"></a><a class="code" href="namespacesvo_1_1feature__detection.html#a482e8ccc77302400c438e1654ef03242">00041</a> <span class="keyword">typedef</span> vector&lt;Corner&gt; <a class="code" href="namespacesvo_1_1feature__detection.html#a482e8ccc77302400c438e1654ef03242">Corners</a>;
-<a name="l00042"></a>00042 
-<a name="l00044"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html">00044</a> <span class="keyword">class </span><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html" title="All detectors should derive from this abstract class.">AbstractDetector</a>
-<a name="l00045"></a>00045 {
-<a name="l00046"></a>00046 <span class="keyword">public</span>:
-<a name="l00047"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#af0687c0ad25170c3b0ed92457dae5de5">00047</a>   <span class="keyword">virtual</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#af0687c0ad25170c3b0ed92457dae5de5">~AbstractDetector</a>() {};
-<a name="l00048"></a>00048   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#aec115bff5427b80291b45da719bbd459">detect</a>(
-<a name="l00049"></a>00049       <span class="keyword">const</span> <a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a>&amp; img_pyr,
-<a name="l00050"></a>00050       <span class="keyword">const</span> <a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a>&amp; fts,
-<a name="l00051"></a>00051       <span class="keyword">const</span> <span class="keywordtype">int</span> cell_size,
-<a name="l00052"></a>00052       <span class="keyword">const</span> <span class="keywordtype">int</span> n_levels,
-<a name="l00053"></a>00053       <span class="keyword">const</span> <span class="keywordtype">double</span> detection_threshold,
-<a name="l00054"></a>00054       <a class="code" href="namespacesvo_1_1feature__detection.html#a482e8ccc77302400c438e1654ef03242">Corners</a>* corners) <span class="keyword">const</span> = 0;
-<a name="l00055"></a>00055 };
-<a name="l00056"></a><a class="code" href="namespacesvo_1_1feature__detection.html#a750b3f003d778474201a8f9d922d3083">00056</a> <span class="keyword">typedef</span> boost::shared_ptr&lt;AbstractDetector&gt; <a class="code" href="namespacesvo_1_1feature__detection.html#a750b3f003d778474201a8f9d922d3083">DetectorPtr</a>;
-<a name="l00057"></a>00057 
-<a name="l00059"></a><a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html">00059</a> <span class="keyword">class </span><a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html" title="FAST detector by Edward Rosten.">FastDetector</a> : <span class="keyword">public</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html" title="All detectors should derive from this abstract class.">AbstractDetector</a>
-<a name="l00060"></a>00060 {
-<a name="l00061"></a>00061 <span class="keyword">public</span>:
-<a name="l00062"></a><a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html#a31b9509e224e8eddbe4e7d9f55e48796">00062</a>   <a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html#a31b9509e224e8eddbe4e7d9f55e48796">FastDetector</a>() {}
-<a name="l00063"></a><a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html#a589c2ee08b140451b689321a043bb25f">00063</a>   <span class="keyword">virtual</span> <a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html#a589c2ee08b140451b689321a043bb25f">~FastDetector</a>() {}
-<a name="l00064"></a>00064   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html#aeb23532f1622fb3149bd156e4cf1151a">detect</a>(
-<a name="l00065"></a>00065         <span class="keyword">const</span> <a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a>&amp; img_pyr,
-<a name="l00066"></a>00066         <span class="keyword">const</span> <a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a>&amp; fts,
-<a name="l00067"></a>00067         <span class="keyword">const</span> <span class="keywordtype">int</span> cell_size,
-<a name="l00068"></a>00068         <span class="keyword">const</span> <span class="keywordtype">int</span> n_levels,
-<a name="l00069"></a>00069         <span class="keyword">const</span> <span class="keywordtype">double</span> detection_threshold,
-<a name="l00070"></a>00070         <a class="code" href="namespacesvo_1_1feature__detection.html#a482e8ccc77302400c438e1654ef03242">Corners</a>* corners) <span class="keyword">const</span>;
-<a name="l00071"></a>00071 };
-<a name="l00072"></a>00072 
-<a name="l00073"></a>00073 } <span class="comment">// namespace feature_detection</span>
-<a name="l00074"></a>00074 } <span class="comment">// namespace svo</span>
-<a name="l00075"></a>00075 
-<a name="l00076"></a>00076 <span class="preprocessor">#endif // SVO_FEATURE_DETECTION_H_</span>
+<a name="l00029"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html">00029</a> <span class="keyword">struct </span><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html" title="Temporary container used for corner detection. Features are initialized from these.">Corner</a>
+<a name="l00030"></a>00030 {
+<a name="l00031"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a511758cfa60038f0316df4e9c3470f3f">00031</a>   <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a511758cfa60038f0316df4e9c3470f3f" title="x-coordinate of corner in the image.">x</a>;        
+<a name="l00032"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a1a656ced5135207ac20b6c249045ef7f">00032</a>   <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a1a656ced5135207ac20b6c249045ef7f" title="y-coordinate of corner in the image.">y</a>;        
+<a name="l00033"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aa5b03ce71c1599819a65bd5b4213e82a">00033</a>   <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aa5b03ce71c1599819a65bd5b4213e82a" title="pyramid level of the corner.">level</a>;    
+<a name="l00034"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#adabee3d19de98058e350700be92c9f9c">00034</a>   <span class="keywordtype">float</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#adabee3d19de98058e350700be92c9f9c" title="shi-tomasi score of the corner.">score</a>;  
+<a name="l00035"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aee4a574b6cb2642cf76a36e2aaa24eb7">00035</a>   <span class="keywordtype">float</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aee4a574b6cb2642cf76a36e2aaa24eb7" title="for gradient-features: dominant gradient angle.">angle</a>;  
+<a name="l00036"></a><a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a848a54912518f6505ca4896f12e584c9">00036</a>   <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a848a54912518f6505ca4896f12e584c9">Corner</a>(<span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a511758cfa60038f0316df4e9c3470f3f" title="x-coordinate of corner in the image.">x</a>, <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#a1a656ced5135207ac20b6c249045ef7f" title="y-coordinate of corner in the image.">y</a>, <span class="keywordtype">float</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#adabee3d19de98058e350700be92c9f9c" title="shi-tomasi score of the corner.">score</a>, <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aa5b03ce71c1599819a65bd5b4213e82a" title="pyramid level of the corner.">level</a>, <span class="keywordtype">float</span> <a class="code" href="structsvo_1_1feature__detection_1_1Corner.html#aee4a574b6cb2642cf76a36e2aaa24eb7" title="for gradient-features: dominant gradient angle.">angle</a>) :
+<a name="l00037"></a>00037     x(x), y(y), level(level), score(score), angle(angle)
+<a name="l00038"></a>00038   {}
+<a name="l00039"></a>00039 };
+<a name="l00040"></a><a class="code" href="namespacesvo_1_1feature__detection.html#a482e8ccc77302400c438e1654ef03242">00040</a> <span class="keyword">typedef</span> vector&lt;Corner&gt; <a class="code" href="namespacesvo_1_1feature__detection.html#a482e8ccc77302400c438e1654ef03242">Corners</a>;
+<a name="l00041"></a>00041 
+<a name="l00043"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html">00043</a> <span class="keyword">class </span><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html" title="All detectors should derive from this abstract class.">AbstractDetector</a>
+<a name="l00044"></a>00044 {
+<a name="l00045"></a>00045 <span class="keyword">public</span>:
+<a name="l00046"></a>00046   <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#ac4c189ec7e2eb29795f98331b3eff390">AbstractDetector</a>(
+<a name="l00047"></a>00047       <span class="keyword">const</span> <span class="keywordtype">int</span> img_width,
+<a name="l00048"></a>00048       <span class="keyword">const</span> <span class="keywordtype">int</span> img_height,
+<a name="l00049"></a>00049       <span class="keyword">const</span> <span class="keywordtype">int</span> cell_size,
+<a name="l00050"></a>00050       <span class="keyword">const</span> <span class="keywordtype">int</span> n_pyr_levels);
+<a name="l00051"></a>00051 
+<a name="l00052"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#af0687c0ad25170c3b0ed92457dae5de5">00052</a>   <span class="keyword">virtual</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#af0687c0ad25170c3b0ed92457dae5de5">~AbstractDetector</a>() {};
+<a name="l00053"></a>00053 
+<a name="l00054"></a>00054   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a8138783a78e2348d26ceb0f4b677a29f">detect</a>(
+<a name="l00055"></a>00055       <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* frame,
+<a name="l00056"></a>00056       <span class="keyword">const</span> <a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a>&amp; img_pyr,
+<a name="l00057"></a>00057       <span class="keyword">const</span> <span class="keywordtype">double</span> detection_threshold,
+<a name="l00058"></a>00058       <a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a>&amp; fts) = 0;
+<a name="l00059"></a>00059 
+<a name="l00061"></a>00061   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#ab38b6a94286860973e19a981a87e15d2" title="Flag the grid cell as occupied.">setGridOccpuancy</a>(<span class="keyword">const</span> Vector2d&amp; px);
+<a name="l00062"></a>00062 
+<a name="l00064"></a>00064   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a52879b24b02bdef2bece2fd8541d7034" title="Set grid cells of existing features as occupied.">setExistingFeatures</a>(<span class="keyword">const</span> <a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a>&amp; fts);
+<a name="l00065"></a>00065 
+<a name="l00066"></a>00066 <span class="keyword">protected</span>:
+<a name="l00067"></a>00067 
+<a name="l00068"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#aab46b48276f04ece25252c552f32a44b">00068</a>   <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#aab46b48276f04ece25252c552f32a44b" title="no feature should be within 8px of border.">border_</a> = 8; 
+<a name="l00069"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a857e8ae3c0f3432c66b35028d891ff6b">00069</a>   <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a857e8ae3c0f3432c66b35028d891ff6b">cell_size_</a>;
+<a name="l00070"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a0d2833ddf90be25baf177f1757a17be8">00070</a>   <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a0d2833ddf90be25baf177f1757a17be8">n_pyr_levels_</a>;
+<a name="l00071"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a5e92f0ddafaca566230c7f68e723245e">00071</a>   <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a5e92f0ddafaca566230c7f68e723245e">grid_n_cols_</a>;
+<a name="l00072"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a185fb2a0bbece69232c4510259868e89">00072</a>   <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a185fb2a0bbece69232c4510259868e89">grid_n_rows_</a>;
+<a name="l00073"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#ade1810c2147f34eaa6da46df5cfb7449">00073</a>   vector&lt;bool&gt; <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#ade1810c2147f34eaa6da46df5cfb7449">grid_occupancy_</a>;
+<a name="l00074"></a>00074 
+<a name="l00075"></a>00075   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#adb44f8da3321c9e6d2be41b79a61d6d4">resetGrid</a>();
+<a name="l00076"></a>00076 
+<a name="l00077"></a><a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a9b92cd4ed10ac24ec139702ceff676c3">00077</a>   <span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a9b92cd4ed10ac24ec139702ceff676c3">getCellIndex</a>(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> level)
+<a name="l00078"></a>00078   {
+<a name="l00079"></a>00079     <span class="keyword">const</span> <span class="keywordtype">int</span> scale = (1&lt;&lt;level);
+<a name="l00080"></a>00080     <span class="keywordflow">return</span> (scale*y)/<a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a857e8ae3c0f3432c66b35028d891ff6b">cell_size_</a>*<a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a5e92f0ddafaca566230c7f68e723245e">grid_n_cols_</a> + (scale*x)/<a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a857e8ae3c0f3432c66b35028d891ff6b">cell_size_</a>;
+<a name="l00081"></a>00081   }
+<a name="l00082"></a>00082 };
+<a name="l00083"></a><a class="code" href="namespacesvo_1_1feature__detection.html#a750b3f003d778474201a8f9d922d3083">00083</a> <span class="keyword">typedef</span> boost::shared_ptr&lt;AbstractDetector&gt; <a class="code" href="namespacesvo_1_1feature__detection.html#a750b3f003d778474201a8f9d922d3083">DetectorPtr</a>;
+<a name="l00084"></a>00084 
+<a name="l00086"></a><a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html">00086</a> <span class="keyword">class </span><a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html" title="FAST detector by Edward Rosten.">FastDetector</a> : <span class="keyword">public</span> <a class="code" href="classsvo_1_1feature__detection_1_1AbstractDetector.html" title="All detectors should derive from this abstract class.">AbstractDetector</a>
+<a name="l00087"></a>00087 {
+<a name="l00088"></a>00088 <span class="keyword">public</span>:
+<a name="l00089"></a>00089   <a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html#a85505e1f71bcb77154ff3c5d8fbcdb8e">FastDetector</a>(
+<a name="l00090"></a>00090       <span class="keyword">const</span> <span class="keywordtype">int</span> img_width,
+<a name="l00091"></a>00091       <span class="keyword">const</span> <span class="keywordtype">int</span> img_height,
+<a name="l00092"></a>00092       <span class="keyword">const</span> <span class="keywordtype">int</span> cell_size,
+<a name="l00093"></a>00093       <span class="keyword">const</span> <span class="keywordtype">int</span> n_pyr_levels);
+<a name="l00094"></a>00094 
+<a name="l00095"></a><a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html#a589c2ee08b140451b689321a043bb25f">00095</a>   <span class="keyword">virtual</span> <a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html#a589c2ee08b140451b689321a043bb25f">~FastDetector</a>() {}
+<a name="l00096"></a>00096 
+<a name="l00097"></a>00097   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1feature__detection_1_1FastDetector.html#a8197fbd4ec44086e482cf70c498f8cf4">detect</a>(
+<a name="l00098"></a>00098       <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* frame,
+<a name="l00099"></a>00099       <span class="keyword">const</span> <a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a>&amp; img_pyr,
+<a name="l00100"></a>00100       <span class="keyword">const</span> <span class="keywordtype">double</span> detection_threshold,
+<a name="l00101"></a>00101       <a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a>&amp; fts);
+<a name="l00102"></a>00102 };
+<a name="l00103"></a>00103 
+<a name="l00104"></a>00104 } <span class="comment">// namespace feature_detection</span>
+<a name="l00105"></a>00105 } <span class="comment">// namespace svo</span>
+<a name="l00106"></a>00106 
+<a name="l00107"></a>00107 <span class="preprocessor">#endif // SVO_FEATURE_DETECTION_H_</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -170,7 +199,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

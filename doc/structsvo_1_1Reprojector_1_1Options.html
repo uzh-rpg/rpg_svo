@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>svo: svo::reprojection::Grid Struct Reference</title>
+<title>svo: svo::Reprojector::Options Struct Reference</title>
 
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
@@ -93,8 +93,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><a class="el" href="namespacesvo.html">svo</a>      </li>
-      <li class="navelem"><a class="el" href="namespacesvo_1_1reprojection.html">reprojection</a>      </li>
-      <li class="navelem"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html">Grid</a>      </li>
+      <li class="navelem"><a class="el" href="classsvo_1_1Reprojector.html">Reprojector</a>      </li>
+      <li class="navelem"><a class="el" href="structsvo_1_1Reprojector_1_1Options.html">Options</a>      </li>
     </ul>
   </div>
 </div>
@@ -103,76 +103,38 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a>  </div>
   <div class="headertitle">
-<div class="title">svo::reprojection::Grid Struct Reference</div>  </div>
+<div class="title">svo::Reprojector::Options Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<!-- doxytag: class="svo::reprojection::Grid" -->
-<p>The grid stores a set of candidate matches. For every grid cell we try to find one match.  
- <a href="structsvo_1_1reprojection_1_1Grid.html#details">More...</a></p>
+<!-- doxytag: class="svo::Reprojector::Options" -->
+<p><a class="el" href="classsvo_1_1Reprojector.html" title="Project points from the map into the image and find the corresponding feature (corner).">Reprojector</a> config parameters.  
+ <a href="structsvo_1_1Reprojector_1_1Options.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="reprojection_8h_source.html">reprojection.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="reprojector_8h_source.html">reprojector.h</a>&gt;</code></p>
 
-<p><a href="structsvo_1_1reprojection_1_1Grid-members.html">List of all members.</a></p>
+<p><a href="structsvo_1_1Reprojector_1_1Options-members.html">List of all members.</a></p>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html#a5ac8c91f33fcb77057c90fd2f0b13044">Grid</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html#afbf3ebbd7e4add859202dea8c445d08c">initialize</a> (vk::AbstractCamera *cam)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html#ace65381861c32d11b1d20d3419803dea">~Grid</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Options.html#a5b3e77b3844ecba38dd9830b6c7748ff">Options</a> ()</td></tr>
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesvo_1_1reprojection.html#a2880371e42a7cf15cafdcb372b04b905">CandidateGrid</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html#a52975ef83eea8787e5c045c2ccdbc688">cells</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html#a381bfb041a24d37c82608680572b75f0">cell_order</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html#a5d1dd12e202f54c51088b797091a90e0">cell_size</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html#a719580e92f96fd4bd5ead4097002fb2f">grid_n_cols</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html#accbc90020fa50d949fd10a9b997cddd6">grid_n_rows</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Options.html#a39b416d4db5ad1eb6646f78dcf5a2e33">max_n_kfs</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">max number of keyframes to reproject from  <a href="#a39b416d4db5ad1eb6646f78dcf5a2e33"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Options.html#a41d51dd0320271a3ef7afc0d58a76dcb">find_match_direct</a></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
-<div class="textblock"><p>The grid stores a set of candidate matches. For every grid cell we try to find one match. </p>
+<div class="textblock"><p><a class="el" href="classsvo_1_1Reprojector.html" title="Project points from the map into the image and find the corresponding feature (corner).">Reprojector</a> config parameters. </p>
 </div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a5ac8c91f33fcb77057c90fd2f0b13044"></a><!-- doxytag: member="svo::reprojection::Grid::Grid" ref="a5ac8c91f33fcb77057c90fd2f0b13044" args="()" -->
+<a class="anchor" id="a5b3e77b3844ecba38dd9830b6c7748ff"></a><!-- doxytag: member="svo::Reprojector::Options::Options" ref="a5b3e77b3844ecba38dd9830b6c7748ff" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html#a5ac8c91f33fcb77057c90fd2f0b13044">svo::reprojection::Grid::Grid</a> </td>
+          <td class="memname"><a class="el" href="structsvo_1_1Reprojector_1_1Options.html#a5b3e77b3844ecba38dd9830b6c7748ff">svo::Reprojector::Options::Options</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ace65381861c32d11b1d20d3419803dea"></a><!-- doxytag: member="svo::reprojection::Grid::~Grid" ref="ace65381861c32d11b1d20d3419803dea" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html#ace65381861c32d11b1d20d3419803dea">svo::reprojection::Grid::~Grid</a> </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-</div>
-</div>
-<hr/><h2>Member Function Documentation</h2>
-<a class="anchor" id="afbf3ebbd7e4add859202dea8c445d08c"></a><!-- doxytag: member="svo::reprojection::Grid::initialize" ref="afbf3ebbd7e4add859202dea8c445d08c" args="(vk::AbstractCamera *cam)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="structsvo_1_1reprojection_1_1Grid.html#afbf3ebbd7e4add859202dea8c445d08c">svo::reprojection::Grid::initialize</a> </td>
-          <td>(</td>
-          <td class="paramtype">vk::AbstractCamera *&#160;</td>
-          <td class="paramname"><em>cam</em></td><td>)</td>
-          <td></td>
+          <td><code> [inline]</code></td>
         </tr>
       </table>
 </div>
@@ -181,12 +143,12 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/><h2>Member Data Documentation</h2>
-<a class="anchor" id="a381bfb041a24d37c82608680572b75f0"></a><!-- doxytag: member="svo::reprojection::Grid::cell_order" ref="a381bfb041a24d37c82608680572b75f0" args="" -->
+<a class="anchor" id="a41d51dd0320271a3ef7afc0d58a76dcb"></a><!-- doxytag: member="svo::Reprojector::Options::find_match_direct" ref="a41d51dd0320271a3ef7afc0d58a76dcb" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;int&gt; <a class="el" href="structsvo_1_1reprojection_1_1Grid.html#a381bfb041a24d37c82608680572b75f0">svo::reprojection::Grid::cell_order</a></td>
+          <td class="memname">bool <a class="el" href="structsvo_1_1Reprojector_1_1Options.html#a41d51dd0320271a3ef7afc0d58a76dcb">svo::Reprojector::Options::find_match_direct</a></td>
         </tr>
       </table>
 </div>
@@ -194,60 +156,23 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a5d1dd12e202f54c51088b797091a90e0"></a><!-- doxytag: member="svo::reprojection::Grid::cell_size" ref="a5d1dd12e202f54c51088b797091a90e0" args="" -->
+<a class="anchor" id="a39b416d4db5ad1eb6646f78dcf5a2e33"></a><!-- doxytag: member="svo::Reprojector::Options::max_n_kfs" ref="a39b416d4db5ad1eb6646f78dcf5a2e33" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int <a class="el" href="structsvo_1_1reprojection_1_1Grid.html#a5d1dd12e202f54c51088b797091a90e0">svo::reprojection::Grid::cell_size</a></td>
+          <td class="memname">size_t <a class="el" href="structsvo_1_1Reprojector_1_1Options.html#a39b416d4db5ad1eb6646f78dcf5a2e33">svo::Reprojector::Options::max_n_kfs</a></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-</div>
-</div>
-<a class="anchor" id="a52975ef83eea8787e5c045c2ccdbc688"></a><!-- doxytag: member="svo::reprojection::Grid::cells" ref="a52975ef83eea8787e5c045c2ccdbc688" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacesvo_1_1reprojection.html#a2880371e42a7cf15cafdcb372b04b905">CandidateGrid</a> <a class="el" href="structsvo_1_1reprojection_1_1Grid.html#a52975ef83eea8787e5c045c2ccdbc688">svo::reprojection::Grid::cells</a></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a719580e92f96fd4bd5ead4097002fb2f"></a><!-- doxytag: member="svo::reprojection::Grid::grid_n_cols" ref="a719580e92f96fd4bd5ead4097002fb2f" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="structsvo_1_1reprojection_1_1Grid.html#a719580e92f96fd4bd5ead4097002fb2f">svo::reprojection::Grid::grid_n_cols</a></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="accbc90020fa50d949fd10a9b997cddd6"></a><!-- doxytag: member="svo::reprojection::Grid::grid_n_rows" ref="accbc90020fa50d949fd10a9b997cddd6" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="structsvo_1_1reprojection_1_1Grid.html#accbc90020fa50d949fd10a9b997cddd6">svo::reprojection::Grid::grid_n_rows</a></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
+<p>max number of keyframes to reproject from </p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/svo/<a class="el" href="reprojection_8h_source.html">reprojection.h</a></li>
+<li>include/svo/<a class="el" href="reprojector_8h_source.html">reprojector.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- window showing the filter options -->
@@ -267,7 +192,7 @@ Public Attributes</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

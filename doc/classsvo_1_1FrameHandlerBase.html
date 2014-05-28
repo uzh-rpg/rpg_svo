@@ -126,25 +126,27 @@ Inheritance diagram for svo::FrameHandlerBase:</div>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3">Stage</a> { <a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3a418eda784a667ade19e028f65645939c">PAUSED</a>, 
-<a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3a85b94fbcfc12beab0f77d5dcb8d78d60">FIRST_FRAME</a>, 
-<a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3a130f1525b476e9a6b039303ff1f45bbf">SECOND_FRAME</a>, 
-<a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3aa708d6fd2901c175d79d6c6c906eb211">DEFAULT_FRAME</a>
+<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3">Stage</a> { <br/>
+&#160;&#160;<a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3ab22f5ea6daeffbb83e02d3735855ce23">STAGE_PAUSED</a>, 
+<a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3ad801899e022bf6568caf2965950f80e8">STAGE_FIRST_FRAME</a>, 
+<a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3a1d8ccfef3bd02626e7e10f2eebfb98d2">STAGE_SECOND_FRAME</a>, 
+<a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3a0f0529e7b590696da1a5fcfbc6fc1b72">STAGE_DEFAULT_FRAME</a>, 
+<br/>
+&#160;&#160;<a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3a921afd20948eb1ac1ab7d1be99066d89">STAGE_RELOCALIZING</a>
+<br/>
  }</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2">TrackingQuality</a> { <a class="el" href="classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2ae7b7e4f41120d432de8ccebe246b8ca2">INSUFFICIENT</a>, 
-<a class="el" href="classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2a7cec6522faba6fee73b3f109a0c5a338">BAD</a>, 
-<a class="el" href="classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2adee99a7bb212cb1f7fef05267cb0c2aa">GOOD</a>
+<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2">TrackingQuality</a> { <a class="el" href="classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2a628aac513839d19b8bd7770e839a6bf3">TRACKING_INSUFFICIENT</a>, 
+<a class="el" href="classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2a9e3130514678892612dbdb5216f34b13">TRACKING_BAD</a>, 
+<a class="el" href="classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2a959adb5f5636e8e1c1eec5500104b9a2">TRACKING_GOOD</a>
  }</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> { <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ffae19b230b219ef9f09fd0dd61b41f3cf4">NO_KEYFRAME</a>, 
-<a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ffa19e135c857256dd92a42b647e8808cbd">IS_KEYFRAME</a>, 
-<a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ffa2de051911a2276d136cd0ea06806f107">FAILURE</a>
+<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> { <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ffa7475ed42ab8eabf6f0e26d2cadbcf732">RESULT_NO_KEYFRAME</a>, 
+<a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ffad8b69ef6c75d16a5244dd8835ec31757">RESULT_IS_KEYFRAME</a>, 
+<a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ffac696faeffdf97405055aa5e46ad45520">RESULT_FAILURE</a>
  }</td></tr>
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a2af876ce3a89d49c887be4b4344c677e">FrameHandlerBase</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a884f4b6bb0dee6b80e90907e5369d28d">~FrameHandlerBase</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a9c09cdb9fa7372aa5bf09cc422e62247">setInitialPose</a> (const SE3 &amp;T_frame_from_world)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set initial pose of the camera.  <a href="#a9c09cdb9fa7372aa5bf09cc422e62247"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classsvo_1_1Map.html">Map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a8491056d01508c977e1ad98292ee22d8">map</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current map.  <a href="#a8491056d01508c977e1ad98292ee22d8"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#ab2ccfae9c7fddf9cf7d4caa2655754f9">reset</a> ()</td></tr>
@@ -159,22 +161,20 @@ Public Member Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the processing time of the previous iteration.  <a href="#ae9ebdb82ddc205eaa3d940b0af6ebe0e"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#ae27cbd9b03e64588b40d7cc36871c8b4">lastNumObservations</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of feature observations of the last frame.  <a href="#ae27cbd9b03e64588b40d7cc36871c8b4"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1DepthFilter.html">DepthFilter</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#ad83c24108333e94feaf9dfadcdc3b56d">depthFilter</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Access the depth filter.  <a href="#ad83c24108333e94feaf9dfadcdc3b56d"></a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a082227cbf4a666013c8bd87a7f6a4b22">startFrameProcessingCommon</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Before a frame is processed, this function is called.  <a href="#a082227cbf4a666013c8bd87a7f6a4b22"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a5ce50a14e5afd32c254ab57ca082d4f6">finishFrameProcessingCommon</a> (size_t update_id, <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> dropout, size_t num_observations)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">When a frame is finished processing, this function is called.  <a href="#a5ce50a14e5afd32c254ab57ca082d4f6"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a3e8054ebd06cf51ba1b4f9b7b489e163">startFrameProcessingCommon</a> (const double timestamp)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Before a frame is processed, this function is called.  <a href="#a3e8054ebd06cf51ba1b4f9b7b489e163"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#af2e77e0cdf4156cd9fe60b264af5e5fb">finishFrameProcessingCommon</a> (const size_t update_id, const <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> dropout, const size_t num_observations)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">When a frame is finished processing, this function is called.  <a href="#af2e77e0cdf4156cd9fe60b264af5e5fb"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a9423e9934db9ef80de33fdbb3bb9bf10">resetCommon</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the map and frame handler to start from scratch.  <a href="#a9423e9934db9ef80de33fdbb3bb9bf10"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#accaed1e9a121fcf913e9366477feb72b">resetAll</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the frame handler. Implement in derived class.  <a href="#accaed1e9a121fcf913e9366477feb72b"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#aa73abab637db87bf6bfc2d913941018c">setTrackingQuality</a> (const size_t num_observations)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the tracking quality based on the number of tracked features.  <a href="#aa73abab637db87bf6bfc2d913941018c"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a0d710295effb757613c2ee9e15bb4ca5">optimizeStructure</a> (<a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> frame, size_t max_n_pts, int max_iter)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Optimize some of the observed 3D points.  <a href="#a0d710295effb757613c2ee9e15bb4ca5"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a4a742ca17dfc575c08a6f58f22723b18">setTrackingQuality</a> (const size_t num_observations)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the tracking quality based on the number of tracked features.  <a href="#a4a742ca17dfc575c08a6f58f22723b18"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a0ca6e39df34d95695acc0884181c9a85">optimizeStructure</a> (<a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> frame, size_t max_n_pts, int max_iter)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Optimize some of the observed 3D points.  <a href="#a0ca6e39df34d95695acc0884181c9a85"></a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1FrameHandlerBase.html#ad6542fbd14b0055fa6e28c7d545c90f3">Stage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a892e230faa0a3073ed05b363968ebe98">stage_</a></td></tr>
@@ -185,8 +185,6 @@ Protected Attributes</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag the user can set to start the system when the next image is received.  <a href="#a8feb15626100f7ef0adccd1d412596ad"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1Map.html">Map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a429f55c5cf944bc37d2d435bdff79f94">map_</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a> of keyframes created by the slam system.  <a href="#a429f55c5cf944bc37d2d435bdff79f94"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">SE3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a03b0c991174e628e5b4a2b86fff64cd7">T_f_w_init_</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial pose of the camera.  <a href="#a03b0c991174e628e5b4a2b86fff64cd7"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">vk::Timer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a60b9699bf6c7dd0e13c48f54b859a3d0">timer_</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Stopwatch to measure time to process frame.  <a href="#a60b9699bf6c7dd0e13c48f54b859a3d0"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">vk::RingBuffer&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#ad4dfcc808f58f96c2ffbc6f25ebaa39e">acc_frame_timings_</a></td></tr>
@@ -197,8 +195,6 @@ Protected Attributes</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of observations in the previous frame.  <a href="#a21c9f984ddd3b2096595ec07dd5df12e"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2">TrackingQuality</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a731f97f7daa1b810d4f0c39f45c4804e">tracking_quality_</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">An estimate of the tracking quality based on the number of tracked features.  <a href="#a731f97f7daa1b810d4f0c39f45c4804e"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1DepthFilter.html">DepthFilter</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerBase.html#a1907f1ee9542949e1510280764a51128">depth_filter_</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Depth estimation algorithm runs in a parallel thread and is used to initialize new 3D points.  <a href="#a1907f1ee9542949e1510280764a51128"></a><br/></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Base class for various VO pipelines. Manages the map and the state machine. </p>
@@ -214,13 +210,15 @@ Protected Attributes</h2></td></tr>
 </div>
 <div class="memdoc">
 <dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" id="ad6542fbd14b0055fa6e28c7d545c90f3a418eda784a667ade19e028f65645939c"></a><!-- doxytag: member="PAUSED" ref="ad6542fbd14b0055fa6e28c7d545c90f3a418eda784a667ade19e028f65645939c" args="" -->PAUSED</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="ad6542fbd14b0055fa6e28c7d545c90f3ab22f5ea6daeffbb83e02d3735855ce23"></a><!-- doxytag: member="STAGE_PAUSED" ref="ad6542fbd14b0055fa6e28c7d545c90f3ab22f5ea6daeffbb83e02d3735855ce23" args="" -->STAGE_PAUSED</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ad6542fbd14b0055fa6e28c7d545c90f3a85b94fbcfc12beab0f77d5dcb8d78d60"></a><!-- doxytag: member="FIRST_FRAME" ref="ad6542fbd14b0055fa6e28c7d545c90f3a85b94fbcfc12beab0f77d5dcb8d78d60" args="" -->FIRST_FRAME</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="ad6542fbd14b0055fa6e28c7d545c90f3ad801899e022bf6568caf2965950f80e8"></a><!-- doxytag: member="STAGE_FIRST_FRAME" ref="ad6542fbd14b0055fa6e28c7d545c90f3ad801899e022bf6568caf2965950f80e8" args="" -->STAGE_FIRST_FRAME</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ad6542fbd14b0055fa6e28c7d545c90f3a130f1525b476e9a6b039303ff1f45bbf"></a><!-- doxytag: member="SECOND_FRAME" ref="ad6542fbd14b0055fa6e28c7d545c90f3a130f1525b476e9a6b039303ff1f45bbf" args="" -->SECOND_FRAME</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="ad6542fbd14b0055fa6e28c7d545c90f3a1d8ccfef3bd02626e7e10f2eebfb98d2"></a><!-- doxytag: member="STAGE_SECOND_FRAME" ref="ad6542fbd14b0055fa6e28c7d545c90f3a1d8ccfef3bd02626e7e10f2eebfb98d2" args="" -->STAGE_SECOND_FRAME</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ad6542fbd14b0055fa6e28c7d545c90f3aa708d6fd2901c175d79d6c6c906eb211"></a><!-- doxytag: member="DEFAULT_FRAME" ref="ad6542fbd14b0055fa6e28c7d545c90f3aa708d6fd2901c175d79d6c6c906eb211" args="" -->DEFAULT_FRAME</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="ad6542fbd14b0055fa6e28c7d545c90f3a0f0529e7b590696da1a5fcfbc6fc1b72"></a><!-- doxytag: member="STAGE_DEFAULT_FRAME" ref="ad6542fbd14b0055fa6e28c7d545c90f3a0f0529e7b590696da1a5fcfbc6fc1b72" args="" -->STAGE_DEFAULT_FRAME</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ad6542fbd14b0055fa6e28c7d545c90f3a921afd20948eb1ac1ab7d1be99066d89"></a><!-- doxytag: member="STAGE_RELOCALIZING" ref="ad6542fbd14b0055fa6e28c7d545c90f3a921afd20948eb1ac1ab7d1be99066d89" args="" -->STAGE_RELOCALIZING</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dd>
@@ -239,11 +237,11 @@ Protected Attributes</h2></td></tr>
 </div>
 <div class="memdoc">
 <dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" id="aee998ae87f2233a006c5abf5f5521da2ae7b7e4f41120d432de8ccebe246b8ca2"></a><!-- doxytag: member="INSUFFICIENT" ref="aee998ae87f2233a006c5abf5f5521da2ae7b7e4f41120d432de8ccebe246b8ca2" args="" -->INSUFFICIENT</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="aee998ae87f2233a006c5abf5f5521da2a628aac513839d19b8bd7770e839a6bf3"></a><!-- doxytag: member="TRACKING_INSUFFICIENT" ref="aee998ae87f2233a006c5abf5f5521da2a628aac513839d19b8bd7770e839a6bf3" args="" -->TRACKING_INSUFFICIENT</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="aee998ae87f2233a006c5abf5f5521da2a7cec6522faba6fee73b3f109a0c5a338"></a><!-- doxytag: member="BAD" ref="aee998ae87f2233a006c5abf5f5521da2a7cec6522faba6fee73b3f109a0c5a338" args="" -->BAD</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="aee998ae87f2233a006c5abf5f5521da2a9e3130514678892612dbdb5216f34b13"></a><!-- doxytag: member="TRACKING_BAD" ref="aee998ae87f2233a006c5abf5f5521da2a9e3130514678892612dbdb5216f34b13" args="" -->TRACKING_BAD</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="aee998ae87f2233a006c5abf5f5521da2adee99a7bb212cb1f7fef05267cb0c2aa"></a><!-- doxytag: member="GOOD" ref="aee998ae87f2233a006c5abf5f5521da2adee99a7bb212cb1f7fef05267cb0c2aa" args="" -->GOOD</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="aee998ae87f2233a006c5abf5f5521da2a959adb5f5636e8e1c1eec5500104b9a2"></a><!-- doxytag: member="TRACKING_GOOD" ref="aee998ae87f2233a006c5abf5f5521da2a959adb5f5636e8e1c1eec5500104b9a2" args="" -->TRACKING_GOOD</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dd>
@@ -262,11 +260,11 @@ Protected Attributes</h2></td></tr>
 </div>
 <div class="memdoc">
 <dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" id="abb178c7e61a44ace3798bd1b68d053ffae19b230b219ef9f09fd0dd61b41f3cf4"></a><!-- doxytag: member="NO_KEYFRAME" ref="abb178c7e61a44ace3798bd1b68d053ffae19b230b219ef9f09fd0dd61b41f3cf4" args="" -->NO_KEYFRAME</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="abb178c7e61a44ace3798bd1b68d053ffa7475ed42ab8eabf6f0e26d2cadbcf732"></a><!-- doxytag: member="RESULT_NO_KEYFRAME" ref="abb178c7e61a44ace3798bd1b68d053ffa7475ed42ab8eabf6f0e26d2cadbcf732" args="" -->RESULT_NO_KEYFRAME</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="abb178c7e61a44ace3798bd1b68d053ffa19e135c857256dd92a42b647e8808cbd"></a><!-- doxytag: member="IS_KEYFRAME" ref="abb178c7e61a44ace3798bd1b68d053ffa19e135c857256dd92a42b647e8808cbd" args="" -->IS_KEYFRAME</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="abb178c7e61a44ace3798bd1b68d053ffad8b69ef6c75d16a5244dd8835ec31757"></a><!-- doxytag: member="RESULT_IS_KEYFRAME" ref="abb178c7e61a44ace3798bd1b68d053ffad8b69ef6c75d16a5244dd8835ec31757" args="" -->RESULT_IS_KEYFRAME</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="abb178c7e61a44ace3798bd1b68d053ffa2de051911a2276d136cd0ea06806f107"></a><!-- doxytag: member="FAILURE" ref="abb178c7e61a44ace3798bd1b68d053ffa2de051911a2276d136cd0ea06806f107" args="" -->FAILURE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="abb178c7e61a44ace3798bd1b68d053ffac696faeffdf97405055aa5e46ad45520"></a><!-- doxytag: member="RESULT_FAILURE" ref="abb178c7e61a44ace3798bd1b68d053ffac696faeffdf97405055aa5e46ad45520" args="" -->RESULT_FAILURE</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dd>
@@ -308,44 +306,26 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <hr/><h2>Member Function Documentation</h2>
-<a class="anchor" id="ad83c24108333e94feaf9dfadcdc3b56d"></a><!-- doxytag: member="svo::FrameHandlerBase::depthFilter" ref="ad83c24108333e94feaf9dfadcdc3b56d" args="() const " -->
+<a class="anchor" id="af2e77e0cdf4156cd9fe60b264af5e5fb"></a><!-- doxytag: member="svo::FrameHandlerBase::finishFrameProcessingCommon" ref="af2e77e0cdf4156cd9fe60b264af5e5fb" args="(const size_t update_id, const UpdateResult dropout, const size_t num_observations)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classsvo_1_1DepthFilter.html">DepthFilter</a>* <a class="el" href="classsvo_1_1FrameHandlerBase.html#ad83c24108333e94feaf9dfadcdc3b56d">svo::FrameHandlerBase::depthFilter</a> </td>
+          <td class="memname">int <a class="el" href="classsvo_1_1FrameHandlerBase.html#af2e77e0cdf4156cd9fe60b264af5e5fb">svo::FrameHandlerBase::finishFrameProcessingCommon</a> </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const<code> [inline]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Access the depth filter. </p>
-
-</div>
-</div>
-<a class="anchor" id="a5ce50a14e5afd32c254ab57ca082d4f6"></a><!-- doxytag: member="svo::FrameHandlerBase::finishFrameProcessingCommon" ref="a5ce50a14e5afd32c254ab57ca082d4f6" args="(size_t update_id, UpdateResult dropout, size_t num_observations)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="classsvo_1_1FrameHandlerBase.html#a5ce50a14e5afd32c254ab57ca082d4f6">svo::FrameHandlerBase::finishFrameProcessingCommon</a> </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
           <td class="paramname"><em>update_id</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a>&#160;</td>
           <td class="paramname"><em>dropout</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">const size_t&#160;</td>
           <td class="paramname"><em>num_observations</em>&#160;</td>
         </tr>
         <tr>
@@ -415,12 +395,12 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a0d710295effb757613c2ee9e15bb4ca5"></a><!-- doxytag: member="svo::FrameHandlerBase::optimizeStructure" ref="a0d710295effb757613c2ee9e15bb4ca5" args="(FramePtr frame, size_t max_n_pts, int max_iter)" -->
+<a class="anchor" id="a0ca6e39df34d95695acc0884181c9a85"></a><!-- doxytag: member="svo::FrameHandlerBase::optimizeStructure" ref="a0ca6e39df34d95695acc0884181c9a85" args="(FramePtr frame, size_t max_n_pts, int max_iter)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classsvo_1_1FrameHandlerBase.html#a0d710295effb757613c2ee9e15bb4ca5">svo::FrameHandlerBase::optimizeStructure</a> </td>
+          <td class="memname">virtual void <a class="el" href="classsvo_1_1FrameHandlerBase.html#a0ca6e39df34d95695acc0884181c9a85">svo::FrameHandlerBase::optimizeStructure</a> </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a>&#160;</td>
           <td class="paramname"><em>frame</em>, </td>
@@ -440,7 +420,7 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td><code> [protected]</code></td>
+          <td></td><td><code> [protected, virtual]</code></td>
         </tr>
       </table>
 </div>
@@ -506,35 +486,16 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a9c09cdb9fa7372aa5bf09cc422e62247"></a><!-- doxytag: member="svo::FrameHandlerBase::setInitialPose" ref="a9c09cdb9fa7372aa5bf09cc422e62247" args="(const SE3 &amp;T_frame_from_world)" -->
+<a class="anchor" id="a4a742ca17dfc575c08a6f58f22723b18"></a><!-- doxytag: member="svo::FrameHandlerBase::setTrackingQuality" ref="a4a742ca17dfc575c08a6f58f22723b18" args="(const size_t num_observations)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classsvo_1_1FrameHandlerBase.html#a9c09cdb9fa7372aa5bf09cc422e62247">svo::FrameHandlerBase::setInitialPose</a> </td>
-          <td>(</td>
-          <td class="paramtype">const SE3 &amp;&#160;</td>
-          <td class="paramname"><em>T_frame_from_world</em></td><td>)</td>
-          <td><code> [inline]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Set initial pose of the camera. </p>
-
-</div>
-</div>
-<a class="anchor" id="aa73abab637db87bf6bfc2d913941018c"></a><!-- doxytag: member="svo::FrameHandlerBase::setTrackingQuality" ref="aa73abab637db87bf6bfc2d913941018c" args="(const size_t num_observations)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classsvo_1_1FrameHandlerBase.html#aa73abab637db87bf6bfc2d913941018c">svo::FrameHandlerBase::setTrackingQuality</a> </td>
+          <td class="memname">virtual void <a class="el" href="classsvo_1_1FrameHandlerBase.html#a4a742ca17dfc575c08a6f58f22723b18">svo::FrameHandlerBase::setTrackingQuality</a> </td>
           <td>(</td>
           <td class="paramtype">const size_t&#160;</td>
           <td class="paramname"><em>num_observations</em></td><td>)</td>
-          <td><code> [protected]</code></td>
+          <td><code> [protected, virtual]</code></td>
         </tr>
       </table>
 </div>
@@ -580,14 +541,15 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a082227cbf4a666013c8bd87a7f6a4b22"></a><!-- doxytag: member="svo::FrameHandlerBase::startFrameProcessingCommon" ref="a082227cbf4a666013c8bd87a7f6a4b22" args="()" -->
+<a class="anchor" id="a3e8054ebd06cf51ba1b4f9b7b489e163"></a><!-- doxytag: member="svo::FrameHandlerBase::startFrameProcessingCommon" ref="a3e8054ebd06cf51ba1b4f9b7b489e163" args="(const double timestamp)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classsvo_1_1FrameHandlerBase.html#a082227cbf4a666013c8bd87a7f6a4b22">svo::FrameHandlerBase::startFrameProcessingCommon</a> </td>
+          <td class="memname">bool <a class="el" href="classsvo_1_1FrameHandlerBase.html#a3e8054ebd06cf51ba1b4f9b7b489e163">svo::FrameHandlerBase::startFrameProcessingCommon</a> </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>timestamp</em></td><td>)</td>
           <td><code> [protected]</code></td>
         </tr>
       </table>
@@ -644,21 +606,6 @@ Protected Attributes</h2></td></tr>
 <div class="memdoc">
 
 <p>Number of observed features of the last 10 frames, used to give some user feedback on the tracking performance. </p>
-
-</div>
-</div>
-<a class="anchor" id="a1907f1ee9542949e1510280764a51128"></a><!-- doxytag: member="svo::FrameHandlerBase::depth_filter_" ref="a1907f1ee9542949e1510280764a51128" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classsvo_1_1DepthFilter.html">DepthFilter</a>* <a class="el" href="classsvo_1_1FrameHandlerBase.html#a1907f1ee9542949e1510280764a51128">svo::FrameHandlerBase::depth_filter_</a><code> [protected]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Depth estimation algorithm runs in a parallel thread and is used to initialize new 3D points. </p>
 
 </div>
 </div>
@@ -737,21 +684,6 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a03b0c991174e628e5b4a2b86fff64cd7"></a><!-- doxytag: member="svo::FrameHandlerBase::T_f_w_init_" ref="a03b0c991174e628e5b4a2b86fff64cd7" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">SE3 <a class="el" href="classsvo_1_1FrameHandlerBase.html#a03b0c991174e628e5b4a2b86fff64cd7">svo::FrameHandlerBase::T_f_w_init_</a><code> [protected]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Initial pose of the camera. </p>
-
-</div>
-</div>
 <a class="anchor" id="a60b9699bf6c7dd0e13c48f54b859a3d0"></a><!-- doxytag: member="svo::FrameHandlerBase::timer_" ref="a60b9699bf6c7dd0e13c48f54b859a3d0" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -803,7 +735,7 @@ Protected Attributes</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

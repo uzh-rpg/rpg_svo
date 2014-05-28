@@ -106,14 +106,11 @@ Namespaces</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1map__debug.html">map_debug</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><p>A collection of debug functions to check the data consistency. </p>
 <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1matcher.html">matcher</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><p>Patch-matcher for reprojection-matching and epipolar search in triangulation. </p>
-<br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1pose__optimizer.html">pose_optimizer</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><p>Motion-only bundle adjustment. Minimize the reprojection error of a single frame. </p>
 <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1reprojection.html">reprojection</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><p>Project points from the map into the image and find the corresponding feature (corner). </p>
+<tr><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1warp.html">warp</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><p>Warp a patch from the reference view to the current view. </p>
 <br/></td></tr>
 <tr><td colspan="2"><h2><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -135,12 +132,19 @@ Classes</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for converged 3D points that are not already assigned to two keyframes.  <a href="classsvo_1_1MapPointCandidates.html#details">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Map.html">Map</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a> object which saves all keyframes which are in a map.  <a href="classsvo_1_1Map.html#details">More...</a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Matcher.html">Matcher</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Patch-matcher for reprojection-matching and epipolar search in triangulation.  <a href="classsvo_1_1Matcher.html#details">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Point.html">Point</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">A 3D point that was triangulated from at least two corresponding image features.  <a href="classsvo_1_1Point.html#details">More...</a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">A 3D point on the surface of the scene.  <a href="classsvo_1_1Point.html#details">More...</a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Reprojector.html">Reprojector</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Project points from the map into the image and find the corresponding feature (corner).  <a href="classsvo_1_1Reprojector.html#details">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1SparseImgAlign.html">SparseImgAlign</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Optimize the pose of the frame by minimizing the photometric error of feature patches.  <a href="classsvo_1_1SparseImgAlign.html#details">More...</a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">typedef g2o::EdgeProjectXYZ2UV&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo.html#ab405b307d732554d91ca05f2d827ead8">g2oEdgeSE3</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">typedef g2o::VertexSE3Expmap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo.html#a469ea351de55547bb26f9b827aad6059">g2oFrameSE3</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">typedef g2o::VertexSBAPointXYZ&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo.html#a091cb15c36354da44cbd3579b576ce13">g2oPoint</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef list&lt; <a class="el" href="structsvo_1_1Feature.html">Feature</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef vector&lt; cv::Mat &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef boost::shared_ptr&lt; <a class="el" href="classsvo_1_1Frame.html">Frame</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a></td></tr>
@@ -173,6 +177,45 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">typedef boost::shared_ptr&lt;<a class="el" href="classsvo_1_1Frame.html">Frame</a>&gt; <a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">svo::FramePtr</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab405b307d732554d91ca05f2d827ead8"></a><!-- doxytag: member="svo::g2oEdgeSE3" ref="ab405b307d732554d91ca05f2d827ead8" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef g2o::EdgeProjectXYZ2UV <a class="el" href="namespacesvo.html#ab405b307d732554d91ca05f2d827ead8">svo::g2oEdgeSE3</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a469ea351de55547bb26f9b827aad6059"></a><!-- doxytag: member="svo::g2oFrameSE3" ref="a469ea351de55547bb26f9b827aad6059" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef g2o::VertexSE3Expmap <a class="el" href="namespacesvo.html#a469ea351de55547bb26f9b827aad6059">svo::g2oFrameSE3</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a091cb15c36354da44cbd3579b576ce13"></a><!-- doxytag: member="svo::g2oPoint" ref="a091cb15c36354da44cbd3579b576ce13" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef g2o::VertexSBAPointXYZ <a class="el" href="namespacesvo.html#a091cb15c36354da44cbd3579b576ce13">svo::g2oPoint</a></td>
         </tr>
       </table>
 </div>
@@ -290,7 +333,7 @@ Variables</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

@@ -113,48 +113,71 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00031"></a>00031 
 <a name="l00032"></a>00032 <span class="keyword">typedef</span> Matrix&lt;double, 2, 3&gt; <a class="code" href="namespacesvo.html#ae88beb0abd03c4a285f748a44ce7d677">Matrix23d</a>;
 <a name="l00033"></a>00033 
-<a name="l00035"></a><a class="code" href="classsvo_1_1Point.html">00035</a> <span class="keyword">class </span><a class="code" href="classsvo_1_1Point.html" title="A 3D point that was triangulated from at least two corresponding image features.">Point</a> : boost::noncopyable
+<a name="l00035"></a><a class="code" href="classsvo_1_1Point.html">00035</a> <span class="keyword">class </span><a class="code" href="classsvo_1_1Point.html" title="A 3D point on the surface of the scene.">Point</a> : boost::noncopyable
 <a name="l00036"></a>00036 {
 <a name="l00037"></a>00037 <span class="keyword">public</span>:
 <a name="l00038"></a>00038 
-<a name="l00039"></a><a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca8b002eb4728bd2c08063fcee0fec4184">00039</a>   <span class="keyword">enum</span> <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196c">PointType</a> {<a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196cab27b9ad08aeb0eeb09f9f7b47137139b">DELETED</a>, <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196cab516ec5c3efbf841660e31720456e68a">CANDIDATE</a>, <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca8b002eb4728bd2c08063fcee0fec4184">UNKNOWN_QUALITY</a>, <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196cabbe23ca4be2b8e7ebf53717169827b3d">GOOD_QUALITY</a> };
-<a name="l00040"></a><a class="code" href="classsvo_1_1Point.html#a8e34853e4e00f6cee337802f001189d1a3bede27e0f00a00060a8b2a137b953c4">00040</a>   <span class="keyword">enum</span> <a class="code" href="classsvo_1_1Point.html#a8e34853e4e00f6cee337802f001189d1">PointOrigin</a> { <a class="code" href="classsvo_1_1Point.html#a8e34853e4e00f6cee337802f001189d1a32b2d84dc28a10aa748d9baab0619374">TRIANGULATION</a>, <a class="code" href="classsvo_1_1Point.html#a8e34853e4e00f6cee337802f001189d1a3c6e6f1476608702d67c8a5dae175f74">DEPTH</a>, <a class="code" href="classsvo_1_1Point.html#a8e34853e4e00f6cee337802f001189d1a3bede27e0f00a00060a8b2a137b953c4">VOGIATZIS</a>, <a class="code" href="classsvo_1_1Point.html#a8e34853e4e00f6cee337802f001189d1acc6e0483bd1c36510d10065dd24c7bd3">IDFILTER</a> };
-<a name="l00041"></a>00041 
-<a name="l00042"></a><a class="code" href="classsvo_1_1Point.html#a41040ba71548161a17106c4555750265">00042</a>   <span class="keyword">static</span> <span class="keywordtype">int</span>                  <a class="code" href="classsvo_1_1Point.html#a41040ba71548161a17106c4555750265" title="Counts the number of created points. Used to set the unique id.">point_counter_</a>;           
-<a name="l00043"></a><a class="code" href="classsvo_1_1Point.html#a4dc25c9a96296984265b1a3a510b8f19">00043</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#a4dc25c9a96296984265b1a3a510b8f19" title="Unique ID of the point.">id_</a>;                      
-<a name="l00044"></a><a class="code" href="classsvo_1_1Point.html#aa14dd9455e79aa16a09a2e383a826273">00044</a>   Vector3d                    <a class="code" href="classsvo_1_1Point.html#aa14dd9455e79aa16a09a2e383a826273" title="3d pos of the point in the world coordinate frame.">pos_</a>;                     
-<a name="l00045"></a><a class="code" href="classsvo_1_1Point.html#a2a3624f466c99a627bba405192467d46">00045</a>   list&lt;Feature*&gt;              <a class="code" href="classsvo_1_1Point.html#a2a3624f466c99a627bba405192467d46" title="References to keyframes which observe the point.">obs_</a>;                     
-<a name="l00046"></a><a class="code" href="classsvo_1_1Point.html#aebcb4d585db1687908f6408aa2bea768">00046</a>   <span class="keywordtype">size_t</span>                      <a class="code" href="classsvo_1_1Point.html#aebcb4d585db1687908f6408aa2bea768" title="Number of obervations, not only keyframes.">n_obs_</a>;                   
-<a name="l00047"></a><a class="code" href="classsvo_1_1Point.html#ad06f0e784cee9c51b4caee626e5a8504">00047</a>   <a class="code" href="point_8h.html#a6081d7f932aed70367fe07bd3754f916">g2oPoint</a>*                   <a class="code" href="classsvo_1_1Point.html#ad06f0e784cee9c51b4caee626e5a8504" title="Temporary pointer to the point-vertex in g2o during bundle adjustment.">v_pt_</a>;                    
-<a name="l00048"></a><a class="code" href="classsvo_1_1Point.html#ae78987b393de6dac62044e53e2512ed8">00048</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#ae78987b393de6dac62044e53e2512ed8" title="Timestamp of last publishing.">last_published_ts_</a>;       
-<a name="l00049"></a><a class="code" href="classsvo_1_1Point.html#acc50c1db0ac0dd7edb82241f8d62bd78">00049</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#acc50c1db0ac0dd7edb82241f8d62bd78" title="Flag for the reprojection: don&#39;t reproject a pt twice.">last_projected_kf_id_</a>;    
-<a name="l00050"></a><a class="code" href="classsvo_1_1Point.html#af55a54c3d8d4f47c38b7c58ac8a99e0a">00050</a>   <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196c">PointType</a>                   <a class="code" href="classsvo_1_1Point.html#af55a54c3d8d4f47c38b7c58ac8a99e0a" title="Quality of the point.">type_</a>;                    
-<a name="l00051"></a><a class="code" href="classsvo_1_1Point.html#a0c9581298f73d0853f03b63d8849309e">00051</a>   <a class="code" href="classsvo_1_1Point.html#a8e34853e4e00f6cee337802f001189d1">PointOrigin</a>                 <a class="code" href="classsvo_1_1Point.html#a0c9581298f73d0853f03b63d8849309e" title="What is the source of the point, i.e. DEPTH if a kinect is used.">origin_</a>;                  
-<a name="l00052"></a><a class="code" href="classsvo_1_1Point.html#aa22f74f4850050eb4c38f8f3b80c17d6">00052</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#aa22f74f4850050eb4c38f8f3b80c17d6" title="Number of failed reprojections. Used to assess the quality of the point.">n_failed_reproj_</a>;         
-<a name="l00053"></a><a class="code" href="classsvo_1_1Point.html#a0ba6315556c70718cf89f6d78553277e">00053</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#a0ba6315556c70718cf89f6d78553277e" title="Number of succeeded reprojections. Used to assess the quality of the point.">n_succeeded_reproj_</a>;      
-<a name="l00054"></a><a class="code" href="classsvo_1_1Point.html#a4968925f54f239e75f31ed3818814ccc">00054</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#a4968925f54f239e75f31ed3818814ccc">last_structure_optim_</a>;
-<a name="l00055"></a>00055 
-<a name="l00056"></a>00056   <a class="code" href="classsvo_1_1Point.html#a1cb977457af312c28834151f4049d0bb">Point</a>(Vector3d pos, <a class="code" href="classsvo_1_1Point.html#a8e34853e4e00f6cee337802f001189d1">PointOrigin</a> origin);
-<a name="l00057"></a>00057   <a class="code" href="classsvo_1_1Point.html#a3ad56f3912adfdca172593afbddb0e97">~Point</a>();
-<a name="l00058"></a>00058 
-<a name="l00060"></a>00060   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Point.html#a76c2b272b88ae69db71081ed6c60e9bb" title="Add a reference to a frame.">addFrameRef</a>(<a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* ftr);
+<a name="l00039"></a><a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196c">00039</a>   <span class="keyword">enum</span> <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196c">PointType</a> {
+<a name="l00040"></a><a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca9059bc4ad01780ddad41fd09b6d44911">00040</a>     <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca9059bc4ad01780ddad41fd09b6d44911">TYPE_DELETED</a>,
+<a name="l00041"></a><a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196cacf1ace310f21f67c332402585a819d90">00041</a>     <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196cacf1ace310f21f67c332402585a819d90">TYPE_CANDIDATE</a>,
+<a name="l00042"></a><a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca73ec5f429fbe9c1e583ad907cbbe5bbf">00042</a>     <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca73ec5f429fbe9c1e583ad907cbbe5bbf">TYPE_UNKNOWN</a>,
+<a name="l00043"></a><a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca940b34e0bd7f47aca548d398f2b02175">00043</a>     <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca940b34e0bd7f47aca548d398f2b02175">TYPE_GOOD</a>
+<a name="l00044"></a>00044   };
+<a name="l00045"></a>00045 
+<a name="l00046"></a><a class="code" href="classsvo_1_1Point.html#a41040ba71548161a17106c4555750265">00046</a>   <span class="keyword">static</span> <span class="keywordtype">int</span>                  <a class="code" href="classsvo_1_1Point.html#a41040ba71548161a17106c4555750265" title="Counts the number of created points. Used to set the unique id.">point_counter_</a>;           
+<a name="l00047"></a><a class="code" href="classsvo_1_1Point.html#a4dc25c9a96296984265b1a3a510b8f19">00047</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#a4dc25c9a96296984265b1a3a510b8f19" title="Unique ID of the point.">id_</a>;                      
+<a name="l00048"></a><a class="code" href="classsvo_1_1Point.html#aa14dd9455e79aa16a09a2e383a826273">00048</a>   Vector3d                    <a class="code" href="classsvo_1_1Point.html#aa14dd9455e79aa16a09a2e383a826273" title="3d pos of the point in the world coordinate frame.">pos_</a>;                     
+<a name="l00049"></a><a class="code" href="classsvo_1_1Point.html#ae7f93dc3f16cf245b67ac3f9fa6d5250">00049</a>   Vector3d                    <a class="code" href="classsvo_1_1Point.html#ae7f93dc3f16cf245b67ac3f9fa6d5250" title="Surface normal at point.">normal_</a>;                  
+<a name="l00050"></a><a class="code" href="classsvo_1_1Point.html#abe33b3ba5937ea033863973e93c6ec07">00050</a>   Matrix3d                    <a class="code" href="classsvo_1_1Point.html#abe33b3ba5937ea033863973e93c6ec07" title="Inverse covariance matrix of normal estimation.">normal_information_</a>;      
+<a name="l00051"></a><a class="code" href="classsvo_1_1Point.html#a9366dd131e9ec57c744b7f3497451af0">00051</a>   <span class="keywordtype">bool</span>                        <a class="code" href="classsvo_1_1Point.html#a9366dd131e9ec57c744b7f3497451af0" title="Flag whether the surface normal was estimated or not.">normal_set_</a>;              
+<a name="l00052"></a><a class="code" href="classsvo_1_1Point.html#a2a3624f466c99a627bba405192467d46">00052</a>   list&lt;Feature*&gt;              <a class="code" href="classsvo_1_1Point.html#a2a3624f466c99a627bba405192467d46" title="References to keyframes which observe the point.">obs_</a>;                     
+<a name="l00053"></a><a class="code" href="classsvo_1_1Point.html#aebcb4d585db1687908f6408aa2bea768">00053</a>   <span class="keywordtype">size_t</span>                      <a class="code" href="classsvo_1_1Point.html#aebcb4d585db1687908f6408aa2bea768" title="Number of obervations: Keyframes AND successful reprojections in intermediate frames.">n_obs_</a>;                   
+<a name="l00054"></a><a class="code" href="classsvo_1_1Point.html#ad06f0e784cee9c51b4caee626e5a8504">00054</a>   <a class="code" href="namespacesvo.html#a091cb15c36354da44cbd3579b576ce13">g2oPoint</a>*                   <a class="code" href="classsvo_1_1Point.html#ad06f0e784cee9c51b4caee626e5a8504" title="Temporary pointer to the point-vertex in g2o during bundle adjustment.">v_pt_</a>;                    
+<a name="l00055"></a><a class="code" href="classsvo_1_1Point.html#ae78987b393de6dac62044e53e2512ed8">00055</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#ae78987b393de6dac62044e53e2512ed8" title="Timestamp of last publishing.">last_published_ts_</a>;       
+<a name="l00056"></a><a class="code" href="classsvo_1_1Point.html#acc50c1db0ac0dd7edb82241f8d62bd78">00056</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#acc50c1db0ac0dd7edb82241f8d62bd78" title="Flag for the reprojection: don&#39;t reproject a pt twice.">last_projected_kf_id_</a>;    
+<a name="l00057"></a><a class="code" href="classsvo_1_1Point.html#af55a54c3d8d4f47c38b7c58ac8a99e0a">00057</a>   <a class="code" href="classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196c">PointType</a>                   <a class="code" href="classsvo_1_1Point.html#af55a54c3d8d4f47c38b7c58ac8a99e0a" title="Quality of the point.">type_</a>;                    
+<a name="l00058"></a><a class="code" href="classsvo_1_1Point.html#aa22f74f4850050eb4c38f8f3b80c17d6">00058</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#aa22f74f4850050eb4c38f8f3b80c17d6" title="Number of failed reprojections. Used to assess the quality of the point.">n_failed_reproj_</a>;         
+<a name="l00059"></a><a class="code" href="classsvo_1_1Point.html#a0ba6315556c70718cf89f6d78553277e">00059</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#a0ba6315556c70718cf89f6d78553277e" title="Number of succeeded reprojections. Used to assess the quality of the point.">n_succeeded_reproj_</a>;      
+<a name="l00060"></a><a class="code" href="classsvo_1_1Point.html#a4968925f54f239e75f31ed3818814ccc">00060</a>   <span class="keywordtype">int</span>                         <a class="code" href="classsvo_1_1Point.html#a4968925f54f239e75f31ed3818814ccc" title="Timestamp of last point optimization.">last_structure_optim_</a>;    
 <a name="l00061"></a>00061 
-<a name="l00063"></a>00063   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Point.html#ade0eec11605fb17ad2331f5ed54229f6" title="Remove reference to a frame.">deleteFrameRef</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* frame);
-<a name="l00064"></a>00064 
-<a name="l00066"></a>00066   <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* <a class="code" href="classsvo_1_1Point.html#a84ad2afd63474dc43af86fa216bdb39f" title="Check whether mappoint has reference to a frame.">findFrameRef</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* frame);
-<a name="l00067"></a>00067 
-<a name="l00069"></a>00069   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Point.html#a997102c8327ff1bafd6cb365109d8b07" title="Get Frame with similar viewpoint.">getCloseViewObs</a>(<span class="keyword">const</span> Vector3d&amp; pos, <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>*&amp; obs) <span class="keyword">const</span>;
-<a name="l00070"></a>00070 
-<a name="l00072"></a><a class="code" href="classsvo_1_1Point.html#abebfb7bf544cd427b23781fe166b60b0">00072</a>   <span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="classsvo_1_1Point.html#abebfb7bf544cd427b23781fe166b60b0" title="Get number of observations.">nRefs</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Point.html#a2a3624f466c99a627bba405192467d46" title="References to keyframes which observe the point.">obs_</a>.size(); }
-<a name="l00073"></a>00073 
-<a name="l00075"></a>00075   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Point.html#ac701cf1a14d3cc1e4b825d2546f84cf6" title="Point jacobian w.r.t frame f.">pointJacobian</a>(<span class="keyword">const</span> Vector3d&amp; p_in_f, <span class="keyword">const</span> Matrix3d&amp; R_f_w, <a class="code" href="namespacesvo.html#ae88beb0abd03c4a285f748a44ce7d677">Matrix23d</a>&amp; point_jac) <span class="keyword">const</span>;
-<a name="l00076"></a>00076 
-<a name="l00078"></a>00078   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Point.html#a87e526225eaa3edba43a64c27854dffd" title="Optimize point position through minimizing the reprojection error.">optimize</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> n_iter);
-<a name="l00079"></a>00079 };
+<a name="l00062"></a>00062   <a class="code" href="classsvo_1_1Point.html#aba25ae1d86fc5d58077158499a1c9caa">Point</a>(<span class="keyword">const</span> Vector3d&amp; pos);
+<a name="l00063"></a>00063   <a class="code" href="classsvo_1_1Point.html#aba25ae1d86fc5d58077158499a1c9caa">Point</a>(<span class="keyword">const</span> Vector3d&amp; pos, <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* ftr);
+<a name="l00064"></a>00064   <a class="code" href="classsvo_1_1Point.html#a3ad56f3912adfdca172593afbddb0e97">~Point</a>();
+<a name="l00065"></a>00065 
+<a name="l00067"></a>00067   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Point.html#a76c2b272b88ae69db71081ed6c60e9bb" title="Add a reference to a frame.">addFrameRef</a>(<a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* ftr);
+<a name="l00068"></a>00068 
+<a name="l00070"></a>00070   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Point.html#ade0eec11605fb17ad2331f5ed54229f6" title="Remove reference to a frame.">deleteFrameRef</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* frame);
+<a name="l00071"></a>00071 
+<a name="l00073"></a>00073   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Point.html#abefcb0aae2a7ff8da053cbfdb4c051d4" title="Initialize point normal. The inital estimate will point towards the frame.">initNormal</a>();
+<a name="l00074"></a>00074 
+<a name="l00076"></a>00076   <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* <a class="code" href="classsvo_1_1Point.html#a84ad2afd63474dc43af86fa216bdb39f" title="Check whether mappoint has reference to a frame.">findFrameRef</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* frame);
+<a name="l00077"></a>00077 
+<a name="l00079"></a>00079   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Point.html#a997102c8327ff1bafd6cb365109d8b07" title="Get Frame with similar viewpoint.">getCloseViewObs</a>(<span class="keyword">const</span> Vector3d&amp; pos, <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>*&amp; obs) <span class="keyword">const</span>;
 <a name="l00080"></a>00080 
-<a name="l00081"></a>00081 } <span class="comment">// namespace svo</span>
-<a name="l00082"></a>00082 
-<a name="l00083"></a>00083 <span class="preprocessor">#endif // SVO_POINT_H_</span>
+<a name="l00082"></a><a class="code" href="classsvo_1_1Point.html#abebfb7bf544cd427b23781fe166b60b0">00082</a>   <span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="classsvo_1_1Point.html#abebfb7bf544cd427b23781fe166b60b0" title="Get number of observations.">nRefs</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Point.html#a2a3624f466c99a627bba405192467d46" title="References to keyframes which observe the point.">obs_</a>.size(); }
+<a name="l00083"></a>00083 
+<a name="l00085"></a>00085   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Point.html#a87e526225eaa3edba43a64c27854dffd" title="Optimize point position through minimizing the reprojection error.">optimize</a>(<span class="keyword">const</span> <span class="keywordtype">size_t</span> n_iter);
+<a name="l00086"></a>00086 
+<a name="l00088"></a><a class="code" href="classsvo_1_1Point.html#a2506f648ad6a2025dcd1881087d6cccf">00088</a>   <span class="keyword">inline</span> <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Point.html#a2506f648ad6a2025dcd1881087d6cccf" title="Jacobian of point projection on unit plane (focal length = 1) in frame (f).">jacobian_xyz2uv</a>(
+<a name="l00089"></a>00089       <span class="keyword">const</span> Vector3d&amp; p_in_f,
+<a name="l00090"></a>00090       <span class="keyword">const</span> Matrix3d&amp; R_f_w,
+<a name="l00091"></a>00091       <a class="code" href="namespacesvo.html#ae88beb0abd03c4a285f748a44ce7d677">Matrix23d</a>&amp; point_jac)
+<a name="l00092"></a>00092   {
+<a name="l00093"></a>00093     <span class="keyword">const</span> <span class="keywordtype">double</span> z_inv = 1.0/p_in_f[2];
+<a name="l00094"></a>00094     <span class="keyword">const</span> <span class="keywordtype">double</span> z_inv_sq = z_inv*z_inv;
+<a name="l00095"></a>00095     point_jac(0, 0) = z_inv;
+<a name="l00096"></a>00096     point_jac(0, 1) = 0.0;
+<a name="l00097"></a>00097     point_jac(0, 2) = -p_in_f[0] * z_inv_sq;
+<a name="l00098"></a>00098     point_jac(1, 0) = 0.0;
+<a name="l00099"></a>00099     point_jac(1, 1) = z_inv;
+<a name="l00100"></a>00100     point_jac(1, 2) = -p_in_f[1] * z_inv_sq;
+<a name="l00101"></a>00101     point_jac = - point_jac * R_f_w;
+<a name="l00102"></a>00102   }
+<a name="l00103"></a>00103 };
+<a name="l00104"></a>00104 
+<a name="l00105"></a>00105 } <span class="comment">// namespace svo</span>
+<a name="l00106"></a>00106 
+<a name="l00107"></a>00107 <span class="preprocessor">#endif // SVO_POINT_H_</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -173,7 +196,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

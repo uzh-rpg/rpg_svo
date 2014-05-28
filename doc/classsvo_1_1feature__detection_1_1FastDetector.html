@@ -124,22 +124,45 @@ Inheritance diagram for svo::feature_detection::FastDetector:</div>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#a31b9509e224e8eddbe4e7d9f55e48796">FastDetector</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#a85505e1f71bcb77154ff3c5d8fbcdb8e">FastDetector</a> (const int img_width, const int img_height, const int cell_size, const int n_pyr_levels)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#a589c2ee08b140451b689321a043bb25f">~FastDetector</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#aeb23532f1622fb3149bd156e4cf1151a">detect</a> (const <a class="el" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a> &amp;img_pyr, const <a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a> &amp;fts, const int cell_size, const int n_levels, const double detection_threshold, <a class="el" href="namespacesvo_1_1feature__detection.html#a482e8ccc77302400c438e1654ef03242">Corners</a> *corners) const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#a8197fbd4ec44086e482cf70c498f8cf4">detect</a> (<a class="el" href="classsvo_1_1Frame.html">Frame</a> *frame, const <a class="el" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a> &amp;img_pyr, const double detection_threshold, <a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a> &amp;fts)</td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>FAST detector by Edward Rosten. </p>
 </div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a31b9509e224e8eddbe4e7d9f55e48796"></a><!-- doxytag: member="svo::feature_detection::FastDetector::FastDetector" ref="a31b9509e224e8eddbe4e7d9f55e48796" args="()" -->
+<a class="anchor" id="a85505e1f71bcb77154ff3c5d8fbcdb8e"></a><!-- doxytag: member="svo::feature_detection::FastDetector::FastDetector" ref="a85505e1f71bcb77154ff3c5d8fbcdb8e" args="(const int img_width, const int img_height, const int cell_size, const int n_pyr_levels)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#a31b9509e224e8eddbe4e7d9f55e48796">svo::feature_detection::FastDetector::FastDetector</a> </td>
+          <td class="memname"><a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#a85505e1f71bcb77154ff3c5d8fbcdb8e">svo::feature_detection::FastDetector::FastDetector</a> </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td><code> [inline]</code></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>img_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>img_height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>cell_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>n_pyr_levels</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div>
@@ -164,33 +187,21 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/><h2>Member Function Documentation</h2>
-<a class="anchor" id="aeb23532f1622fb3149bd156e4cf1151a"></a><!-- doxytag: member="svo::feature_detection::FastDetector::detect" ref="aeb23532f1622fb3149bd156e4cf1151a" args="(const ImgPyr &amp;img_pyr, const Features &amp;fts, const int cell_size, const int n_levels, const double detection_threshold, Corners *corners) const " -->
+<a class="anchor" id="a8197fbd4ec44086e482cf70c498f8cf4"></a><!-- doxytag: member="svo::feature_detection::FastDetector::detect" ref="a8197fbd4ec44086e482cf70c498f8cf4" args="(Frame *frame, const ImgPyr &amp;img_pyr, const double detection_threshold, Features &amp;fts)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void <a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#aeb23532f1622fb3149bd156e4cf1151a">svo::feature_detection::FastDetector::detect</a> </td>
+          <td class="memname">virtual void <a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#a8197fbd4ec44086e482cf70c498f8cf4">svo::feature_detection::FastDetector::detect</a> </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="classsvo_1_1Frame.html">Frame</a> *&#160;</td>
+          <td class="paramname"><em>frame</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const <a class="el" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a> &amp;&#160;</td>
           <td class="paramname"><em>img_pyr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a> &amp;&#160;</td>
-          <td class="paramname"><em>fts</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>cell_size</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>n_levels</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -201,19 +212,19 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacesvo_1_1feature__detection.html#a482e8ccc77302400c438e1654ef03242">Corners</a> *&#160;</td>
-          <td class="paramname"><em>corners</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a> &amp;&#160;</td>
+          <td class="paramname"><em>fts</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td> const<code> [virtual]</code></td>
+          <td></td><td><code> [virtual]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Implements <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#aec115bff5427b80291b45da719bbd459">svo::feature_detection::AbstractDetector</a>.</p>
+<p>Implements <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a8138783a78e2348d26ceb0f4b677a29f">svo::feature_detection::AbstractDetector</a>.</p>
 
 </div>
 </div>
@@ -238,7 +249,7 @@ Public Member Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

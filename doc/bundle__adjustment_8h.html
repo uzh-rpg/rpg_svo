@@ -101,7 +101,9 @@ Namespaces</h2></td></tr>
 <br/></td></tr>
 <tr><td colspan="2"><h2><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">typedef g2o::EdgeProjectXYZ2UV&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bundle__adjustment_8h.html#ab4ece95d673fce5279845e23d90093a1">g2oEdgeSE3</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">typedef g2o::EdgeProjectXYZ2UV&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo.html#ab405b307d732554d91ca05f2d827ead8">svo::g2oEdgeSE3</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">typedef g2o::VertexSE3Expmap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo.html#a469ea351de55547bb26f9b827aad6059">svo::g2oFrameSE3</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">typedef g2o::VertexSBAPointXYZ&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo.html#a091cb15c36354da44cbd3579b576ce13">svo::g2oPoint</a></td></tr>
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1ba.html#a5ea29b3fd9712d361d596266a6153a63">svo::ba::twoViewBA</a> (Frame *frame1, Frame *frame2, double reproj_thresh, Map *map)</td></tr>
@@ -118,23 +120,9 @@ Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a g2o vertice from a keyframe object.  <a href="#a5af5b9f08df0724a9bb58f07cc08619c"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="point_8h.html#a6081d7f932aed70367fe07bd3754f916">g2oPoint</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1ba.html#a6c326389b9980413868a8200ef49191d">svo::ba::createG2oPoint</a> (Vector3d pos, size_t id, bool fixed)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a g2o vertice from a mappoint object.  <a href="#a6c326389b9980413868a8200ef49191d"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="bundle__adjustment_8h.html#ab4ece95d673fce5279845e23d90093a1">g2oEdgeSE3</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1ba.html#aa9c21b78794e1b2903fb31d2fb84df77">svo::ba::createG2oEdgeSE3</a> (<a class="el" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">g2oFrameSE3</a> *v_kf, <a class="el" href="point_8h.html#a6081d7f932aed70367fe07bd3754f916">g2oPoint</a> *v_mp, const Vector2d &amp;f_up, bool robust_kernel, double huber_width, double weight=1)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">g2oEdgeSE3 *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1ba.html#aa9c21b78794e1b2903fb31d2fb84df77">svo::ba::createG2oEdgeSE3</a> (<a class="el" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">g2oFrameSE3</a> *v_kf, <a class="el" href="point_8h.html#a6081d7f932aed70367fe07bd3754f916">g2oPoint</a> *v_mp, const Vector2d &amp;f_up, bool robust_kernel, double huber_width, double weight=1)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a g2o edge between a g2o keyframe and mappoint vertice with the provided measurement.  <a href="#aa9c21b78794e1b2903fb31d2fb84df77"></a><br/></td></tr>
 </table>
-<hr/><h2>Typedef Documentation</h2>
-<a class="anchor" id="ab4ece95d673fce5279845e23d90093a1"></a><!-- doxytag: member="bundle_adjustment.h::g2oEdgeSE3" ref="ab4ece95d673fce5279845e23d90093a1" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef g2o::EdgeProjectXYZ2UV <a class="el" href="bundle__adjustment_8h.html#ab4ece95d673fce5279845e23d90093a1">g2oEdgeSE3</a></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -153,7 +141,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

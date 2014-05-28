@@ -1,6 +1,7 @@
 var searchData=
 [
   ['score',['score',['../structsvo_1_1feature__detection_1_1Corner.html#adabee3d19de98058e350700be92c9f9c',1,'svo::feature_detection::Corner']]],
+  ['search_5flevel_5f',['search_level_',['../classsvo_1_1Matcher.html#a0105e4370d460cd2062cb663fa657b6b',1,'svo::Matcher']]],
   ['seed_5fconverged_5fcb_5f',['seed_converged_cb_',['../classsvo_1_1DepthFilter.html#a48cd586e5ee0c647f749ea7f650102a4',1,'svo::DepthFilter']]],
   ['seed_5fconvergence_5fsigma2_5fthresh',['seed_convergence_sigma2_thresh',['../structsvo_1_1DepthFilter_1_1Options.html#aef9c25772ab0f2b5f98b40e338fbc657',1,'svo::DepthFilter::Options']]],
   ['seed_5fcounter',['seed_counter',['../structsvo_1_1Seed.html#aa72cac2c4cfd466fc89f5ae2a1792136',1,'svo::Seed']]],
@@ -14,5 +15,6 @@ var searchData=
   ['stage_5f',['stage_',['../classsvo_1_1FrameHandlerBase.html#a892e230faa0a3073ed05b363968ebe98',1,'svo::FrameHandlerBase']]],
   ['structureoptim_5fmax_5fpts',['structureoptim_max_pts',['../classsvo_1_1Config.html#a50ab687a77ba248ca48f88cc9ed935d5',1,'svo::Config']]],
   ['structureoptim_5fnum_5fiter',['structureoptim_num_iter',['../classsvo_1_1Config.html#a4edbb41f185cfa06dab8075e0269eca1',1,'svo::Config']]],
-  ['subpix_5fn_5fiter',['subpix_n_iter',['../classsvo_1_1Config.html#a609d48d52848f37b95948ea7404b5a87',1,'svo::Config']]]
+  ['subpix_5fn_5fiter',['subpix_n_iter',['../classsvo_1_1Config.html#a609d48d52848f37b95948ea7404b5a87',1,'svo::Config']]],
+  ['subpix_5frefinement',['subpix_refinement',['../structsvo_1_1Matcher_1_1Options.html#a28337eefd24e5ca13f42c234245090cb',1,'svo::Matcher::Options']]]
 ];

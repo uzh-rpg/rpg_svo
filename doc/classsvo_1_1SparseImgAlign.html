@@ -120,6 +120,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1SparseImgAlign.html#a3bdd3f10024ffd7727d4862cdc553ed1">SparseImgAlign</a> (int n_levels, int min_level, int n_iter, Method method, bool display, bool verbose)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1SparseImgAlign.html#a1b7271a33d570915026e385ccc46ac4a">run</a> (<a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> ref_frame, <a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> cur_frame)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">Matrix&lt; double, 6, 6 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1SparseImgAlign.html#aee65245232c336d4ee90aa910001473d">getFisherInformation</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return fisher information matrix, i.e.  <a href="#aee65245232c336d4ee90aa910001473d"></a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1SparseImgAlign.html#afaa10195dedd4ca0550f5e6331285b4d">resimg_</a></td></tr>
@@ -147,7 +149,6 @@ Protected Attributes</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">finest pyramid level for the alignment.  <a href="#a65d9bb396967b05c095ab70db447a4e9"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">Matrix&lt; double, 6, Dynamic, <br class="typebreak"/>
 ColMajor &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1SparseImgAlign.html#a4f88dbffd358ce6a7a3da4a8b0fc28e4">jacobian_cache_</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">the first row is a flag whether the jacobian has been computed.  <a href="#a4f88dbffd358ce6a7a3da4a8b0fc28e4"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1SparseImgAlign.html#a4b893f6ad907706207e81b0aa87fe6f6">have_ref_patch_cache_</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1SparseImgAlign.html#a1ae2dc0fe3bbac05221793286d67ddf1">ref_patch_cache_</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">std::vector&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1SparseImgAlign.html#a28a5be4827b1ca16913af2f66304e153">visible_fts_</a></td></tr>
@@ -258,6 +259,25 @@ Static Private Attributes</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aee65245232c336d4ee90aa910001473d"></a><!-- doxytag: member="svo::SparseImgAlign::getFisherInformation" ref="aee65245232c336d4ee90aa910001473d" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Matrix&lt;double, 6, 6&gt; <a class="el" href="classsvo_1_1SparseImgAlign.html#aee65245232c336d4ee90aa910001473d">svo::SparseImgAlign::getFisherInformation</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Return fisher information matrix, i.e. </p>
+<p>the Hessian of the log-likelihood at the converged state. </p>
 
 </div>
 </div>
@@ -417,8 +437,6 @@ Static Private Attributes</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-
-<p>the first row is a flag whether the jacobian has been computed. </p>
 
 </div>
 </div>
@@ -581,7 +599,7 @@ Static Private Attributes</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

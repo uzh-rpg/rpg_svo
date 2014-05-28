@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>svo: svo::matcher::warp Namespace Reference</title>
+<title>svo: svo::warp Namespace Reference</title>
 
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
@@ -91,8 +91,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><a class="el" href="namespacesvo.html">svo</a>      </li>
-      <li class="navelem"><a class="el" href="namespacesvo_1_1matcher.html">matcher</a>      </li>
-      <li class="navelem"><a class="el" href="namespacesvo_1_1matcher_1_1warp.html">warp</a>      </li>
+      <li class="navelem"><a class="el" href="namespacesvo_1_1warp.html">warp</a>      </li>
     </ul>
   </div>
 </div>
@@ -100,7 +99,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">svo::matcher::warp Namespace Reference</div>  </div>
+<div class="title">svo::warp Namespace Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -109,19 +108,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1matcher_1_1warp.html#a6a670eb8cabd7dbddb49ddd5ccbbd904">getWarpMatrixAffine</a> (const vk::AbstractCamera &amp;cam_ref, const vk::AbstractCamera &amp;cam_cur, const Vector2d &amp;px_ref, const Vector3d &amp;f_ref, const double depth_ref, const SE3 &amp;T_cur_ref, const int level_ref, Matrix2d &amp;A_cur_ref)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1matcher_1_1warp.html#a6694a92b13128c336a8ef93cef94ec45">getBestSearchLevel</a> (const Matrix2d &amp;A_cur_ref, const int max_level)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1matcher_1_1warp.html#a4378dee57369792dfeb95a9f3cbad2d2">warpAffine</a> (const Matrix2d &amp;A_cur_ref, const cv::Mat &amp;img_ref, const Vector2d &amp;px_ref, const int level_ref, const int level_cur, <a class="el" href="structsvo_1_1matcher_1_1PatchData.html">PatchData</a> &amp;ref_patch)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1warp.html#a17c558122cf2545030ad41278a3b22a3">getWarpMatrixAffine</a> (const vk::AbstractCamera &amp;cam_ref, const vk::AbstractCamera &amp;cam_cur, const Vector2d &amp;px_ref, const Vector3d &amp;f_ref, const double depth_ref, const SE3 &amp;T_cur_ref, const int level_ref, Matrix2d &amp;A_cur_ref)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1warp.html#ab9f97fcb83ef8c499c0860931d479d3d">getBestSearchLevel</a> (const Matrix2d &amp;A_cur_ref, const int max_level)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1warp.html#ae240f2136d59b6b80a0780680e4218c6">warpAffine</a> (const Matrix2d &amp;A_cur_ref, const cv::Mat &amp;img_ref, const Vector2d &amp;px_ref, const int level_ref, const int level_cur, const int halfpatch_size, uint8_t *patch)</td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Warp a patch from the reference view to the current view. </p>
 </div><hr/><h2>Function Documentation</h2>
-<a class="anchor" id="a6694a92b13128c336a8ef93cef94ec45"></a><!-- doxytag: member="svo::matcher::warp::getBestSearchLevel" ref="a6694a92b13128c336a8ef93cef94ec45" args="(const Matrix2d &amp;A_cur_ref, const int max_level)" -->
+<a class="anchor" id="ab9f97fcb83ef8c499c0860931d479d3d"></a><!-- doxytag: member="svo::warp::getBestSearchLevel" ref="ab9f97fcb83ef8c499c0860931d479d3d" args="(const Matrix2d &amp;A_cur_ref, const int max_level)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int <a class="el" href="namespacesvo_1_1matcher_1_1warp.html#a6694a92b13128c336a8ef93cef94ec45">svo::matcher::warp::getBestSearchLevel</a> </td>
+          <td class="memname">int <a class="el" href="namespacesvo_1_1warp.html#ab9f97fcb83ef8c499c0860931d479d3d">svo::warp::getBestSearchLevel</a> </td>
           <td>(</td>
           <td class="paramtype">const Matrix2d &amp;&#160;</td>
           <td class="paramname"><em>A_cur_ref</em>, </td>
@@ -143,12 +142,12 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a6a670eb8cabd7dbddb49ddd5ccbbd904"></a><!-- doxytag: member="svo::matcher::warp::getWarpMatrixAffine" ref="a6a670eb8cabd7dbddb49ddd5ccbbd904" args="(const vk::AbstractCamera &amp;cam_ref, const vk::AbstractCamera &amp;cam_cur, const Vector2d &amp;px_ref, const Vector3d &amp;f_ref, const double depth_ref, const SE3 &amp;T_cur_ref, const int level_ref, Matrix2d &amp;A_cur_ref)" -->
+<a class="anchor" id="a17c558122cf2545030ad41278a3b22a3"></a><!-- doxytag: member="svo::warp::getWarpMatrixAffine" ref="a17c558122cf2545030ad41278a3b22a3" args="(const vk::AbstractCamera &amp;cam_ref, const vk::AbstractCamera &amp;cam_cur, const Vector2d &amp;px_ref, const Vector3d &amp;f_ref, const double depth_ref, const SE3 &amp;T_cur_ref, const int level_ref, Matrix2d &amp;A_cur_ref)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="namespacesvo_1_1matcher_1_1warp.html#a6a670eb8cabd7dbddb49ddd5ccbbd904">svo::matcher::warp::getWarpMatrixAffine</a> </td>
+          <td class="memname">void <a class="el" href="namespacesvo_1_1warp.html#a17c558122cf2545030ad41278a3b22a3">svo::warp::getWarpMatrixAffine</a> </td>
           <td>(</td>
           <td class="paramtype">const vk::AbstractCamera &amp;&#160;</td>
           <td class="paramname"><em>cam_ref</em>, </td>
@@ -206,12 +205,12 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a4378dee57369792dfeb95a9f3cbad2d2"></a><!-- doxytag: member="svo::matcher::warp::warpAffine" ref="a4378dee57369792dfeb95a9f3cbad2d2" args="(const Matrix2d &amp;A_cur_ref, const cv::Mat &amp;img_ref, const Vector2d &amp;px_ref, const int level_ref, const int level_cur, PatchData &amp;ref_patch)" -->
+<a class="anchor" id="ae240f2136d59b6b80a0780680e4218c6"></a><!-- doxytag: member="svo::warp::warpAffine" ref="ae240f2136d59b6b80a0780680e4218c6" args="(const Matrix2d &amp;A_cur_ref, const cv::Mat &amp;img_ref, const Vector2d &amp;px_ref, const int level_ref, const int level_cur, const int halfpatch_size, uint8_t *patch)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="namespacesvo_1_1matcher_1_1warp.html#a4378dee57369792dfeb95a9f3cbad2d2">svo::matcher::warp::warpAffine</a> </td>
+          <td class="memname">void <a class="el" href="namespacesvo_1_1warp.html#ae240f2136d59b6b80a0780680e4218c6">svo::warp::warpAffine</a> </td>
           <td>(</td>
           <td class="paramtype">const Matrix2d &amp;&#160;</td>
           <td class="paramname"><em>A_cur_ref</em>, </td>
@@ -243,8 +242,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">PatchData &amp;&#160;</td>
-          <td class="paramname"><em>ref_patch</em>&#160;</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>halfpatch_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>patch</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -275,7 +280,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

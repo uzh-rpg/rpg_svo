@@ -99,94 +99,116 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00017"></a>00017 <span class="preprocessor">#ifndef SVO_FRAME_H_</span>
 <a name="l00018"></a>00018 <span class="preprocessor"></span><span class="preprocessor">#define SVO_FRAME_H_</span>
 <a name="l00019"></a>00019 <span class="preprocessor"></span>
-<a name="l00020"></a>00020 <span class="preprocessor">#include &lt;algorithm&gt;</span>
-<a name="l00021"></a>00021 <span class="preprocessor">#include &lt;sophus/se3.h&gt;</span>
-<a name="l00022"></a>00022 <span class="preprocessor">#include &lt;vikit/math_utils.h&gt;</span>
-<a name="l00023"></a>00023 <span class="preprocessor">#include &lt;vikit/abstract_camera.h&gt;</span>
-<a name="l00024"></a>00024 <span class="preprocessor">#include &lt;boost/noncopyable.hpp&gt;</span>
-<a name="l00025"></a>00025 <span class="preprocessor">#include &lt;<a class="code" href="global_8h.html">svo/global.h</a>&gt;</span>
-<a name="l00026"></a>00026 
-<a name="l00027"></a>00027 <span class="keyword">namespace </span>g2o {
-<a name="l00028"></a>00028 <span class="keyword">class </span>VertexSE3Expmap;
-<a name="l00029"></a>00029 }
-<a name="l00030"></a><a class="code" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">00030</a> <span class="keyword">typedef</span> g2o::VertexSE3Expmap <a class="code" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">g2oFrameSE3</a>;
-<a name="l00031"></a>00031 
-<a name="l00032"></a>00032 <span class="keyword">namespace </span>svo {
-<a name="l00033"></a>00033 
-<a name="l00034"></a>00034 <span class="keyword">class </span>Point;
-<a name="l00035"></a>00035 <span class="keyword">class </span>Frame;
-<a name="l00036"></a><a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">00036</a> <span class="keyword">struct </span><a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>;
-<a name="l00037"></a>00037 
-<a name="l00038"></a>00038 <span class="keyword">typedef</span> list&lt;Feature*&gt; <a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a>;
-<a name="l00039"></a><a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">00039</a> <span class="keyword">typedef</span> vector&lt;cv::Mat&gt; <a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a>;
-<a name="l00040"></a>00040 
-<a name="l00042"></a><a class="code" href="classsvo_1_1Frame.html">00042</a> <span class="keyword">class </span><a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a> : boost::noncopyable
-<a name="l00043"></a>00043 {
-<a name="l00044"></a>00044 <span class="keyword">public</span>:
-<a name="l00045"></a>00045   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-<a name="l00046"></a>00046     
-<a name="l00047"></a><a class="code" href="classsvo_1_1Frame.html#a644cc7768e0f17887e708f1811365810">00047</a>   <span class="keyword">static</span> <span class="keywordtype">int</span>                    <a class="code" href="classsvo_1_1Frame.html#a644cc7768e0f17887e708f1811365810" title="Counts the number of created frames. Used to set the unique id.">frame_counter_</a>;         
-<a name="l00048"></a><a class="code" href="classsvo_1_1Frame.html#a3220d0fd39e2c2b6b502ebe5e56fe3e0">00048</a>   <span class="keywordtype">int</span>                           <a class="code" href="classsvo_1_1Frame.html#a3220d0fd39e2c2b6b502ebe5e56fe3e0" title="Unique id of the frame.">id_</a>;                    
-<a name="l00049"></a><a class="code" href="classsvo_1_1Frame.html#af775e897d6d89a4325c6abb4c6fdaaf3">00049</a>   <span class="keywordtype">double</span>                        <a class="code" href="classsvo_1_1Frame.html#af775e897d6d89a4325c6abb4c6fdaaf3" title="Timestamp of when the image was recorded.">timestamp_</a>;             
-<a name="l00050"></a><a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64">00050</a>   vk::AbstractCamera*           <a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64" title="Camera model.">cam_</a>;                   
-<a name="l00051"></a><a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf">00051</a>   Sophus::SE3                   <a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf" title="Transform (f)rame from (w)orld.">T_f_w_</a>;                 
-<a name="l00052"></a><a class="code" href="classsvo_1_1Frame.html#a180ef7501283f92a0b0277b462841332">00052</a>   Matrix&lt;double, 6, 6&gt;          <a class="code" href="classsvo_1_1Frame.html#a180ef7501283f92a0b0277b462841332" title="Covariance.">Cov_</a>;                   
-<a name="l00053"></a><a class="code" href="classsvo_1_1Frame.html#a1147e6dd9b678161585875e4a4048987">00053</a>   <a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a>                        <a class="code" href="classsvo_1_1Frame.html#a1147e6dd9b678161585875e4a4048987" title="Image Pyramid.">img_pyr_</a>;               
-<a name="l00054"></a><a class="code" href="classsvo_1_1Frame.html#ae092429d42e150568d176fb3c4f24e42">00054</a>   <a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a>                      <a class="code" href="classsvo_1_1Frame.html#ae092429d42e150568d176fb3c4f24e42" title="List of features in the image.">fts_</a>;                   
-<a name="l00055"></a><a class="code" href="classsvo_1_1Frame.html#a97618aeda08f505222bd4fc18eaf8504">00055</a>   vector&lt;Feature*&gt;              <a class="code" href="classsvo_1_1Frame.html#a97618aeda08f505222bd4fc18eaf8504" title="Five features and associated 3D points which are used to detect if two frames have overlapping field ...">key_pts_</a>;               
-<a name="l00056"></a><a class="code" href="classsvo_1_1Frame.html#a4ae56e6cb7e35f1ec17aedb9f00ac3d0">00056</a>   <span class="keywordtype">bool</span>                          <a class="code" href="classsvo_1_1Frame.html#a4ae56e6cb7e35f1ec17aedb9f00ac3d0" title="Was this frames selected as keyframe?">is_keyframe_</a>;           
-<a name="l00057"></a><a class="code" href="classsvo_1_1Frame.html#a31796338a0929c8b18c108cfaba07708">00057</a>   <a class="code" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">g2oFrameSE3</a>*                  <a class="code" href="classsvo_1_1Frame.html#a31796338a0929c8b18c108cfaba07708" title="Temporary pointer to the g2o node object of the keyframe.">v_kf_</a>;                  
-<a name="l00058"></a><a class="code" href="classsvo_1_1Frame.html#a137c490d744a7002f7608801714edba9">00058</a>   <span class="keywordtype">int</span>                           <a class="code" href="classsvo_1_1Frame.html#a137c490d744a7002f7608801714edba9" title="Timestamp of last publishing.">last_published_ts_</a>;     
-<a name="l00059"></a>00059 
-<a name="l00060"></a>00060   <a class="code" href="classsvo_1_1Frame.html#abe7bb31fb82e199726b9887f4e77d961">Frame</a>(vk::AbstractCamera* cam, <span class="keyword">const</span> cv::Mat&amp; <a class="code" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e" title="Full resolution image stored in the frame.">img</a>, <span class="keywordtype">double</span> timestamp=0.0);
-<a name="l00061"></a>00061   <a class="code" href="classsvo_1_1Frame.html#aa3d890f9fee920036f430bf6e546a174">~Frame</a>();
-<a name="l00062"></a>00062 
-<a name="l00064"></a>00064   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#aec87eb10b07bc6f19e9a91b064e991a3" title="Initialize new frame and create image pyramid.">initFrame</a>(<span class="keyword">const</span> cv::Mat&amp; <a class="code" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e" title="Full resolution image stored in the frame.">img</a>);
-<a name="l00065"></a>00065 
-<a name="l00067"></a>00067   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#a90c4503d84f89bad3a1ed7971902b000" title="Select this frame as keyframe.">setKeyframe</a>();
-<a name="l00068"></a>00068 
-<a name="l00070"></a>00070   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#ad028be8b81c12e887e5e028ca50b6cdb" title="Add a feature to the image.">addFeature</a>(<a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* ftr);
-<a name="l00071"></a>00071 
-<a name="l00075"></a>00075   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#a436a95418ec6eba4dd5fa283b9160dc8" title="The KeyPoints are those five features which are closest to the 4 image corners and to the center and ...">setKeyPoints</a>();
-<a name="l00076"></a>00076 
-<a name="l00078"></a>00078   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#aec168216abaa552ec52de42c40ef85c6" title="Check if we can select five better key-points.">checkKeyPoints</a>(<a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* ftr);
-<a name="l00079"></a>00079 
-<a name="l00081"></a>00081   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#a68b7b28632bf04bc04caa243ce71c28d" title="If a point is deleted, we must remove the corresponding key-point.">removeKeyPoint</a>(<a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* ftr);
-<a name="l00082"></a>00082 
-<a name="l00084"></a>00084   <span class="keywordtype">size_t</span> <a class="code" href="classsvo_1_1Frame.html#a7a197d075bfb643f49e01c40cbf529b8" title="Return number of point observations.">nObs</a>() <span class="keyword">const</span>;
-<a name="l00085"></a>00085 
-<a name="l00087"></a>00087   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Frame.html#aff35d299a0c6b2ed2901ae5c5c1a295f" title="Check if a point in (w)orld coordinate frame is visible in the image.">isVisible</a>(<span class="keyword">const</span> Vector3d&amp; xyz_w) <span class="keyword">const</span>;
-<a name="l00088"></a>00088 
-<a name="l00090"></a><a class="code" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e">00090</a>   <span class="keyword">inline</span> <span class="keyword">const</span> cv::Mat&amp; <a class="code" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e" title="Full resolution image stored in the frame.">img</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a1147e6dd9b678161585875e4a4048987" title="Image Pyramid.">img_pyr_</a>[0]; }
-<a name="l00091"></a>00091 
-<a name="l00093"></a><a class="code" href="classsvo_1_1Frame.html#a8800d7c7cd58266e17b5fd186a34ae30">00093</a>   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Frame.html#a8800d7c7cd58266e17b5fd186a34ae30" title="Was this frame selected as keyframe?">isKeyframe</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a4ae56e6cb7e35f1ec17aedb9f00ac3d0" title="Was this frames selected as keyframe?">is_keyframe_</a>; }
-<a name="l00094"></a>00094 
-<a name="l00096"></a><a class="code" href="classsvo_1_1Frame.html#a7a35229e8049384da4298c38911cf00b">00096</a>   <span class="keyword">inline</span> Vector2d <a class="code" href="classsvo_1_1Frame.html#a7a35229e8049384da4298c38911cf00b" title="Transforms point coordinates in world-frame (w) to camera pixel coordinates (c).">w2c</a>(<span class="keyword">const</span> Vector3d&amp; xyz_w)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64" title="Camera model.">cam_</a>-&gt;world2cam( <a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf" title="Transform (f)rame from (w)orld.">T_f_w_</a> * xyz_w ); }
-<a name="l00097"></a>00097 
-<a name="l00099"></a><a class="code" href="classsvo_1_1Frame.html#a64560f85f9ef22892b795f30bd30a76a">00099</a>   <span class="keyword">inline</span> Vector3d <a class="code" href="classsvo_1_1Frame.html#a64560f85f9ef22892b795f30bd30a76a" title="Transforms pixel coordinates (c) to frame unit sphere coordinates (f).">c2f</a>(<span class="keyword">const</span> Vector2d&amp; px)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64" title="Camera model.">cam_</a>-&gt;cam2world(px[0], px[1]); }
-<a name="l00100"></a>00100 
-<a name="l00102"></a><a class="code" href="classsvo_1_1Frame.html#aab7d2f4d81291d021c6b373aadf8a009">00102</a>   <span class="keyword">inline</span> Vector3d <a class="code" href="classsvo_1_1Frame.html#aab7d2f4d81291d021c6b373aadf8a009" title="Transforms pixel coordinates (c) to frame unit sphere coordinates (f).">c2f</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> x, <span class="keyword">const</span> <span class="keywordtype">double</span> y)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64" title="Camera model.">cam_</a>-&gt;cam2world(x, y); }
-<a name="l00103"></a>00103 
-<a name="l00105"></a><a class="code" href="classsvo_1_1Frame.html#a59abc46912599c92b167095ad893e877">00105</a>   <span class="keyword">inline</span> Vector3d <a class="code" href="classsvo_1_1Frame.html#a59abc46912599c92b167095ad893e877" title="Transforms point coordinates in world-frame (w) to camera-frams (f).">w2f</a>(<span class="keyword">const</span> Vector3d&amp; xyz_w)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf" title="Transform (f)rame from (w)orld.">T_f_w_</a> * xyz_w; }
-<a name="l00106"></a>00106 
-<a name="l00108"></a><a class="code" href="classsvo_1_1Frame.html#a9d180b87837af63a66f86896387cd645">00108</a>   <span class="keyword">inline</span> Vector3d <a class="code" href="classsvo_1_1Frame.html#a9d180b87837af63a66f86896387cd645" title="Transforms point from frame unit sphere (f) frame to world coordinate frame (w).">f2w</a>(<span class="keyword">const</span> Vector3d&amp; f)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf" title="Transform (f)rame from (w)orld.">T_f_w_</a>.inverse() * f; }
-<a name="l00109"></a>00109 
-<a name="l00111"></a><a class="code" href="classsvo_1_1Frame.html#af31527b012b1b3c5691eca5625847d00">00111</a>   <span class="keyword">inline</span> Vector2d <a class="code" href="classsvo_1_1Frame.html#af31527b012b1b3c5691eca5625847d00" title="Projects Point from unit sphere (f) in camera pixels (c).">f2c</a>(<span class="keyword">const</span> Vector3d&amp; f)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64" title="Camera model.">cam_</a>-&gt;world2cam( f ); }
-<a name="l00112"></a>00112 
-<a name="l00114"></a><a class="code" href="classsvo_1_1Frame.html#a71e4312c548a2d3d776eef408795bd19">00114</a>   <span class="keyword">inline</span> Vector3d <a class="code" href="classsvo_1_1Frame.html#a71e4312c548a2d3d776eef408795bd19" title="Return the pose of the frame in the (w)orld coordinate frame.">pos</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf" title="Transform (f)rame from (w)orld.">T_f_w_</a>.inverse().translation(); }
-<a name="l00115"></a>00115 };
-<a name="l00116"></a>00116 
-<a name="l00117"></a>00117 
-<a name="l00119"></a><a class="code" href="namespacesvo_1_1frame__utils.html">00119</a> <span class="keyword">namespace </span>frame_utils {
-<a name="l00120"></a>00120 
-<a name="l00122"></a>00122 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1frame__utils.html#ab66effb506ec377e6edf35e95c5d8228" title="Creates an image pyramid of half-sampled images.">createImgPyramid</a>(<span class="keyword">const</span> cv::Mat&amp; img_level_0, <span class="keywordtype">int</span> n_levels, <a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a>&amp; pyr);
-<a name="l00123"></a>00123 
-<a name="l00125"></a>00125 <span class="keywordtype">bool</span> <a class="code" href="namespacesvo_1_1frame__utils.html#a98b0dbe0c500bde9888e8036de7c7afb" title="Get the average depth of the features in the image.">getSceneDepth</a>(<span class="keyword">const</span> <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>&amp; frame, <span class="keywordtype">double</span>&amp; depth_mean, <span class="keywordtype">double</span>&amp; depth_min);
-<a name="l00126"></a>00126 
-<a name="l00127"></a>00127 } <span class="comment">// namespace frame_utils</span>
-<a name="l00128"></a>00128 } <span class="comment">// namespace svo</span>
-<a name="l00129"></a>00129 
-<a name="l00130"></a>00130 <span class="preprocessor">#endif // SVO_FRAME_H_</span>
+<a name="l00020"></a>00020 <span class="preprocessor">#include &lt;sophus/se3.h&gt;</span>
+<a name="l00021"></a>00021 <span class="preprocessor">#include &lt;vikit/math_utils.h&gt;</span>
+<a name="l00022"></a>00022 <span class="preprocessor">#include &lt;vikit/abstract_camera.h&gt;</span>
+<a name="l00023"></a>00023 <span class="preprocessor">#include &lt;boost/noncopyable.hpp&gt;</span>
+<a name="l00024"></a>00024 <span class="preprocessor">#include &lt;<a class="code" href="global_8h.html">svo/global.h</a>&gt;</span>
+<a name="l00025"></a>00025 
+<a name="l00026"></a>00026 <span class="keyword">namespace </span>g2o {
+<a name="l00027"></a>00027 <span class="keyword">class </span>VertexSE3Expmap;
+<a name="l00028"></a>00028 }
+<a name="l00029"></a><a class="code" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">00029</a> <span class="keyword">typedef</span> g2o::VertexSE3Expmap <a class="code" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">g2oFrameSE3</a>;
+<a name="l00030"></a>00030 
+<a name="l00031"></a>00031 <span class="keyword">namespace </span>svo {
+<a name="l00032"></a>00032 
+<a name="l00033"></a>00033 <span class="keyword">class </span>Point;
+<a name="l00034"></a><a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">00034</a> <span class="keyword">struct </span><a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>;
+<a name="l00035"></a>00035 
+<a name="l00036"></a>00036 <span class="keyword">typedef</span> list&lt;Feature*&gt; <a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a>;
+<a name="l00037"></a><a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">00037</a> <span class="keyword">typedef</span> vector&lt;cv::Mat&gt; <a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a>;
+<a name="l00038"></a>00038 
+<a name="l00040"></a><a class="code" href="classsvo_1_1Frame.html">00040</a> <span class="keyword">class </span><a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a> : boost::noncopyable
+<a name="l00041"></a>00041 {
+<a name="l00042"></a>00042 <span class="keyword">public</span>:
+<a name="l00043"></a>00043   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+<a name="l00044"></a>00044     
+<a name="l00045"></a><a class="code" href="classsvo_1_1Frame.html#a644cc7768e0f17887e708f1811365810">00045</a>   <span class="keyword">static</span> <span class="keywordtype">int</span>                    <a class="code" href="classsvo_1_1Frame.html#a644cc7768e0f17887e708f1811365810" title="Counts the number of created frames. Used to set the unique id.">frame_counter_</a>;         
+<a name="l00046"></a><a class="code" href="classsvo_1_1Frame.html#a3220d0fd39e2c2b6b502ebe5e56fe3e0">00046</a>   <span class="keywordtype">int</span>                           <a class="code" href="classsvo_1_1Frame.html#a3220d0fd39e2c2b6b502ebe5e56fe3e0" title="Unique id of the frame.">id_</a>;                    
+<a name="l00047"></a><a class="code" href="classsvo_1_1Frame.html#af775e897d6d89a4325c6abb4c6fdaaf3">00047</a>   <span class="keywordtype">double</span>                        <a class="code" href="classsvo_1_1Frame.html#af775e897d6d89a4325c6abb4c6fdaaf3" title="Timestamp of when the image was recorded.">timestamp_</a>;             
+<a name="l00048"></a><a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64">00048</a>   vk::AbstractCamera*           <a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64" title="Camera model.">cam_</a>;                   
+<a name="l00049"></a><a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf">00049</a>   Sophus::SE3                   <a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf" title="Transform (f)rame from (w)orld.">T_f_w_</a>;                 
+<a name="l00050"></a><a class="code" href="classsvo_1_1Frame.html#a180ef7501283f92a0b0277b462841332">00050</a>   Matrix&lt;double, 6, 6&gt;          <a class="code" href="classsvo_1_1Frame.html#a180ef7501283f92a0b0277b462841332" title="Covariance.">Cov_</a>;                   
+<a name="l00051"></a><a class="code" href="classsvo_1_1Frame.html#a1147e6dd9b678161585875e4a4048987">00051</a>   <a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a>                        <a class="code" href="classsvo_1_1Frame.html#a1147e6dd9b678161585875e4a4048987" title="Image Pyramid.">img_pyr_</a>;               
+<a name="l00052"></a><a class="code" href="classsvo_1_1Frame.html#ae092429d42e150568d176fb3c4f24e42">00052</a>   <a class="code" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a>                      <a class="code" href="classsvo_1_1Frame.html#ae092429d42e150568d176fb3c4f24e42" title="List of features in the image.">fts_</a>;                   
+<a name="l00053"></a><a class="code" href="classsvo_1_1Frame.html#a97618aeda08f505222bd4fc18eaf8504">00053</a>   vector&lt;Feature*&gt;              <a class="code" href="classsvo_1_1Frame.html#a97618aeda08f505222bd4fc18eaf8504" title="Five features and associated 3D points which are used to detect if two frames have overlapping field ...">key_pts_</a>;               
+<a name="l00054"></a><a class="code" href="classsvo_1_1Frame.html#a4ae56e6cb7e35f1ec17aedb9f00ac3d0">00054</a>   <span class="keywordtype">bool</span>                          <a class="code" href="classsvo_1_1Frame.html#a4ae56e6cb7e35f1ec17aedb9f00ac3d0" title="Was this frames selected as keyframe?">is_keyframe_</a>;           
+<a name="l00055"></a><a class="code" href="classsvo_1_1Frame.html#a31796338a0929c8b18c108cfaba07708">00055</a>   <a class="code" href="namespacesvo.html#a469ea351de55547bb26f9b827aad6059">g2oFrameSE3</a>*                  <a class="code" href="classsvo_1_1Frame.html#a31796338a0929c8b18c108cfaba07708" title="Temporary pointer to the g2o node object of the keyframe.">v_kf_</a>;                  
+<a name="l00056"></a><a class="code" href="classsvo_1_1Frame.html#a137c490d744a7002f7608801714edba9">00056</a>   <span class="keywordtype">int</span>                           <a class="code" href="classsvo_1_1Frame.html#a137c490d744a7002f7608801714edba9" title="Timestamp of last publishing.">last_published_ts_</a>;     
+<a name="l00057"></a>00057 
+<a name="l00058"></a>00058   <a class="code" href="classsvo_1_1Frame.html#a59d35ca0a2bae528292c7fc6b8089c48">Frame</a>(vk::AbstractCamera* cam, <span class="keyword">const</span> cv::Mat&amp; <a class="code" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e" title="Full resolution image stored in the frame.">img</a>, <span class="keywordtype">double</span> timestamp);
+<a name="l00059"></a>00059   <a class="code" href="classsvo_1_1Frame.html#aa3d890f9fee920036f430bf6e546a174">~Frame</a>();
+<a name="l00060"></a>00060 
+<a name="l00062"></a>00062   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#aec87eb10b07bc6f19e9a91b064e991a3" title="Initialize new frame and create image pyramid.">initFrame</a>(<span class="keyword">const</span> cv::Mat&amp; <a class="code" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e" title="Full resolution image stored in the frame.">img</a>);
+<a name="l00063"></a>00063 
+<a name="l00065"></a>00065   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#a90c4503d84f89bad3a1ed7971902b000" title="Select this frame as keyframe.">setKeyframe</a>();
+<a name="l00066"></a>00066 
+<a name="l00068"></a>00068   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#ad028be8b81c12e887e5e028ca50b6cdb" title="Add a feature to the image.">addFeature</a>(<a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* ftr);
+<a name="l00069"></a>00069 
+<a name="l00073"></a>00073   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#a436a95418ec6eba4dd5fa283b9160dc8" title="The KeyPoints are those five features which are closest to the 4 image corners and to the center and ...">setKeyPoints</a>();
+<a name="l00074"></a>00074 
+<a name="l00076"></a>00076   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#aec168216abaa552ec52de42c40ef85c6" title="Check if we can select five better key-points.">checkKeyPoints</a>(<a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* ftr);
+<a name="l00077"></a>00077 
+<a name="l00079"></a>00079   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#a68b7b28632bf04bc04caa243ce71c28d" title="If a point is deleted, we must remove the corresponding key-point.">removeKeyPoint</a>(<a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* ftr);
+<a name="l00080"></a>00080 
+<a name="l00082"></a><a class="code" href="classsvo_1_1Frame.html#a7a197d075bfb643f49e01c40cbf529b8">00082</a>   <span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code" href="classsvo_1_1Frame.html#a7a197d075bfb643f49e01c40cbf529b8" title="Return number of point observations.">nObs</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#ae092429d42e150568d176fb3c4f24e42" title="List of features in the image.">fts_</a>.size(); }
+<a name="l00083"></a>00083 
+<a name="l00085"></a>00085   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Frame.html#aff35d299a0c6b2ed2901ae5c5c1a295f" title="Check if a point in (w)orld coordinate frame is visible in the image.">isVisible</a>(<span class="keyword">const</span> Vector3d&amp; xyz_w) <span class="keyword">const</span>;
+<a name="l00086"></a>00086 
+<a name="l00088"></a><a class="code" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e">00088</a>   <span class="keyword">inline</span> <span class="keyword">const</span> cv::Mat&amp; <a class="code" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e" title="Full resolution image stored in the frame.">img</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a1147e6dd9b678161585875e4a4048987" title="Image Pyramid.">img_pyr_</a>[0]; }
+<a name="l00089"></a>00089 
+<a name="l00091"></a><a class="code" href="classsvo_1_1Frame.html#a8800d7c7cd58266e17b5fd186a34ae30">00091</a>   <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Frame.html#a8800d7c7cd58266e17b5fd186a34ae30" title="Was this frame selected as keyframe?">isKeyframe</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a4ae56e6cb7e35f1ec17aedb9f00ac3d0" title="Was this frames selected as keyframe?">is_keyframe_</a>; }
+<a name="l00092"></a>00092 
+<a name="l00094"></a><a class="code" href="classsvo_1_1Frame.html#a7a35229e8049384da4298c38911cf00b">00094</a>   <span class="keyword">inline</span> Vector2d <a class="code" href="classsvo_1_1Frame.html#a7a35229e8049384da4298c38911cf00b" title="Transforms point coordinates in world-frame (w) to camera pixel coordinates (c).">w2c</a>(<span class="keyword">const</span> Vector3d&amp; xyz_w)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64" title="Camera model.">cam_</a>-&gt;world2cam( <a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf" title="Transform (f)rame from (w)orld.">T_f_w_</a> * xyz_w ); }
+<a name="l00095"></a>00095 
+<a name="l00097"></a><a class="code" href="classsvo_1_1Frame.html#a64560f85f9ef22892b795f30bd30a76a">00097</a>   <span class="keyword">inline</span> Vector3d <a class="code" href="classsvo_1_1Frame.html#a64560f85f9ef22892b795f30bd30a76a" title="Transforms pixel coordinates (c) to frame unit sphere coordinates (f).">c2f</a>(<span class="keyword">const</span> Vector2d&amp; px)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64" title="Camera model.">cam_</a>-&gt;cam2world(px[0], px[1]); }
+<a name="l00098"></a>00098 
+<a name="l00100"></a><a class="code" href="classsvo_1_1Frame.html#aab7d2f4d81291d021c6b373aadf8a009">00100</a>   <span class="keyword">inline</span> Vector3d <a class="code" href="classsvo_1_1Frame.html#aab7d2f4d81291d021c6b373aadf8a009" title="Transforms pixel coordinates (c) to frame unit sphere coordinates (f).">c2f</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> x, <span class="keyword">const</span> <span class="keywordtype">double</span> y)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64" title="Camera model.">cam_</a>-&gt;cam2world(x, y); }
+<a name="l00101"></a>00101 
+<a name="l00103"></a><a class="code" href="classsvo_1_1Frame.html#a59abc46912599c92b167095ad893e877">00103</a>   <span class="keyword">inline</span> Vector3d <a class="code" href="classsvo_1_1Frame.html#a59abc46912599c92b167095ad893e877" title="Transforms point coordinates in world-frame (w) to camera-frams (f).">w2f</a>(<span class="keyword">const</span> Vector3d&amp; xyz_w)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf" title="Transform (f)rame from (w)orld.">T_f_w_</a> * xyz_w; }
+<a name="l00104"></a>00104 
+<a name="l00106"></a><a class="code" href="classsvo_1_1Frame.html#a9d180b87837af63a66f86896387cd645">00106</a>   <span class="keyword">inline</span> Vector3d <a class="code" href="classsvo_1_1Frame.html#a9d180b87837af63a66f86896387cd645" title="Transforms point from frame unit sphere (f) frame to world coordinate frame (w).">f2w</a>(<span class="keyword">const</span> Vector3d&amp; f)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf" title="Transform (f)rame from (w)orld.">T_f_w_</a>.inverse() * f; }
+<a name="l00107"></a>00107 
+<a name="l00109"></a><a class="code" href="classsvo_1_1Frame.html#af31527b012b1b3c5691eca5625847d00">00109</a>   <span class="keyword">inline</span> Vector2d <a class="code" href="classsvo_1_1Frame.html#af31527b012b1b3c5691eca5625847d00" title="Projects Point from unit sphere (f) in camera pixels (c).">f2c</a>(<span class="keyword">const</span> Vector3d&amp; f)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a721ed187644c9b9913bb366f92873a64" title="Camera model.">cam_</a>-&gt;world2cam( f ); }
+<a name="l00110"></a>00110 
+<a name="l00112"></a><a class="code" href="classsvo_1_1Frame.html#a71e4312c548a2d3d776eef408795bd19">00112</a>   <span class="keyword">inline</span> Vector3d <a class="code" href="classsvo_1_1Frame.html#a71e4312c548a2d3d776eef408795bd19" title="Return the pose of the frame in the (w)orld coordinate frame.">pos</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf" title="Transform (f)rame from (w)orld.">T_f_w_</a>.inverse().translation(); }
+<a name="l00113"></a>00113 
+<a name="l00116"></a><a class="code" href="classsvo_1_1Frame.html#ae9745ac3477b6c20c8f75369ceb73303">00116</a>   <span class="keyword">inline</span> <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Frame.html#ae9745ac3477b6c20c8f75369ceb73303" title="Frame jacobian for projection of 3D point in (f)rame coordinate to unit plane coordinates uv (focal l...">jacobian_xyz2uv</a>(
+<a name="l00117"></a>00117       <span class="keyword">const</span> Vector3d&amp; xyz_in_f,
+<a name="l00118"></a>00118       Matrix&lt;double,2,6&gt;&amp; J)
+<a name="l00119"></a>00119   {
+<a name="l00120"></a>00120     <span class="keyword">const</span> <span class="keywordtype">double</span> x = xyz_in_f[0];
+<a name="l00121"></a>00121     <span class="keyword">const</span> <span class="keywordtype">double</span> y = xyz_in_f[1];
+<a name="l00122"></a>00122     <span class="keyword">const</span> <span class="keywordtype">double</span> z_inv = 1./xyz_in_f[2];
+<a name="l00123"></a>00123     <span class="keyword">const</span> <span class="keywordtype">double</span> z_inv_2 = z_inv*z_inv;
+<a name="l00124"></a>00124 
+<a name="l00125"></a>00125     J(0,0) = -z_inv;              <span class="comment">// -1/z</span>
+<a name="l00126"></a>00126     J(0,1) = 0.0;                 <span class="comment">// 0</span>
+<a name="l00127"></a>00127     J(0,2) = x*z_inv_2;           <span class="comment">// x/z^2</span>
+<a name="l00128"></a>00128     J(0,3) = y*J(0,2);            <span class="comment">// x*y/z^2</span>
+<a name="l00129"></a>00129     J(0,4) = -(1.0 + x*J(0,2));   <span class="comment">// -(1.0 + x^2/z^2)</span>
+<a name="l00130"></a>00130     J(0,5) = y*z_inv;             <span class="comment">// y/z</span>
+<a name="l00131"></a>00131 
+<a name="l00132"></a>00132     J(1,0) = 0.0;                 <span class="comment">// 0</span>
+<a name="l00133"></a>00133     J(1,1) = -z_inv;              <span class="comment">// -1/z</span>
+<a name="l00134"></a>00134     J(1,2) = y*z_inv_2;           <span class="comment">// y/z^2</span>
+<a name="l00135"></a>00135     J(1,3) = 1.0 + y*J(1,2);      <span class="comment">// 1.0 + y^2/z^2</span>
+<a name="l00136"></a>00136     J(1,4) = -J(0,3);             <span class="comment">// -x*y/z^2</span>
+<a name="l00137"></a>00137     J(1,5) = -x*z_inv;            <span class="comment">// x/z</span>
+<a name="l00138"></a>00138   }
+<a name="l00139"></a>00139 };
+<a name="l00140"></a>00140 
+<a name="l00141"></a>00141 
+<a name="l00143"></a><a class="code" href="namespacesvo_1_1frame__utils.html">00143</a> <span class="keyword">namespace </span>frame_utils {
+<a name="l00144"></a>00144 
+<a name="l00146"></a>00146 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1frame__utils.html#ab66effb506ec377e6edf35e95c5d8228" title="Creates an image pyramid of half-sampled images.">createImgPyramid</a>(<span class="keyword">const</span> cv::Mat&amp; img_level_0, <span class="keywordtype">int</span> n_levels, <a class="code" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a>&amp; pyr);
+<a name="l00147"></a>00147 
+<a name="l00149"></a>00149 <span class="keywordtype">bool</span> <a class="code" href="namespacesvo_1_1frame__utils.html#a98b0dbe0c500bde9888e8036de7c7afb" title="Get the average depth of the features in the image.">getSceneDepth</a>(<span class="keyword">const</span> <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>&amp; frame, <span class="keywordtype">double</span>&amp; depth_mean, <span class="keywordtype">double</span>&amp; depth_min);
+<a name="l00150"></a>00150 
+<a name="l00151"></a>00151 } <span class="comment">// namespace frame_utils</span>
+<a name="l00152"></a>00152 } <span class="comment">// namespace svo</span>
+<a name="l00153"></a>00153 
+<a name="l00154"></a>00154 <span class="preprocessor">#endif // SVO_FRAME_H_</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -205,7 +227,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

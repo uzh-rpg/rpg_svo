@@ -103,82 +103,106 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00021"></a>00021 
 <a name="l00022"></a>00022 <span class="keyword">namespace </span>vk {
 <a name="l00023"></a>00023   <span class="keyword">class </span>AbstractCamera;
-<a name="l00024"></a>00024 }
-<a name="l00025"></a>00025 
-<a name="l00026"></a>00026 <span class="keyword">namespace </span>svo {
-<a name="l00027"></a>00027 
-<a name="l00028"></a>00028 <span class="keyword">class </span>Point;
-<a name="l00029"></a>00029 <span class="keyword">class </span>Frame;
-<a name="l00030"></a>00030 <span class="keyword">class </span>Feature;
-<a name="l00031"></a>00031 
-<a name="l00033"></a><a class="code" href="namespacesvo_1_1matcher.html">00033</a> <span class="keyword">namespace </span>matcher {
+<a name="l00024"></a>00024   <span class="keyword">namespace </span>patch_score {
+<a name="l00025"></a>00025     <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> HALF_PATCH_SIZE&gt; <span class="keyword">class </span>ZMSSD;
+<a name="l00026"></a>00026   }
+<a name="l00027"></a>00027 }
+<a name="l00028"></a>00028 
+<a name="l00029"></a>00029 <span class="keyword">namespace </span>svo {
+<a name="l00030"></a>00030 
+<a name="l00031"></a>00031 <span class="keyword">class </span>Point;
+<a name="l00032"></a>00032 <span class="keyword">class </span>Frame;
+<a name="l00033"></a>00033 <span class="keyword">class </span>Feature;
 <a name="l00034"></a>00034 
-<a name="l00035"></a><a class="code" href="namespacesvo_1_1matcher.html#a6d3e860bdfcfcefc573998b4de06b288">00035</a> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespacesvo_1_1matcher.html#a6d3e860bdfcfcefc573998b4de06b288">g_halfpatch_size</a> = 4; <span class="comment">// do not change, because of sse instructions alignment.</span>
-<a name="l00036"></a><a class="code" href="namespacesvo_1_1matcher.html#a318f37aa065172673f49349293e8a899">00036</a> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespacesvo_1_1matcher.html#a318f37aa065172673f49349293e8a899">g_patch_size</a> = 8;     <span class="comment">// do not change, because of sse instructions alignment.</span>
+<a name="l00036"></a><a class="code" href="namespacesvo_1_1warp.html">00036</a> <span class="keyword">namespace </span>warp {
 <a name="l00037"></a>00037 
-<a name="l00039"></a><a class="code" href="structsvo_1_1matcher_1_1PatchData.html">00039</a> <span class="keyword">struct </span><a class="code" href="structsvo_1_1matcher_1_1PatchData.html" title="Manages the aligned memory of a patch. Aligned for SIMD instructions.">PatchData</a>
-<a name="l00040"></a>00040 {
-<a name="l00041"></a><a class="code" href="structsvo_1_1matcher_1_1PatchData.html#a8ee6000ad91fc1e68f08a4c227974880">00041</a>   <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1matcher_1_1PatchData.html#a8ee6000ad91fc1e68f08a4c227974880">patch_size</a>;
-<a name="l00042"></a><a class="code" href="structsvo_1_1matcher_1_1PatchData.html#a11be50cce013f521f839143cf6ee530c">00042</a>   uint8_t*  <a class="code" href="structsvo_1_1matcher_1_1PatchData.html#a11be50cce013f521f839143cf6ee530c">patch</a>;
-<a name="l00043"></a><a class="code" href="structsvo_1_1matcher_1_1PatchData.html#a4e0662e7e45e47798bef98eea0762fa8">00043</a>   uint8_t*  <a class="code" href="structsvo_1_1matcher_1_1PatchData.html#a4e0662e7e45e47798bef98eea0762fa8">patch_with_border</a>;
-<a name="l00044"></a>00044   <a class="code" href="structsvo_1_1matcher_1_1PatchData.html#af0d39e991a57c05b0703444a08541545">PatchData</a>(<span class="keywordtype">int</span> <a class="code" href="structsvo_1_1matcher_1_1PatchData.html#a8ee6000ad91fc1e68f08a4c227974880">patch_size</a>);
-<a name="l00045"></a>00045   <a class="code" href="structsvo_1_1matcher_1_1PatchData.html#a2f277af5a0598d9c8e43c8e2f75715c3">~PatchData</a>();
-<a name="l00046"></a>00046 };
+<a name="l00038"></a>00038 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1warp.html#a17c558122cf2545030ad41278a3b22a3">getWarpMatrixAffine</a>(
+<a name="l00039"></a>00039     <span class="keyword">const</span> vk::AbstractCamera&amp; cam_ref,
+<a name="l00040"></a>00040     <span class="keyword">const</span> vk::AbstractCamera&amp; cam_cur,
+<a name="l00041"></a>00041     <span class="keyword">const</span> Vector2d&amp; px_ref,
+<a name="l00042"></a>00042     <span class="keyword">const</span> Vector3d&amp; f_ref,
+<a name="l00043"></a>00043     <span class="keyword">const</span> <span class="keywordtype">double</span> depth_ref,
+<a name="l00044"></a>00044     <span class="keyword">const</span> SE3&amp; T_cur_ref,
+<a name="l00045"></a>00045     <span class="keyword">const</span> <span class="keywordtype">int</span> level_ref,
+<a name="l00046"></a>00046     Matrix2d&amp; A_cur_ref);
 <a name="l00047"></a>00047 
-<a name="l00049"></a><a class="code" href="namespacesvo_1_1matcher_1_1warp.html">00049</a> <span class="keyword">namespace </span>warp {
-<a name="l00050"></a>00050 
-<a name="l00051"></a>00051 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1matcher_1_1warp.html#a6a670eb8cabd7dbddb49ddd5ccbbd904">getWarpMatrixAffine</a>(
-<a name="l00052"></a>00052     <span class="keyword">const</span> vk::AbstractCamera&amp; cam_ref,
-<a name="l00053"></a>00053     <span class="keyword">const</span> vk::AbstractCamera&amp; cam_cur,
-<a name="l00054"></a>00054     <span class="keyword">const</span> Vector2d&amp; px_ref,
-<a name="l00055"></a>00055     <span class="keyword">const</span> Vector3d&amp; f_ref,
-<a name="l00056"></a>00056     <span class="keyword">const</span> <span class="keywordtype">double</span> depth_ref,
-<a name="l00057"></a>00057     <span class="keyword">const</span> SE3&amp; T_cur_ref,
-<a name="l00058"></a>00058     <span class="keyword">const</span> <span class="keywordtype">int</span> level_ref,
-<a name="l00059"></a>00059     Matrix2d&amp; A_cur_ref);
+<a name="l00048"></a>00048 <span class="keywordtype">int</span> <a class="code" href="namespacesvo_1_1warp.html#ab9f97fcb83ef8c499c0860931d479d3d">getBestSearchLevel</a>(
+<a name="l00049"></a>00049     <span class="keyword">const</span> Matrix2d&amp; A_cur_ref,
+<a name="l00050"></a>00050     <span class="keyword">const</span> <span class="keywordtype">int</span> max_level);
+<a name="l00051"></a>00051 
+<a name="l00052"></a>00052 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1warp.html#ae240f2136d59b6b80a0780680e4218c6">warpAffine</a>(
+<a name="l00053"></a>00053     <span class="keyword">const</span> Matrix2d&amp; A_cur_ref,
+<a name="l00054"></a>00054     <span class="keyword">const</span> cv::Mat&amp; img_ref,
+<a name="l00055"></a>00055     <span class="keyword">const</span> Vector2d&amp; px_ref,
+<a name="l00056"></a>00056     <span class="keyword">const</span> <span class="keywordtype">int</span> level_ref,
+<a name="l00057"></a>00057     <span class="keyword">const</span> <span class="keywordtype">int</span> level_cur,
+<a name="l00058"></a>00058     <span class="keyword">const</span> <span class="keywordtype">int</span> halfpatch_size,
+<a name="l00059"></a>00059     uint8_t* patch);
 <a name="l00060"></a>00060 
-<a name="l00061"></a>00061 <span class="keywordtype">int</span> <a class="code" href="namespacesvo_1_1matcher_1_1warp.html#a6694a92b13128c336a8ef93cef94ec45">getBestSearchLevel</a>(
-<a name="l00062"></a>00062     <span class="keyword">const</span> Matrix2d&amp; A_cur_ref,
-<a name="l00063"></a>00063     <span class="keyword">const</span> <span class="keywordtype">int</span> max_level);
-<a name="l00064"></a>00064 
-<a name="l00065"></a>00065 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1matcher_1_1warp.html#a4378dee57369792dfeb95a9f3cbad2d2">warpAffine</a>(
-<a name="l00066"></a>00066     <span class="keyword">const</span> Matrix2d&amp; A_cur_ref,
-<a name="l00067"></a>00067     <span class="keyword">const</span> cv::Mat&amp; img_ref,
-<a name="l00068"></a>00068     <span class="keyword">const</span> Vector2d&amp; px_ref,
-<a name="l00069"></a>00069     <span class="keyword">const</span> <span class="keywordtype">int</span> level_ref,
-<a name="l00070"></a>00070     <span class="keyword">const</span> <span class="keywordtype">int</span> level_cur,
-<a name="l00071"></a>00071     <a class="code" href="structsvo_1_1matcher_1_1PatchData.html" title="Manages the aligned memory of a patch. Aligned for SIMD instructions.">PatchData</a>&amp; ref_patch);
-<a name="l00072"></a>00072 
-<a name="l00073"></a>00073 } <span class="comment">// namespace warp</span>
-<a name="l00074"></a>00074 
-<a name="l00075"></a>00075 <span class="comment">// TODO take function from vikit</span>
-<a name="l00076"></a>00076 <span class="keywordtype">bool</span> <a class="code" href="namespacesvo_1_1matcher.html#a2c653d384f6c2edd285ab9c39a13a01d">depthFromTriangulation</a>(
-<a name="l00077"></a>00077     <span class="keyword">const</span> SE3&amp; T_cur_ref,
-<a name="l00078"></a>00078     <span class="keyword">const</span> Vector3d&amp; f_ref,
-<a name="l00079"></a>00079     <span class="keyword">const</span> Vector3d&amp; f_cur,
-<a name="l00080"></a>00080     <span class="keywordtype">double</span>&amp; depth);
-<a name="l00081"></a>00081 
-<a name="l00084"></a>00084 <span class="keywordtype">bool</span> <a class="code" href="namespacesvo_1_1matcher.html#a7b01f5a5b064a565e837d38ddf4fb100" title="Find a match by directly applying subpix refinement.">findMatchDirect</a>(
-<a name="l00085"></a>00085     <span class="keyword">const</span> <a class="code" href="classsvo_1_1Point.html" title="A 3D point that was triangulated from at least two corresponding image features.">Point</a>&amp; pt,
-<a name="l00086"></a>00086     <span class="keyword">const</span> <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>&amp; frame,
-<a name="l00087"></a>00087     Vector2d&amp; px_cur,
-<a name="l00088"></a>00088     <span class="keywordtype">int</span>&amp; level_cur);
-<a name="l00089"></a>00089 
-<a name="l00091"></a>00091 <span class="keywordtype">bool</span> <a class="code" href="namespacesvo_1_1matcher.html#a1ad5c6ef68249208970893995850580f" title="Find a match by searching along the epipolar line without using any features.">findEpipolarMatchDirect</a>(
-<a name="l00092"></a>00092     <span class="keyword">const</span> <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>&amp; ref_frame,
-<a name="l00093"></a>00093     <span class="keyword">const</span> <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>&amp; cur_frame,
-<a name="l00094"></a>00094     <span class="keyword">const</span> <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>&amp; ref_ftr,
-<a name="l00095"></a>00095     <span class="keyword">const</span> <span class="keywordtype">double</span> d_estimate,
-<a name="l00096"></a>00096     <span class="keyword">const</span> <span class="keywordtype">double</span> d_min,
-<a name="l00097"></a>00097     <span class="keyword">const</span> <span class="keywordtype">double</span> d_max,
-<a name="l00098"></a>00098     <span class="keyword">const</span> <span class="keywordtype">bool</span> align_1d,
-<a name="l00099"></a>00099     <span class="keywordtype">double</span>&amp; depth,
-<a name="l00100"></a>00100     <span class="keywordtype">double</span>&amp; h_inv);
-<a name="l00101"></a>00101 
-<a name="l00102"></a>00102 } <span class="comment">// namespace matcher</span>
-<a name="l00103"></a>00103 } <span class="comment">// namespace svo</span>
-<a name="l00104"></a>00104 
-<a name="l00105"></a>00105 <span class="preprocessor">#endif // SVO_MATCHER_H_</span>
+<a name="l00061"></a>00061 } <span class="comment">// namespace warp</span>
+<a name="l00062"></a>00062 
+<a name="l00064"></a><a class="code" href="classsvo_1_1Matcher.html">00064</a> <span class="keyword">class </span><a class="code" href="classsvo_1_1Matcher.html" title="Patch-matcher for reprojection-matching and epipolar search in triangulation.">Matcher</a>
+<a name="l00065"></a>00065 {
+<a name="l00066"></a>00066 <span class="keyword">public</span>:
+<a name="l00067"></a><a class="code" href="classsvo_1_1Matcher.html#a38bd31a1bc1669f4e109656c2090666b">00067</a>   <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1Matcher.html#a38bd31a1bc1669f4e109656c2090666b">halfpatch_size_</a> = 4;
+<a name="l00068"></a><a class="code" href="classsvo_1_1Matcher.html#a1dc1d35b1b40cd5a869e2fd2eb9ee16e">00068</a>   <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1Matcher.html#a1dc1d35b1b40cd5a869e2fd2eb9ee16e">patch_size_</a> = 8;
+<a name="l00069"></a>00069 
+<a name="l00070"></a><a class="code" href="classsvo_1_1Matcher.html#a8f2abf9bf3fb27fde6cdb99213a1925d">00070</a>   <span class="keyword">typedef</span> vk::patch_score::ZMSSD&lt;halfpatch_size_&gt; <a class="code" href="classsvo_1_1Matcher.html#a8f2abf9bf3fb27fde6cdb99213a1925d">PatchScore</a>;
+<a name="l00071"></a>00071 
+<a name="l00072"></a><a class="code" href="structsvo_1_1Matcher_1_1Options.html">00072</a>   <span class="keyword">struct </span><a class="code" href="structsvo_1_1Matcher_1_1Options.html">Options</a>
+<a name="l00073"></a>00073   {
+<a name="l00074"></a><a class="code" href="structsvo_1_1Matcher_1_1Options.html#a162577038ffdb370a7f366ced6c15e71">00074</a>     <span class="keywordtype">bool</span> <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a162577038ffdb370a7f366ced6c15e71" title="in epipolar search: align patch 1D along epipolar line">align_1d</a>;              
+<a name="l00075"></a><a class="code" href="structsvo_1_1Matcher_1_1Options.html#a209da4bf99c795453f20278efe16126e">00075</a>     <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a209da4bf99c795453f20278efe16126e" title="number of iterations for aligning the feature patches in gauss newton">align_max_iter</a>;         
+<a name="l00076"></a><a class="code" href="structsvo_1_1Matcher_1_1Options.html#a73ab9ec912bd083c25e594f451208b81">00076</a>     <span class="keywordtype">double</span> <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a73ab9ec912bd083c25e594f451208b81" title="max length of epipolar line to skip epipolar search and directly go to img align">max_epi_length_optim</a>;
+<a name="l00077"></a><a class="code" href="structsvo_1_1Matcher_1_1Options.html#a02d8425fefcbd1205027dbcca80cb22b">00077</a>     <span class="keywordtype">size_t</span> <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a02d8425fefcbd1205027dbcca80cb22b" title="max number of evaluations along epipolar line">max_epi_search_steps</a>;
+<a name="l00078"></a><a class="code" href="structsvo_1_1Matcher_1_1Options.html#a28337eefd24e5ca13f42c234245090cb">00078</a>     <span class="keywordtype">bool</span> <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a28337eefd24e5ca13f42c234245090cb" title="do gauss newton feature patch alignment after epipolar search">subpix_refinement</a>;     
+<a name="l00079"></a><a class="code" href="structsvo_1_1Matcher_1_1Options.html#a5fecd2773a09734cb404120ded74cd94">00079</a>     <span class="keywordtype">bool</span> <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a5fecd2773a09734cb404120ded74cd94">epi_search_edgelet_filtering</a>;
+<a name="l00080"></a><a class="code" href="structsvo_1_1Matcher_1_1Options.html#acd2d1ea6dd68a243bcc69751c3b7d71c">00080</a>     <span class="keywordtype">double</span> <a class="code" href="structsvo_1_1Matcher_1_1Options.html#acd2d1ea6dd68a243bcc69751c3b7d71c">epi_search_edgelet_max_angle</a>;
+<a name="l00081"></a><a class="code" href="structsvo_1_1Matcher_1_1Options.html#a816c4abfa63a8ae98be901591730a5b3">00081</a>     <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a816c4abfa63a8ae98be901591730a5b3">Options</a>() :
+<a name="l00082"></a>00082       <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a162577038ffdb370a7f366ced6c15e71" title="in epipolar search: align patch 1D along epipolar line">align_1d</a>(false),
+<a name="l00083"></a>00083       <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a209da4bf99c795453f20278efe16126e" title="number of iterations for aligning the feature patches in gauss newton">align_max_iter</a>(10),
+<a name="l00084"></a>00084       <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a73ab9ec912bd083c25e594f451208b81" title="max length of epipolar line to skip epipolar search and directly go to img align">max_epi_length_optim</a>(2.0),
+<a name="l00085"></a>00085       <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a02d8425fefcbd1205027dbcca80cb22b" title="max number of evaluations along epipolar line">max_epi_search_steps</a>(1000),
+<a name="l00086"></a>00086       <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a28337eefd24e5ca13f42c234245090cb" title="do gauss newton feature patch alignment after epipolar search">subpix_refinement</a>(true),
+<a name="l00087"></a>00087       <a class="code" href="structsvo_1_1Matcher_1_1Options.html#a5fecd2773a09734cb404120ded74cd94">epi_search_edgelet_filtering</a>(true),
+<a name="l00088"></a>00088       <a class="code" href="structsvo_1_1Matcher_1_1Options.html#acd2d1ea6dd68a243bcc69751c3b7d71c">epi_search_edgelet_max_angle</a>(0.7)
+<a name="l00089"></a>00089     {}
+<a name="l00090"></a>00090   } <a class="code" href="classsvo_1_1Matcher.html#a35f5144cf82ab4409a048aaf315802e1">options_</a>;
+<a name="l00091"></a>00091 
+<a name="l00092"></a><a class="code" href="classsvo_1_1Matcher.html#aad548718c95e60928b4347047d7e2640">00092</a>   uint8_t* <a class="code" href="classsvo_1_1Matcher.html#aad548718c95e60928b4347047d7e2640">patch_</a>;
+<a name="l00093"></a><a class="code" href="classsvo_1_1Matcher.html#a23b933bca2b4c235f97c21697ba953c4">00093</a>   uint8_t* <a class="code" href="classsvo_1_1Matcher.html#a23b933bca2b4c235f97c21697ba953c4">patch_with_border_</a>;
+<a name="l00094"></a><a class="code" href="classsvo_1_1Matcher.html#a72ec28ddb6cc043aab75e6f55c2991f0">00094</a>   Matrix2d <a class="code" href="classsvo_1_1Matcher.html#a72ec28ddb6cc043aab75e6f55c2991f0" title="affine warp matrix">A_cur_ref_</a>;          
+<a name="l00095"></a><a class="code" href="classsvo_1_1Matcher.html#a2f972cdc2570afeaae56887ca798ad3a">00095</a>   Vector2d <a class="code" href="classsvo_1_1Matcher.html#a2f972cdc2570afeaae56887ca798ad3a">epi_dir_</a>;
+<a name="l00096"></a><a class="code" href="classsvo_1_1Matcher.html#a37bd4b9cb2dd4cf9af04fe6e2f0899a1">00096</a>   <span class="keywordtype">double</span> <a class="code" href="classsvo_1_1Matcher.html#a37bd4b9cb2dd4cf9af04fe6e2f0899a1" title="length of epipolar line segment in pixels (only used for epipolar search)">epi_length_</a>;           
+<a name="l00097"></a><a class="code" href="classsvo_1_1Matcher.html#ae09df94962be792484c79ec44f76a5c3">00097</a>   <span class="keywordtype">double</span> <a class="code" href="classsvo_1_1Matcher.html#ae09df94962be792484c79ec44f76a5c3" title="hessian of 1d image alignment along epipolar line">h_inv_</a>;                
+<a name="l00098"></a><a class="code" href="classsvo_1_1Matcher.html#a0105e4370d460cd2062cb663fa657b6b">00098</a>   <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1Matcher.html#a0105e4370d460cd2062cb663fa657b6b">search_level_</a>;
+<a name="l00099"></a><a class="code" href="classsvo_1_1Matcher.html#a4263cfae15bbc2bf241e206563db60ea">00099</a>   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Matcher.html#a4263cfae15bbc2bf241e206563db60ea">reject_</a>;
+<a name="l00100"></a><a class="code" href="classsvo_1_1Matcher.html#a3aec42385e7915ec36004dd8637ab57c">00100</a>   <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* <a class="code" href="classsvo_1_1Matcher.html#a3aec42385e7915ec36004dd8637ab57c">ref_ftr_</a>;
+<a name="l00101"></a><a class="code" href="classsvo_1_1Matcher.html#aa81088f76142e6d0a63e78a4cf475e06">00101</a>   Vector2d <a class="code" href="classsvo_1_1Matcher.html#aa81088f76142e6d0a63e78a4cf475e06">px_cur_</a>;
+<a name="l00102"></a>00102 
+<a name="l00103"></a>00103   <a class="code" href="classsvo_1_1Matcher.html#a4a132dd767283e5faf3a97f03eadb069">Matcher</a>();
+<a name="l00104"></a>00104   <a class="code" href="classsvo_1_1Matcher.html#a86c2047c703574e30e2138d104f8fbb9">~Matcher</a>();
+<a name="l00105"></a>00105 
+<a name="l00108"></a>00108   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Matcher.html#a35ad6833ba0592d078b06e3564de5857" title="Find a match by directly applying subpix refinement.">findMatchDirect</a>(
+<a name="l00109"></a>00109       <span class="keyword">const</span> <a class="code" href="classsvo_1_1Point.html" title="A 3D point on the surface of the scene.">Point</a>&amp; pt,
+<a name="l00110"></a>00110       <span class="keyword">const</span> <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>&amp; frame,
+<a name="l00111"></a>00111       Vector2d&amp; px_cur);
+<a name="l00112"></a>00112 
+<a name="l00114"></a>00114   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1Matcher.html#ad5f538e826abe501a5a5eadb4ef0a8d5" title="Find a match by searching along the epipolar line without using any features.">findEpipolarMatchDirect</a>(
+<a name="l00115"></a>00115       <span class="keyword">const</span> <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>&amp; ref_frame,
+<a name="l00116"></a>00116       <span class="keyword">const</span> <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>&amp; cur_frame,
+<a name="l00117"></a>00117       <span class="keyword">const</span> <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>&amp; ref_ftr,
+<a name="l00118"></a>00118       <span class="keyword">const</span> <span class="keywordtype">double</span> d_estimate,
+<a name="l00119"></a>00119       <span class="keyword">const</span> <span class="keywordtype">double</span> d_min,
+<a name="l00120"></a>00120       <span class="keyword">const</span> <span class="keywordtype">double</span> d_max,
+<a name="l00121"></a>00121       <span class="keywordtype">double</span>&amp; depth);
+<a name="l00122"></a>00122 
+<a name="l00123"></a>00123   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1Matcher.html#a7a0b2f4fdf67c63a1af35fac77fe8c42">createPatchFromPatchWithBorder</a>();
+<a name="l00124"></a>00124 };
+<a name="l00125"></a>00125 
+<a name="l00126"></a>00126 } <span class="comment">// namespace svo</span>
+<a name="l00127"></a>00127 
+<a name="l00128"></a>00128 <span class="preprocessor">#endif // SVO_MATCHER_H_</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -197,7 +221,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

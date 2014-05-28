@@ -135,6 +135,7 @@ Public Member Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the keyframe which is spatially closest and has overlapping field of view.  <a href="#a7c4de24b5c2d3cd54babc958696d4799"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Map.html#af44482d1f3dfa37ffa8056efef337b62">getFurthestKeyframe</a> (const Vector3d &amp;pos) const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the keyframe which is furthest apart from pos.  <a href="#af44482d1f3dfa37ffa8056efef337b62"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Map.html#ad883589c45262dd4feeee03db9354ba8">getKeyframeById</a> (const int id, <a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> &amp;frame) const </td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Map.html#a977dcc0712a023af82e8c8eaa1d76bf4">transform</a> (const Matrix3d &amp;R, const Vector3d &amp;t, const double &amp;s)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Transform the whole map with rotation R, translation t and scale s.  <a href="#a977dcc0712a023af82e8c8eaa1d76bf4"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Map.html#a39124ccb686000febd58f70dfd297d99">emptyTrash</a> ()</td></tr>
@@ -308,6 +309,33 @@ Public Attributes</h2></td></tr>
 <div class="memdoc">
 
 <p>Return the keyframe which is furthest apart from pos. </p>
+
+</div>
+</div>
+<a class="anchor" id="ad883589c45262dd4feeee03db9354ba8"></a><!-- doxytag: member="svo::Map::getKeyframeById" ref="ad883589c45262dd4feeee03db9354ba8" args="(const int id, FramePtr &amp;frame) const " -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classsvo_1_1Map.html#ad883589c45262dd4feeee03db9354ba8">svo::Map::getKeyframeById</a> </td>
+          <td>(</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> &amp;&#160;</td>
+          <td class="paramname"><em>frame</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
 
 </div>
 </div>
@@ -532,7 +560,7 @@ Public Attributes</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

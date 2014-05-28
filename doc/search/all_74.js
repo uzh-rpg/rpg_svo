@@ -2,7 +2,6 @@ var searchData=
 [
   ['t_5fcur_5ffrom_5fref_5f',['T_cur_from_ref_',['../classsvo_1_1initialization_1_1KltHomographyInit.html#ad503b52768bd390721c5244b3ef5841b',1,'svo::initialization::KltHomographyInit']]],
   ['t_5ff_5fw_5f',['T_f_w_',['../classsvo_1_1Frame.html#a7950652a4b6aea8b7cc92d375ed2cbaf',1,'svo::Frame']]],
-  ['t_5ff_5fw_5finit_5f',['T_f_w_init_',['../classsvo_1_1FrameHandlerBase.html#a03b0c991174e628e5b4a2b86fff64cd7',1,'svo::FrameHandlerBase']]],
   ['thread_5f',['thread_',['../classsvo_1_1DepthFilter.html#ac5fa6fb15f16a719a6446a33f0392e0c',1,'svo::DepthFilter']]],
   ['timer_5f',['timer_',['../classsvo_1_1FrameHandlerBase.html#a60b9699bf6c7dd0e13c48f54b859a3d0',1,'svo::FrameHandlerBase']]],
   ['timestamp_5f',['timestamp_',['../classsvo_1_1Frame.html#af775e897d6d89a4325c6abb4c6fdaaf3',1,'svo::Frame']]],
@@ -10,6 +9,9 @@ var searchData=
   ['trace_5fname',['trace_name',['../classsvo_1_1Config.html#aa1f599a6da41d1249c6f761c043433f3',1,'svo::Config']]],
   ['tracedir',['traceDir',['../classsvo_1_1Config.html#a99f3d7b73c9566c4224c1267563db3c2',1,'svo::Config']]],
   ['tracename',['traceName',['../classsvo_1_1Config.html#afe8cc5c0c05c1fe90b99c92949ab29c5',1,'svo::Config']]],
+  ['tracking_5fbad',['TRACKING_BAD',['../classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2a9e3130514678892612dbdb5216f34b13',1,'svo::FrameHandlerBase']]],
+  ['tracking_5fgood',['TRACKING_GOOD',['../classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2a959adb5f5636e8e1c1eec5500104b9a2',1,'svo::FrameHandlerBase']]],
+  ['tracking_5finsufficient',['TRACKING_INSUFFICIENT',['../classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2a628aac513839d19b8bd7770e839a6bf3',1,'svo::FrameHandlerBase']]],
   ['tracking_5fquality_5f',['tracking_quality_',['../classsvo_1_1FrameHandlerBase.html#a731f97f7daa1b810d4f0c39f45c4804e',1,'svo::FrameHandlerBase']]],
   ['trackingquality',['TrackingQuality',['../classsvo_1_1FrameHandlerBase.html#aee998ae87f2233a006c5abf5f5521da2',1,'svo::FrameHandlerBase::TrackingQuality()'],['../classsvo_1_1FrameHandlerBase.html#a4292eba2eaea6653814167ed0e1e9f98',1,'svo::FrameHandlerBase::trackingQuality() const ']]],
   ['trackklt',['trackKlt',['../namespacesvo_1_1initialization.html#adb710f0dbcfb5c2c9a89ecbaed9b0b61',1,'svo::initialization']]],
@@ -18,7 +20,11 @@ var searchData=
   ['triang_5fhalf_5fpatch_5fsize',['triang_half_patch_size',['../classsvo_1_1Config.html#a9afe19e8cf9d0f0a10e2db4616899b5c',1,'svo::Config']]],
   ['triang_5fmin_5fcorner_5fscore',['triang_min_corner_score',['../classsvo_1_1Config.html#a01749d64ad5640ad82b01234232a8d89',1,'svo::Config']]],
   ['triangmincornerscore',['triangMinCornerScore',['../classsvo_1_1Config.html#adb539378b51db5a5e5d647008d760014',1,'svo::Config']]],
-  ['triangulation',['TRIANGULATION',['../classsvo_1_1Point.html#a8e34853e4e00f6cee337802f001189d1a32b2d84dc28a10aa748d9baab0619374',1,'svo::Point']]],
   ['twoviewba',['twoViewBA',['../namespacesvo_1_1ba.html#a5ea29b3fd9712d361d596266a6153a63',1,'svo::ba']]],
-  ['type_5f',['type_',['../classsvo_1_1Point.html#af55a54c3d8d4f47c38b7c58ac8a99e0a',1,'svo::Point']]]
+  ['type',['type',['../structsvo_1_1Feature.html#ac74076cb3269ae27ef011fa6fd288fdb',1,'svo::Feature']]],
+  ['type_5f',['type_',['../classsvo_1_1Point.html#af55a54c3d8d4f47c38b7c58ac8a99e0a',1,'svo::Point']]],
+  ['type_5fcandidate',['TYPE_CANDIDATE',['../classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196cacf1ace310f21f67c332402585a819d90',1,'svo::Point']]],
+  ['type_5fdeleted',['TYPE_DELETED',['../classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca9059bc4ad01780ddad41fd09b6d44911',1,'svo::Point']]],
+  ['type_5fgood',['TYPE_GOOD',['../classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca940b34e0bd7f47aca548d398f2b02175',1,'svo::Point']]],
+  ['type_5funknown',['TYPE_UNKNOWN',['../classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196ca73ec5f429fbe9c1e583ad907cbbe5bbf',1,'svo::Point']]]
 ];

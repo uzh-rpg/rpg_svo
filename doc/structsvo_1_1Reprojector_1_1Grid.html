@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>svo: svo::reprojection::Candidate Struct Reference</title>
+<title>svo: svo::Reprojector::Grid Struct Reference</title>
 
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
@@ -93,61 +93,41 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><a class="el" href="namespacesvo.html">svo</a>      </li>
-      <li class="navelem"><a class="el" href="namespacesvo_1_1reprojection.html">reprojection</a>      </li>
-      <li class="navelem"><a class="el" href="structsvo_1_1reprojection_1_1Candidate.html">Candidate</a>      </li>
+      <li class="navelem"><a class="el" href="classsvo_1_1Reprojector.html">Reprojector</a>      </li>
+      <li class="navelem"><a class="el" href="structsvo_1_1Reprojector_1_1Grid.html">Grid</a>      </li>
     </ul>
   </div>
 </div>
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a>  </div>
   <div class="headertitle">
-<div class="title">svo::reprojection::Candidate Struct Reference</div>  </div>
+<div class="title">svo::Reprojector::Grid Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<!-- doxytag: class="svo::reprojection::Candidate" -->
-<p>A candidate is a point that projects into the image plane and for which we will search a maching feature in the image.  
- <a href="structsvo_1_1reprojection_1_1Candidate.html#details">More...</a></p>
+<!-- doxytag: class="svo::Reprojector::Grid" -->
+<p>The grid stores a set of candidate matches. For every grid cell we try to find one match.  
+ <a href="structsvo_1_1Reprojector_1_1Grid.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="reprojection_8h_source.html">reprojection.h</a>&gt;</code></p>
-
-<p><a href="structsvo_1_1reprojection_1_1Candidate-members.html">List of all members.</a></p>
+<p><a href="structsvo_1_1Reprojector_1_1Grid-members.html">List of all members.</a></p>
 <table class="memberdecls">
-<tr><td colspan="2"><h2><a name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Candidate.html#a7ff0cdb88cb47748c11e450feced6caa">Candidate</a> (<a class="el" href="classsvo_1_1Point.html">Point</a> *<a class="el" href="structsvo_1_1reprojection_1_1Candidate.html#a185cace1d03aee15c9d81ac058005ac9">pt</a>, Vector2d &amp;<a class="el" href="structsvo_1_1reprojection_1_1Candidate.html#a36ad761459ee46adc5c3ddc4202182c6">px</a>)</td></tr>
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">EIGEN_MAKE_ALIGNED_OPERATOR_NEW <br class="typebreak"/>
-<a class="el" href="classsvo_1_1Point.html">Point</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Candidate.html#a185cace1d03aee15c9d81ac058005ac9">pt</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">3D point.  <a href="#a185cace1d03aee15c9d81ac058005ac9"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">Vector2d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Candidate.html#a36ad761459ee46adc5c3ddc4202182c6">px</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">projected 2D pixel location.  <a href="#a36ad761459ee46adc5c3ddc4202182c6"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1Reprojector.html#aa77c76e0d6ee4ffe1700e99a18dcf989">CandidateGrid</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Grid.html#a64289136c8a047dc77b5fb9d5b67e678">cells</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Grid.html#a84c6e986cad988a07515db73e9b9a1f4">cell_order</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Grid.html#ac9a218801a25ebf6b1134cf6bdad8bd5">cell_size</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Grid.html#a3953300aa369b46f9742304a9cb85479">grid_n_cols</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Grid.html#a6427694788c5572145ab03001bf4e337">grid_n_rows</a></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
-<div class="textblock"><p>A candidate is a point that projects into the image plane and for which we will search a maching feature in the image. </p>
-</div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a7ff0cdb88cb47748c11e450feced6caa"></a><!-- doxytag: member="svo::reprojection::Candidate::Candidate" ref="a7ff0cdb88cb47748c11e450feced6caa" args="(Point *pt, Vector2d &amp;px)" -->
+<div class="textblock"><p>The grid stores a set of candidate matches. For every grid cell we try to find one match. </p>
+</div><hr/><h2>Member Data Documentation</h2>
+<a class="anchor" id="a84c6e986cad988a07515db73e9b9a1f4"></a><!-- doxytag: member="svo::Reprojector::Grid::cell_order" ref="a84c6e986cad988a07515db73e9b9a1f4" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structsvo_1_1reprojection_1_1Candidate.html#a7ff0cdb88cb47748c11e450feced6caa">svo::reprojection::Candidate::Candidate</a> </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classsvo_1_1Point.html">Point</a> *&#160;</td>
-          <td class="paramname"><em>pt</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Vector2d &amp;&#160;</td>
-          <td class="paramname"><em>px</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td><code> [inline]</code></td>
+          <td class="memname">vector&lt;int&gt; <a class="el" href="structsvo_1_1Reprojector_1_1Grid.html#a84c6e986cad988a07515db73e9b9a1f4">svo::Reprojector::Grid::cell_order</a></td>
         </tr>
       </table>
 </div>
@@ -155,39 +135,60 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<hr/><h2>Member Data Documentation</h2>
-<a class="anchor" id="a185cace1d03aee15c9d81ac058005ac9"></a><!-- doxytag: member="svo::reprojection::Candidate::pt" ref="a185cace1d03aee15c9d81ac058005ac9" args="" -->
+<a class="anchor" id="ac9a218801a25ebf6b1134cf6bdad8bd5"></a><!-- doxytag: member="svo::Reprojector::Grid::cell_size" ref="ac9a218801a25ebf6b1134cf6bdad8bd5" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">EIGEN_MAKE_ALIGNED_OPERATOR_NEW <a class="el" href="classsvo_1_1Point.html">Point</a>* <a class="el" href="structsvo_1_1reprojection_1_1Candidate.html#a185cace1d03aee15c9d81ac058005ac9">svo::reprojection::Candidate::pt</a></td>
+          <td class="memname">int <a class="el" href="structsvo_1_1Reprojector_1_1Grid.html#ac9a218801a25ebf6b1134cf6bdad8bd5">svo::Reprojector::Grid::cell_size</a></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>3D point. </p>
-
 </div>
 </div>
-<a class="anchor" id="a36ad761459ee46adc5c3ddc4202182c6"></a><!-- doxytag: member="svo::reprojection::Candidate::px" ref="a36ad761459ee46adc5c3ddc4202182c6" args="" -->
+<a class="anchor" id="a64289136c8a047dc77b5fb9d5b67e678"></a><!-- doxytag: member="svo::Reprojector::Grid::cells" ref="a64289136c8a047dc77b5fb9d5b67e678" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Vector2d <a class="el" href="structsvo_1_1reprojection_1_1Candidate.html#a36ad761459ee46adc5c3ddc4202182c6">svo::reprojection::Candidate::px</a></td>
+          <td class="memname"><a class="el" href="classsvo_1_1Reprojector.html#aa77c76e0d6ee4ffe1700e99a18dcf989">CandidateGrid</a> <a class="el" href="structsvo_1_1Reprojector_1_1Grid.html#a64289136c8a047dc77b5fb9d5b67e678">svo::Reprojector::Grid::cells</a></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>projected 2D pixel location. </p>
+</div>
+</div>
+<a class="anchor" id="a3953300aa369b46f9742304a9cb85479"></a><!-- doxytag: member="svo::Reprojector::Grid::grid_n_cols" ref="a3953300aa369b46f9742304a9cb85479" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="structsvo_1_1Reprojector_1_1Grid.html#a3953300aa369b46f9742304a9cb85479">svo::Reprojector::Grid::grid_n_cols</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6427694788c5572145ab03001bf4e337"></a><!-- doxytag: member="svo::Reprojector::Grid::grid_n_rows" ref="a6427694788c5572145ab03001bf4e337" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="structsvo_1_1Reprojector_1_1Grid.html#a6427694788c5572145ab03001bf4e337">svo::Reprojector::Grid::grid_n_rows</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/svo/<a class="el" href="reprojection_8h_source.html">reprojection.h</a></li>
+<li>include/svo/<a class="el" href="reprojector_8h_source.html">reprojector.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- window showing the filter options -->
@@ -207,7 +208,7 @@ Public Attributes</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

@@ -104,71 +104,77 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00022"></a>00022 <span class="keyword">namespace </span>g2o {
 <a name="l00023"></a>00023 <span class="keyword">class </span>EdgeProjectXYZ2UV;
 <a name="l00024"></a>00024 <span class="keyword">class </span>SparseOptimizer;
-<a name="l00025"></a>00025 }
-<a name="l00026"></a><a class="code" href="bundle__adjustment_8h.html#ab4ece95d673fce5279845e23d90093a1">00026</a> <span class="keyword">typedef</span> g2o::EdgeProjectXYZ2UV <a class="code" href="bundle__adjustment_8h.html#ab4ece95d673fce5279845e23d90093a1">g2oEdgeSE3</a>;
-<a name="l00027"></a>00027 
-<a name="l00028"></a><a class="code" href="namespacesvo.html">00028</a> <span class="keyword">namespace </span>svo {
-<a name="l00029"></a>00029 
-<a name="l00030"></a>00030 <span class="keyword">class </span><a class="code" href="classsvo_1_1Point.html" title="A 3D point that was triangulated from at least two corresponding image features.">Point</a>;
-<a name="l00031"></a>00031 <span class="keyword">class </span><a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>;
-<a name="l00032"></a>00032 <span class="keyword">class </span><a class="code" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a>;
-<a name="l00033"></a>00033 
-<a name="l00035"></a><a class="code" href="namespacesvo_1_1ba.html">00035</a> <span class="keyword">namespace </span>ba {
-<a name="l00036"></a>00036 
-<a name="l00038"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html">00038</a> <span class="keyword">struct </span><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html" title="Temporary container to hold the g2o edge with reference to frame and point.">EdgeContainerSE3</a>
-<a name="l00039"></a>00039 {
-<a name="l00040"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9e7590e605707fa147714a676af63366">00040</a>   <a class="code" href="bundle__adjustment_8h.html#ab4ece95d673fce5279845e23d90093a1">g2oEdgeSE3</a>*     <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9e7590e605707fa147714a676af63366">edge</a>;
-<a name="l00041"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a5516a31f6614a9aec18e8fd9640f94ee">00041</a>   <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>*          <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a5516a31f6614a9aec18e8fd9640f94ee">frame</a>;
-<a name="l00042"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a48a424f257f6fb5fbe281726df6ce8a0">00042</a>   <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>*        <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a48a424f257f6fb5fbe281726df6ce8a0">feature</a>;
-<a name="l00043"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9f65db0093a464ffe4ebd3b460f7035a">00043</a>   <span class="keywordtype">bool</span>            <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9f65db0093a464ffe4ebd3b460f7035a">is_deleted</a>;
-<a name="l00044"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a0e3b7e8feac46d3550f47bcdae3be8fa">00044</a>   <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a0e3b7e8feac46d3550f47bcdae3be8fa">EdgeContainerSE3</a>(<a class="code" href="bundle__adjustment_8h.html#ab4ece95d673fce5279845e23d90093a1">g2oEdgeSE3</a>* e, <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a5516a31f6614a9aec18e8fd9640f94ee">frame</a>, <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a48a424f257f6fb5fbe281726df6ce8a0">feature</a>) :
-<a name="l00045"></a>00045     <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9e7590e605707fa147714a676af63366">edge</a>(e), frame(frame), feature(feature), <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9f65db0093a464ffe4ebd3b460f7035a">is_deleted</a>(false)
-<a name="l00046"></a>00046   {}
-<a name="l00047"></a>00047 };
-<a name="l00048"></a>00048 
-<a name="l00051"></a>00051 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1ba.html#a5ea29b3fd9712d361d596266a6153a63" title="Optimize two camera frames and their observed 3D points.">twoViewBA</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* frame1, <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* frame2, <span class="keywordtype">double</span> reproj_thresh, <a class="code" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a>* map);
-<a name="l00052"></a>00052 
-<a name="l00056"></a>00056 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1ba.html#af4b591d09cffe5c3411bf02717d36f92" title="Local bundle adjustment.">localBA</a>(
-<a name="l00057"></a>00057     <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* center_kf,
-<a name="l00058"></a>00058     set&lt;FramePtr&gt;* core_kfs,
-<a name="l00059"></a>00059     <a class="code" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a>* map,
-<a name="l00060"></a>00060     <span class="keywordtype">size_t</span>&amp; n_incorrect_edges_1,
-<a name="l00061"></a>00061     <span class="keywordtype">size_t</span>&amp; n_incorrect_edges_2,
-<a name="l00062"></a>00062     <span class="keywordtype">double</span>&amp; init_error,
-<a name="l00063"></a>00063     <span class="keywordtype">double</span>&amp; final_error);
-<a name="l00064"></a>00064 
-<a name="l00067"></a>00067 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1ba.html#ab1058e1af1296c7a8514705ed218837f" title="Global bundle adjustment.">globalBA</a>(<a class="code" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a>* map);
-<a name="l00068"></a>00068 
-<a name="l00070"></a>00070 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1ba.html#a1713995cd714cbb9d3bb80b5e46d000e" title="Initialize g2o with solver type, optimization strategy and camera model.">setupG2o</a>(g2o::SparseOptimizer * optimizer);
-<a name="l00071"></a>00071 
-<a name="l00073"></a>00073 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1ba.html#a786064dd8c8cd177b2d35f5c1097339f" title="Run the optimization on the provided graph.">runSparseBAOptimizer</a>(
-<a name="l00074"></a>00074     g2o::SparseOptimizer* optimizer,
-<a name="l00075"></a>00075     <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> num_iter,
-<a name="l00076"></a>00076     <span class="keywordtype">double</span>&amp; init_error,
-<a name="l00077"></a>00077     <span class="keywordtype">double</span>&amp; final_error);
-<a name="l00078"></a>00078 
-<a name="l00080"></a>00080 <a class="code" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">g2oFrameSE3</a>* <a class="code" href="namespacesvo_1_1ba.html#a5af5b9f08df0724a9bb58f07cc08619c" title="Create a g2o vertice from a keyframe object.">createG2oFrameSE3</a>(
-<a name="l00081"></a>00081     <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* kf,
-<a name="l00082"></a>00082     <span class="keywordtype">size_t</span> <span class="keywordtype">id</span>,
-<a name="l00083"></a>00083     <span class="keywordtype">bool</span> fixed);
+<a name="l00025"></a>00025 <span class="keyword">class </span>VertexSE3Expmap;
+<a name="l00026"></a>00026 <span class="keyword">class </span>VertexSBAPointXYZ;
+<a name="l00027"></a>00027 }
+<a name="l00028"></a>00028 
+<a name="l00029"></a><a class="code" href="namespacesvo.html">00029</a> <span class="keyword">namespace </span>svo {
+<a name="l00030"></a>00030 
+<a name="l00031"></a><a class="code" href="namespacesvo.html#ab405b307d732554d91ca05f2d827ead8">00031</a> <span class="keyword">typedef</span> g2o::EdgeProjectXYZ2UV <a class="code" href="namespacesvo.html#ab405b307d732554d91ca05f2d827ead8">g2oEdgeSE3</a>;
+<a name="l00032"></a><a class="code" href="namespacesvo.html#a469ea351de55547bb26f9b827aad6059">00032</a> <span class="keyword">typedef</span> g2o::VertexSE3Expmap <a class="code" href="namespacesvo.html#a469ea351de55547bb26f9b827aad6059">g2oFrameSE3</a>;
+<a name="l00033"></a><a class="code" href="namespacesvo.html#a091cb15c36354da44cbd3579b576ce13">00033</a> <span class="keyword">typedef</span> g2o::VertexSBAPointXYZ <a class="code" href="namespacesvo.html#a091cb15c36354da44cbd3579b576ce13">g2oPoint</a>;
+<a name="l00034"></a>00034 
+<a name="l00035"></a>00035 <span class="keyword">class </span><a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>;
+<a name="l00036"></a>00036 <span class="keyword">class </span><a class="code" href="classsvo_1_1Point.html" title="A 3D point on the surface of the scene.">Point</a>;
+<a name="l00037"></a>00037 <span class="keyword">class </span><a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>;
+<a name="l00038"></a>00038 <span class="keyword">class </span><a class="code" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a>;
+<a name="l00039"></a>00039 
+<a name="l00041"></a><a class="code" href="namespacesvo_1_1ba.html">00041</a> <span class="keyword">namespace </span>ba {
+<a name="l00042"></a>00042 
+<a name="l00044"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html">00044</a> <span class="keyword">struct </span><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html" title="Temporary container to hold the g2o edge with reference to frame and point.">EdgeContainerSE3</a>
+<a name="l00045"></a>00045 {
+<a name="l00046"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9e7590e605707fa147714a676af63366">00046</a>   <a class="code" href="namespacesvo.html#ab405b307d732554d91ca05f2d827ead8">g2oEdgeSE3</a>*     <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9e7590e605707fa147714a676af63366">edge</a>;
+<a name="l00047"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a5516a31f6614a9aec18e8fd9640f94ee">00047</a>   <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>*          <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a5516a31f6614a9aec18e8fd9640f94ee">frame</a>;
+<a name="l00048"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a48a424f257f6fb5fbe281726df6ce8a0">00048</a>   <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>*        <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a48a424f257f6fb5fbe281726df6ce8a0">feature</a>;
+<a name="l00049"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9f65db0093a464ffe4ebd3b460f7035a">00049</a>   <span class="keywordtype">bool</span>            <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9f65db0093a464ffe4ebd3b460f7035a">is_deleted</a>;
+<a name="l00050"></a><a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a0e3b7e8feac46d3550f47bcdae3be8fa">00050</a>   <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a0e3b7e8feac46d3550f47bcdae3be8fa">EdgeContainerSE3</a>(<a class="code" href="namespacesvo.html#ab405b307d732554d91ca05f2d827ead8">g2oEdgeSE3</a>* e, <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a5516a31f6614a9aec18e8fd9640f94ee">frame</a>, <a class="code" href="structsvo_1_1Feature.html" title="A salient image region that is tracked across frames.">Feature</a>* <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a48a424f257f6fb5fbe281726df6ce8a0">feature</a>) :
+<a name="l00051"></a>00051     <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9e7590e605707fa147714a676af63366">edge</a>(e), frame(frame), feature(feature), <a class="code" href="structsvo_1_1ba_1_1EdgeContainerSE3.html#a9f65db0093a464ffe4ebd3b460f7035a">is_deleted</a>(false)
+<a name="l00052"></a>00052   {}
+<a name="l00053"></a>00053 };
+<a name="l00054"></a>00054 
+<a name="l00057"></a>00057 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1ba.html#a5ea29b3fd9712d361d596266a6153a63" title="Optimize two camera frames and their observed 3D points.">twoViewBA</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* frame1, <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* frame2, <span class="keywordtype">double</span> reproj_thresh, <a class="code" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a>* map);
+<a name="l00058"></a>00058 
+<a name="l00062"></a>00062 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1ba.html#af4b591d09cffe5c3411bf02717d36f92" title="Local bundle adjustment.">localBA</a>(
+<a name="l00063"></a>00063     <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* center_kf,
+<a name="l00064"></a>00064     set&lt;FramePtr&gt;* core_kfs,
+<a name="l00065"></a>00065     <a class="code" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a>* map,
+<a name="l00066"></a>00066     <span class="keywordtype">size_t</span>&amp; n_incorrect_edges_1,
+<a name="l00067"></a>00067     <span class="keywordtype">size_t</span>&amp; n_incorrect_edges_2,
+<a name="l00068"></a>00068     <span class="keywordtype">double</span>&amp; init_error,
+<a name="l00069"></a>00069     <span class="keywordtype">double</span>&amp; final_error);
+<a name="l00070"></a>00070 
+<a name="l00073"></a>00073 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1ba.html#ab1058e1af1296c7a8514705ed218837f" title="Global bundle adjustment.">globalBA</a>(<a class="code" href="classsvo_1_1Map.html" title="Map object which saves all keyframes which are in a map.">Map</a>* map);
+<a name="l00074"></a>00074 
+<a name="l00076"></a>00076 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1ba.html#a1713995cd714cbb9d3bb80b5e46d000e" title="Initialize g2o with solver type, optimization strategy and camera model.">setupG2o</a>(g2o::SparseOptimizer * optimizer);
+<a name="l00077"></a>00077 
+<a name="l00079"></a>00079 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1ba.html#a786064dd8c8cd177b2d35f5c1097339f" title="Run the optimization on the provided graph.">runSparseBAOptimizer</a>(
+<a name="l00080"></a>00080     g2o::SparseOptimizer* optimizer,
+<a name="l00081"></a>00081     <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> num_iter,
+<a name="l00082"></a>00082     <span class="keywordtype">double</span>&amp; init_error,
+<a name="l00083"></a>00083     <span class="keywordtype">double</span>&amp; final_error);
 <a name="l00084"></a>00084 
-<a name="l00086"></a>00086 <a class="code" href="point_8h.html#a6081d7f932aed70367fe07bd3754f916">g2oPoint</a>* <a class="code" href="namespacesvo_1_1ba.html#a6c326389b9980413868a8200ef49191d" title="Creates a g2o vertice from a mappoint object.">createG2oPoint</a>(
-<a name="l00087"></a>00087     Vector3d pos,
+<a name="l00086"></a>00086 <a class="code" href="namespacesvo.html#a469ea351de55547bb26f9b827aad6059">g2oFrameSE3</a>* <a class="code" href="namespacesvo_1_1ba.html#a5af5b9f08df0724a9bb58f07cc08619c" title="Create a g2o vertice from a keyframe object.">createG2oFrameSE3</a>(
+<a name="l00087"></a>00087     <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* kf,
 <a name="l00088"></a>00088     <span class="keywordtype">size_t</span> <span class="keywordtype">id</span>,
 <a name="l00089"></a>00089     <span class="keywordtype">bool</span> fixed);
 <a name="l00090"></a>00090 
-<a name="l00092"></a>00092 <a class="code" href="bundle__adjustment_8h.html#ab4ece95d673fce5279845e23d90093a1">g2oEdgeSE3</a>* <a class="code" href="namespacesvo_1_1ba.html#aa9c21b78794e1b2903fb31d2fb84df77" title="Creates a g2o edge between a g2o keyframe and mappoint vertice with the provided measurement.">createG2oEdgeSE3</a>(
-<a name="l00093"></a>00093     <a class="code" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">g2oFrameSE3</a>* v_kf,
-<a name="l00094"></a>00094     <a class="code" href="point_8h.html#a6081d7f932aed70367fe07bd3754f916">g2oPoint</a>* v_mp,
-<a name="l00095"></a>00095     <span class="keyword">const</span> Vector2d&amp; f_up,
-<a name="l00096"></a>00096     <span class="keywordtype">bool</span> robust_kernel,
-<a name="l00097"></a>00097     <span class="keywordtype">double</span> huber_width,
-<a name="l00098"></a>00098     <span class="keywordtype">double</span> weight = 1);
-<a name="l00099"></a>00099 
-<a name="l00100"></a>00100 } <span class="comment">// namespace ba</span>
-<a name="l00101"></a>00101 } <span class="comment">// namespace svo</span>
-<a name="l00102"></a>00102 
-<a name="l00103"></a>00103 <span class="preprocessor">#endif // SVO_BUNDLE_ADJUSTMENT_H_</span>
+<a name="l00092"></a>00092 <a class="code" href="namespacesvo.html#a091cb15c36354da44cbd3579b576ce13">g2oPoint</a>* <a class="code" href="namespacesvo_1_1ba.html#a6c326389b9980413868a8200ef49191d" title="Creates a g2o vertice from a mappoint object.">createG2oPoint</a>(
+<a name="l00093"></a>00093     Vector3d pos,
+<a name="l00094"></a>00094     <span class="keywordtype">size_t</span> <span class="keywordtype">id</span>,
+<a name="l00095"></a>00095     <span class="keywordtype">bool</span> fixed);
+<a name="l00096"></a>00096 
+<a name="l00098"></a>00098 <a class="code" href="namespacesvo.html#ab405b307d732554d91ca05f2d827ead8">g2oEdgeSE3</a>* <a class="code" href="namespacesvo_1_1ba.html#aa9c21b78794e1b2903fb31d2fb84df77" title="Creates a g2o edge between a g2o keyframe and mappoint vertice with the provided measurement.">createG2oEdgeSE3</a>(
+<a name="l00099"></a>00099     <a class="code" href="namespacesvo.html#a469ea351de55547bb26f9b827aad6059">g2oFrameSE3</a>* v_kf,
+<a name="l00100"></a>00100     <a class="code" href="namespacesvo.html#a091cb15c36354da44cbd3579b576ce13">g2oPoint</a>* v_mp,
+<a name="l00101"></a>00101     <span class="keyword">const</span> Vector2d&amp; f_up,
+<a name="l00102"></a>00102     <span class="keywordtype">bool</span> robust_kernel,
+<a name="l00103"></a>00103     <span class="keywordtype">double</span> huber_width,
+<a name="l00104"></a>00104     <span class="keywordtype">double</span> weight = 1);
+<a name="l00105"></a>00105 
+<a name="l00106"></a>00106 } <span class="comment">// namespace ba</span>
+<a name="l00107"></a>00107 } <span class="comment">// namespace svo</span>
+<a name="l00108"></a>00108 
+<a name="l00109"></a>00109 <span class="preprocessor">#endif // SVO_BUNDLE_ADJUSTMENT_H_</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -187,7 +193,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

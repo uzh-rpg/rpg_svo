@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['candidate',['CANDIDATE',['../classsvo_1_1Point.html#a965ba3de05ff34114bd6e9b97827196cab516ec5c3efbf841660e31720456e68a',1,'svo::Point']]]
+  ['corner',['CORNER',['../structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7ea5af63453cd7a0bc96cb060ef6a6677ec',1,'svo::Feature']]]
 ];

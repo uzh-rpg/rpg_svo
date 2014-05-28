@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>svo: include/svo/reprojection.h File Reference</title>
+<title>svo: include/svo/reprojector.h File Reference</title>
 
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
@@ -78,43 +78,29 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#namespaces">Namespaces</a>  </div>
   <div class="headertitle">
-<div class="title">include/svo/reprojection.h File Reference</div>  </div>
+<div class="title">include/svo/reprojector.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="global_8h_source.html">svo/global.h</a>&gt;</code><br/>
 <code>#include &lt;<a class="el" href="matcher_8h_source.html">svo/matcher.h</a>&gt;</code><br/>
 </div>
-<p><a href="reprojection_8h_source.html">Go to the source code of this file.</a></p>
+<p><a href="reprojector_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Candidate.html">svo::reprojection::Candidate</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">A candidate is a point that projects into the image plane and for which we will search a maching feature in the image.  <a href="structsvo_1_1reprojection_1_1Candidate.html#details">More...</a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html">svo::reprojection::Grid</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">The grid stores a set of candidate matches. For every grid cell we try to find one match.  <a href="structsvo_1_1reprojection_1_1Grid.html#details">More...</a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Reprojector.html">svo::Reprojector</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Project points from the map into the image and find the corresponding feature (corner).  <a href="classsvo_1_1Reprojector.html#details">More...</a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Options.html">svo::Reprojector::Options</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsvo_1_1Reprojector.html" title="Project points from the map into the image and find the corresponding feature (corner).">Reprojector</a> config parameters.  <a href="structsvo_1_1Reprojector_1_1Options.html#details">More...</a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Candidate.html">svo::Reprojector::Candidate</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">A candidate is a point that projects into the image plane and for which we will search a maching feature in the image.  <a href="structsvo_1_1Reprojector_1_1Candidate.html#details">More...</a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvo_1_1Reprojector_1_1Grid.html">svo::Reprojector::Grid</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">The grid stores a set of candidate matches. For every grid cell we try to find one match.  <a href="structsvo_1_1Reprojector_1_1Grid.html#details">More...</a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo.html">svo</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1reprojection.html">svo::reprojection</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><p>Project points from the map into the image and find the corresponding feature (corner). </p>
-<br/></td></tr>
-<tr><td colspan="2"><h2><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">typedef std::list&lt; Candidate, <br class="typebreak"/>
-aligned_allocator&lt; Candidate &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1reprojection.html#a168fe5c322e0f528f3387989e72d7aac">svo::reprojection::Cell</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; Cell * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1reprojection.html#a2880371e42a7cf15cafdcb372b04b905">svo::reprojection::CandidateGrid</a></td></tr>
-<tr><td colspan="2"><h2><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1reprojection.html#a6f77c303ac27f803a1c56ff495ee5a0e">svo::reprojection::resetGrid</a> (Grid &amp;grid)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the grid.  <a href="#a6f77c303ac27f803a1c56ff495ee5a0e"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1reprojection.html#aabe09d7e9ffd575669b0e751e0d35d0e">svo::reprojection::reprojectMap</a> (Map &amp;map, FramePtr frame, Grid &amp;grid, MapPointCandidates &amp;candidate_points, std::vector&lt; std::pair&lt; FramePtr, std::size_t &gt; &gt; &amp;overlap_kfs, size_t &amp;n_matches, size_t &amp;n_trials)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Project points from the map into the image.  <a href="#aabe09d7e9ffd575669b0e751e0d35d0e"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1reprojection.html#a12eec5adbcd1f625b0133c03cfd38ee7">svo::reprojection::reprojectCell</a> (Cell &amp;cell, FramePtr frame, Map &amp;map, MapPointCandidates &amp;candidate_points, size_t &amp;n_trials)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesvo_1_1reprojection.html#a282f7cfb53cc2118ec9835d7c38132ff">svo::reprojection::reprojectPoint</a> (Grid &amp;grid, FramePtr frame, Point *point)</td></tr>
 </table>
 </div><!-- contents -->
 <!-- window showing the filter options -->
@@ -134,7 +120,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

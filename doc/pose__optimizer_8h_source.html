@@ -111,51 +111,24 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00029"></a><a class="code" href="namespacesvo.html#a92fc38136355d6162003a2e7f5c2b3ec">00029</a> <span class="keyword">typedef</span> Matrix&lt;double,2,6&gt; <a class="code" href="namespacesvo.html#a92fc38136355d6162003a2e7f5c2b3ec">Matrix26d</a>;
 <a name="l00030"></a><a class="code" href="namespacesvo.html#a6eae00d174ce9e3d93317f5f0b7d3416">00030</a> <span class="keyword">typedef</span> Matrix&lt;double,6,1&gt; <a class="code" href="namespacesvo.html#a6eae00d174ce9e3d93317f5f0b7d3416">Vector6d</a>;
 <a name="l00031"></a>00031 
-<a name="l00032"></a>00032 <span class="keyword">class </span><a class="code" href="classsvo_1_1Point.html" title="A 3D point that was triangulated from at least two corresponding image features.">Point</a>;
+<a name="l00032"></a>00032 <span class="keyword">class </span><a class="code" href="classsvo_1_1Point.html" title="A 3D point on the surface of the scene.">Point</a>;
 <a name="l00033"></a>00033 
 <a name="l00035"></a><a class="code" href="namespacesvo_1_1pose__optimizer.html">00035</a> <span class="keyword">namespace </span>pose_optimizer {
 <a name="l00036"></a>00036 
-<a name="l00037"></a>00037 <span class="keyword">inline</span> <a class="code" href="namespacesvo.html#a92fc38136355d6162003a2e7f5c2b3ec">Matrix26d</a>
-<a name="l00038"></a><a class="code" href="namespacesvo_1_1pose__optimizer.html#ab4d1d36e460eef75d394af302c322071">00038</a> <a class="code" href="namespacesvo_1_1pose__optimizer.html#ab4d1d36e460eef75d394af302c322071">frameJac</a>(<span class="keyword">const</span> SE3 &amp; T,
-<a name="l00039"></a>00039          <span class="keyword">const</span> Vector3d &amp; xyz,
-<a name="l00040"></a>00040          <span class="keyword">const</span> Vector2d &amp; focal_length)
-<a name="l00041"></a>00041 {
-<a name="l00042"></a>00042   <span class="keyword">const</span> Vector3d &amp; xyz_trans = T*xyz;
-<a name="l00043"></a>00043   <span class="keywordtype">double</span> x = xyz_trans[0];
-<a name="l00044"></a>00044   <span class="keywordtype">double</span> y = xyz_trans[1];
-<a name="l00045"></a>00045   <span class="keywordtype">double</span> z = xyz_trans[2];
-<a name="l00046"></a>00046   <span class="keywordtype">double</span> z_2 = z*z;
-<a name="l00047"></a>00047   <a class="code" href="namespacesvo.html#a92fc38136355d6162003a2e7f5c2b3ec">Matrix26d</a> frame_jac;
-<a name="l00048"></a>00048   frame_jac(0,0) = -1./z *focal_length[0];
-<a name="l00049"></a>00049   frame_jac(0,1) = 0;
-<a name="l00050"></a>00050   frame_jac(0,2) = x/z_2 *focal_length[0];
-<a name="l00051"></a>00051   frame_jac(0,3) =  x*y/z_2 * focal_length[0];
-<a name="l00052"></a>00052   frame_jac(0,4) = -(1+(x*x/z_2)) *focal_length[0];
-<a name="l00053"></a>00053   frame_jac(0,5) = y/z *focal_length[0];
-<a name="l00054"></a>00054 
-<a name="l00055"></a>00055   frame_jac(1,0) = 0;
-<a name="l00056"></a>00056   frame_jac(1,1) = -1./z *focal_length[1];
-<a name="l00057"></a>00057   frame_jac(1,2) = y/z_2 *focal_length[1];
-<a name="l00058"></a>00058   frame_jac(1,3) = (1+y*y/z_2) *focal_length[1];
-<a name="l00059"></a>00059   frame_jac(1,4) = -x*y/z_2 *focal_length[1];
-<a name="l00060"></a>00060   frame_jac(1,5) = -x/z *focal_length[1];
-<a name="l00061"></a>00061   <span class="keywordflow">return</span> frame_jac;
-<a name="l00062"></a>00062 }
-<a name="l00063"></a>00063 
-<a name="l00064"></a>00064 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1pose__optimizer.html#ad84a73f4e1755d676e9303af8eb0eed8">optimizeGaussNewton</a>(
-<a name="l00065"></a>00065     <span class="keyword">const</span> <span class="keywordtype">double</span> reproj_thresh,
-<a name="l00066"></a>00066     <span class="keyword">const</span> <span class="keywordtype">size_t</span> n_iter,
-<a name="l00067"></a>00067     <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,
-<a name="l00068"></a>00068     <a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a>&amp; frame,
-<a name="l00069"></a>00069     <span class="keywordtype">double</span>&amp; estimated_scale,
-<a name="l00070"></a>00070     <span class="keywordtype">double</span>&amp; error_init,
-<a name="l00071"></a>00071     <span class="keywordtype">double</span>&amp; error_final,
-<a name="l00072"></a>00072     <span class="keywordtype">size_t</span>&amp; num_obs);
-<a name="l00073"></a>00073 
-<a name="l00074"></a>00074 } <span class="comment">// namespace pose_optimizer</span>
-<a name="l00075"></a>00075 } <span class="comment">// namespace svo</span>
-<a name="l00076"></a>00076 
-<a name="l00077"></a>00077 <span class="preprocessor">#endif // SVO_POSE_OPTIMIZER_H_</span>
+<a name="l00037"></a>00037 <span class="keywordtype">void</span> <a class="code" href="namespacesvo_1_1pose__optimizer.html#ad84a73f4e1755d676e9303af8eb0eed8">optimizeGaussNewton</a>(
+<a name="l00038"></a>00038     <span class="keyword">const</span> <span class="keywordtype">double</span> reproj_thresh,
+<a name="l00039"></a>00039     <span class="keyword">const</span> <span class="keywordtype">size_t</span> n_iter,
+<a name="l00040"></a>00040     <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,
+<a name="l00041"></a>00041     <a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a>&amp; frame,
+<a name="l00042"></a>00042     <span class="keywordtype">double</span>&amp; estimated_scale,
+<a name="l00043"></a>00043     <span class="keywordtype">double</span>&amp; error_init,
+<a name="l00044"></a>00044     <span class="keywordtype">double</span>&amp; error_final,
+<a name="l00045"></a>00045     <span class="keywordtype">size_t</span>&amp; num_obs);
+<a name="l00046"></a>00046 
+<a name="l00047"></a>00047 } <span class="comment">// namespace pose_optimizer</span>
+<a name="l00048"></a>00048 } <span class="comment">// namespace svo</span>
+<a name="l00049"></a>00049 
+<a name="l00050"></a>00050 <span class="preprocessor">#endif // SVO_POSE_OPTIMIZER_H_</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -174,7 +147,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

@@ -112,7 +112,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00030"></a>00030 <span class="preprocessor">#include &lt;vikit/performance_monitor.h&gt;</span>
 <a name="l00031"></a>00031 <span class="preprocessor">#include &lt;boost/shared_ptr.hpp&gt;</span>
 <a name="l00032"></a>00032 
-<a name="l00033"></a>00033 <span class="preprocessor">#ifdef USE_ROS</span>
+<a name="l00033"></a>00033 <span class="preprocessor">#ifdef SVO_USE_ROS</span>
 <a name="l00034"></a>00034 <span class="preprocessor"></span><span class="preprocessor">  #include &lt;ros/console.h&gt;</span>
 <a name="l00035"></a>00035 <span class="preprocessor">  #define SVO_DEBUG_STREAM(x) ROS_DEBUG_STREAM(x)</span>
 <a name="l00036"></a>00036 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_INFO_STREAM(x) ROS_INFO_STREAM(x)</span>
@@ -121,60 +121,56 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00039"></a>00039 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_ERROR_STREAM(x) ROS_ERROR_STREAM(x)</span>
 <a name="l00040"></a>00040 <span class="preprocessor"></span><span class="preprocessor">#else</span>
 <a name="l00041"></a><a class="code" href="global_8h.html#a36349cd6838789a61339688f39c232e6">00041</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_INFO_STREAM(x) std::cerr&lt;&lt;&quot;\033[0;0m[INFO] &quot;&lt;&lt;x&lt;&lt;&quot;\033[0;0m&quot;&lt;&lt;std::endl;</span>
-<a name="l00042"></a>00042 <span class="preprocessor"></span><span class="preprocessor">  #ifdef SVO_DEBUG</span>
-<a name="l00043"></a>00043 <span class="preprocessor"></span><span class="preprocessor">    #define SVO_DEBUG_STREAM(x) SVO_INFO_STREAM(x)</span>
-<a name="l00044"></a>00044 <span class="preprocessor"></span><span class="preprocessor">  #else</span>
-<a name="l00045"></a><a class="code" href="global_8h.html#ae469e272b90d3be18ba0eec33ccf8480">00045</a> <span class="preprocessor"></span><span class="preprocessor">    #define SVO_DEBUG_STREAM(x)</span>
-<a name="l00046"></a>00046 <span class="preprocessor"></span><span class="preprocessor">  #endif</span>
-<a name="l00047"></a><a class="code" href="global_8h.html#a111585026514381792398573dcff4ec5">00047</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_WARN_STREAM(x) std::cerr&lt;&lt;&quot;\033[0;33m[WARN] &quot;&lt;&lt;x&lt;&lt;&quot;\033[0;0m&quot;&lt;&lt;std::endl;</span>
-<a name="l00048"></a><a class="code" href="global_8h.html#ae49fe867becda2475c94d5d23ce0eb8d">00048</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_ERROR_STREAM(x) std::cerr&lt;&lt;&quot;\033[1;31m[ERROR] &quot;&lt;&lt;x&lt;&lt;&quot;\033[0;0m&quot;&lt;&lt;std::endl;</span>
-<a name="l00049"></a>00049 <span class="preprocessor"></span><span class="preprocessor">  #include &lt;chrono&gt;</span> <span class="comment">// Adapted from rosconsole. Copyright (c) 2008, Willow Garage, Inc.</span>
-<a name="l00050"></a><a class="code" href="global_8h.html#a14355546ed024fb1a184deee0bf8da60">00050</a> <span class="preprocessor">  #define SVO_WARN_STREAM_THROTTLE(rate, x) \</span>
-<a name="l00051"></a>00051 <span class="preprocessor">    do { \</span>
-<a name="l00052"></a>00052 <span class="preprocessor">      static double __log_stream_throttle__last_hit__ = 0.0; \</span>
-<a name="l00053"></a>00053 <span class="preprocessor">      std::chrono::time_point&lt;std::chrono::system_clock&gt; __log_stream_throttle__now__ = \</span>
-<a name="l00054"></a>00054 <span class="preprocessor">      std::chrono::system_clock::now(); \</span>
-<a name="l00055"></a>00055 <span class="preprocessor">      if (__log_stream_throttle__last_hit__ + rate &lt;= \</span>
-<a name="l00056"></a>00056 <span class="preprocessor">          std::chrono::duration_cast&lt;std::chrono::seconds&gt;( \</span>
-<a name="l00057"></a>00057 <span class="preprocessor">          __log_stream_throttle__now__.time_since_epoch()).count()) { \</span>
-<a name="l00058"></a>00058 <span class="preprocessor">        __log_stream_throttle__last_hit__ = \</span>
-<a name="l00059"></a>00059 <span class="preprocessor">        std::chrono::duration_cast&lt;std::chrono::seconds&gt;( \</span>
-<a name="l00060"></a>00060 <span class="preprocessor">        __log_stream_throttle__now__.time_since_epoch()).count(); \</span>
-<a name="l00061"></a>00061 <span class="preprocessor">        SVO_WARN_STREAM(x); \</span>
-<a name="l00062"></a>00062 <span class="preprocessor">      } \</span>
-<a name="l00063"></a>00063 <span class="preprocessor">    } while(0)</span>
-<a name="l00064"></a>00064 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
-<a name="l00065"></a>00065 <span class="preprocessor"></span>
-<a name="l00066"></a>00066 <span class="keyword">namespace </span>svo
-<a name="l00067"></a>00067 {
-<a name="l00068"></a>00068   <span class="keyword">using namespace </span>Eigen;
-<a name="l00069"></a>00069   <span class="keyword">using namespace </span>Sophus;
-<a name="l00070"></a>00070 
-<a name="l00071"></a><a class="code" href="namespacesvo.html#a060832b0d7fc3cca33953088bafa6699">00071</a>   <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacesvo.html#a060832b0d7fc3cca33953088bafa6699">EPS</a> = 0.0000000001;
-<a name="l00072"></a><a class="code" href="namespacesvo.html#a15738a874426a0dd328b323a123a25d7">00072</a>   <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacesvo.html#a15738a874426a0dd328b323a123a25d7">PI</a> = 3.14159265;
-<a name="l00073"></a>00073 
-<a name="l00074"></a>00074 <span class="preprocessor">#ifdef SVO_TRACE</span>
-<a name="l00075"></a>00075 <span class="preprocessor"></span>  <span class="keyword">extern</span> vk::PerformanceMonitor* g_permon;
-<a name="l00076"></a>00076 <span class="preprocessor">  #define SVO_LOG(value) g_permon-&gt;log(std::string((#value)),(value))</span>
-<a name="l00077"></a>00077 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG2(value1, value2) SVO_LOG(value1); SVO_LOG(value2)</span>
-<a name="l00078"></a>00078 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG3(value1, value2, value3) SVO_LOG2(value1, value2); SVO_LOG(value3)</span>
-<a name="l00079"></a>00079 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG4(value1, value2, value3, value4) SVO_LOG2(value1, value2); SVO_LOG2(value3, value4)</span>
-<a name="l00080"></a>00080 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_START_TIMER(name) g_permon-&gt;startTimer((name))</span>
-<a name="l00081"></a>00081 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_STOP_TIMER(name) g_permon-&gt;stopTimer((name))</span>
-<a name="l00082"></a>00082 <span class="preprocessor"></span><span class="preprocessor">#else</span>
-<a name="l00083"></a><a class="code" href="global_8h.html#a7051dcbffd380a42a2a5fd3fb5f8706a">00083</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG(v)</span>
-<a name="l00084"></a><a class="code" href="global_8h.html#a11d369abc73749892af021d743e1be73">00084</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG2(v1, v2)</span>
-<a name="l00085"></a><a class="code" href="global_8h.html#ada265e1b32634c0548e40845d45b09c1">00085</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG3(v1, v2, v3)</span>
-<a name="l00086"></a><a class="code" href="global_8h.html#a364df3dfbe4e296ab8f005b6340daecb">00086</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG4(v1, v2, v3, v4)</span>
-<a name="l00087"></a><a class="code" href="global_8h.html#afaf8840e6928258b74c1558d4bc1339b">00087</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_START_TIMER(name)</span>
-<a name="l00088"></a><a class="code" href="global_8h.html#a90c920b83c088895442ee223adf9452a">00088</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_STOP_TIMER(name)</span>
-<a name="l00089"></a>00089 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
-<a name="l00090"></a>00090 <span class="preprocessor"></span>
-<a name="l00091"></a><a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">00091</a>   <span class="keyword">class </span><a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>;
-<a name="l00092"></a>00092   <span class="keyword">typedef</span> boost::shared_ptr&lt;Frame&gt; <a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a>;
-<a name="l00093"></a>00093 } <span class="comment">// namespace svo</span>
-<a name="l00094"></a>00094 
-<a name="l00095"></a>00095 <span class="preprocessor">#endif // SVO_GLOBAL_H_</span>
+<a name="l00042"></a><a class="code" href="global_8h.html#ae469e272b90d3be18ba0eec33ccf8480">00042</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_DEBUG_STREAM(x) SVO_INFO_STREAM(x)</span>
+<a name="l00043"></a><a class="code" href="global_8h.html#a111585026514381792398573dcff4ec5">00043</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_WARN_STREAM(x) std::cerr&lt;&lt;&quot;\033[0;33m[WARN] &quot;&lt;&lt;x&lt;&lt;&quot;\033[0;0m&quot;&lt;&lt;std::endl;</span>
+<a name="l00044"></a><a class="code" href="global_8h.html#ae49fe867becda2475c94d5d23ce0eb8d">00044</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_ERROR_STREAM(x) std::cerr&lt;&lt;&quot;\033[1;31m[ERROR] &quot;&lt;&lt;x&lt;&lt;&quot;\033[0;0m&quot;&lt;&lt;std::endl;</span>
+<a name="l00045"></a>00045 <span class="preprocessor"></span><span class="preprocessor">  #include &lt;chrono&gt;</span> <span class="comment">// Adapted from rosconsole. Copyright (c) 2008, Willow Garage, Inc.</span>
+<a name="l00046"></a><a class="code" href="global_8h.html#a14355546ed024fb1a184deee0bf8da60">00046</a> <span class="preprocessor">  #define SVO_WARN_STREAM_THROTTLE(rate, x) \</span>
+<a name="l00047"></a>00047 <span class="preprocessor">    do { \</span>
+<a name="l00048"></a>00048 <span class="preprocessor">      static double __log_stream_throttle__last_hit__ = 0.0; \</span>
+<a name="l00049"></a>00049 <span class="preprocessor">      std::chrono::time_point&lt;std::chrono::system_clock&gt; __log_stream_throttle__now__ = \</span>
+<a name="l00050"></a>00050 <span class="preprocessor">      std::chrono::system_clock::now(); \</span>
+<a name="l00051"></a>00051 <span class="preprocessor">      if (__log_stream_throttle__last_hit__ + rate &lt;= \</span>
+<a name="l00052"></a>00052 <span class="preprocessor">          std::chrono::duration_cast&lt;std::chrono::seconds&gt;( \</span>
+<a name="l00053"></a>00053 <span class="preprocessor">          __log_stream_throttle__now__.time_since_epoch()).count()) { \</span>
+<a name="l00054"></a>00054 <span class="preprocessor">        __log_stream_throttle__last_hit__ = \</span>
+<a name="l00055"></a>00055 <span class="preprocessor">        std::chrono::duration_cast&lt;std::chrono::seconds&gt;( \</span>
+<a name="l00056"></a>00056 <span class="preprocessor">        __log_stream_throttle__now__.time_since_epoch()).count(); \</span>
+<a name="l00057"></a>00057 <span class="preprocessor">        SVO_WARN_STREAM(x); \</span>
+<a name="l00058"></a>00058 <span class="preprocessor">      } \</span>
+<a name="l00059"></a>00059 <span class="preprocessor">    } while(0)</span>
+<a name="l00060"></a>00060 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+<a name="l00061"></a>00061 <span class="preprocessor"></span>
+<a name="l00062"></a>00062 <span class="keyword">namespace </span>svo
+<a name="l00063"></a>00063 {
+<a name="l00064"></a>00064   <span class="keyword">using namespace </span>Eigen;
+<a name="l00065"></a>00065   <span class="keyword">using namespace </span>Sophus;
+<a name="l00066"></a>00066 
+<a name="l00067"></a><a class="code" href="namespacesvo.html#a060832b0d7fc3cca33953088bafa6699">00067</a>   <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacesvo.html#a060832b0d7fc3cca33953088bafa6699">EPS</a> = 0.0000000001;
+<a name="l00068"></a><a class="code" href="namespacesvo.html#a15738a874426a0dd328b323a123a25d7">00068</a>   <span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code" href="namespacesvo.html#a15738a874426a0dd328b323a123a25d7">PI</a> = 3.14159265;
+<a name="l00069"></a>00069 
+<a name="l00070"></a>00070 <span class="preprocessor">#ifdef SVO_TRACE</span>
+<a name="l00071"></a>00071 <span class="preprocessor"></span>  <span class="keyword">extern</span> vk::PerformanceMonitor* g_permon;
+<a name="l00072"></a>00072 <span class="preprocessor">  #define SVO_LOG(value) g_permon-&gt;log(std::string((#value)),(value))</span>
+<a name="l00073"></a>00073 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG2(value1, value2) SVO_LOG(value1); SVO_LOG(value2)</span>
+<a name="l00074"></a>00074 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG3(value1, value2, value3) SVO_LOG2(value1, value2); SVO_LOG(value3)</span>
+<a name="l00075"></a>00075 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG4(value1, value2, value3, value4) SVO_LOG2(value1, value2); SVO_LOG2(value3, value4)</span>
+<a name="l00076"></a>00076 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_START_TIMER(name) g_permon-&gt;startTimer((name))</span>
+<a name="l00077"></a>00077 <span class="preprocessor"></span><span class="preprocessor">  #define SVO_STOP_TIMER(name) g_permon-&gt;stopTimer((name))</span>
+<a name="l00078"></a>00078 <span class="preprocessor"></span><span class="preprocessor">#else</span>
+<a name="l00079"></a><a class="code" href="global_8h.html#a7051dcbffd380a42a2a5fd3fb5f8706a">00079</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG(v)</span>
+<a name="l00080"></a><a class="code" href="global_8h.html#a11d369abc73749892af021d743e1be73">00080</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG2(v1, v2)</span>
+<a name="l00081"></a><a class="code" href="global_8h.html#ada265e1b32634c0548e40845d45b09c1">00081</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG3(v1, v2, v3)</span>
+<a name="l00082"></a><a class="code" href="global_8h.html#a364df3dfbe4e296ab8f005b6340daecb">00082</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_LOG4(v1, v2, v3, v4)</span>
+<a name="l00083"></a><a class="code" href="global_8h.html#afaf8840e6928258b74c1558d4bc1339b">00083</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_START_TIMER(name)</span>
+<a name="l00084"></a><a class="code" href="global_8h.html#a90c920b83c088895442ee223adf9452a">00084</a> <span class="preprocessor"></span><span class="preprocessor">  #define SVO_STOP_TIMER(name)</span>
+<a name="l00085"></a>00085 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+<a name="l00086"></a>00086 <span class="preprocessor"></span>
+<a name="l00087"></a><a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">00087</a>   <span class="keyword">class </span><a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>;
+<a name="l00088"></a>00088   <span class="keyword">typedef</span> boost::shared_ptr&lt;Frame&gt; <a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a>;
+<a name="l00089"></a>00089 } <span class="comment">// namespace svo</span>
+<a name="l00090"></a>00090 
+<a name="l00091"></a>00091 <span class="preprocessor">#endif // SVO_GLOBAL_H_</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -193,7 +189,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

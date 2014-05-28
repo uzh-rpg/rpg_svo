@@ -100,6 +100,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a>  </div>
   <div class="headertitle">
@@ -116,7 +117,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#abe7bb31fb82e199726b9887f4e77d961">Frame</a> (vk::AbstractCamera *cam, const cv::Mat &amp;<a class="el" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e">img</a>, double timestamp=0.0)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#a59d35ca0a2bae528292c7fc6b8089c48">Frame</a> (vk::AbstractCamera *cam, const cv::Mat &amp;<a class="el" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e">img</a>, double timestamp)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#aa3d890f9fee920036f430bf6e546a174">~Frame</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#aec87eb10b07bc6f19e9a91b064e991a3">initFrame</a> (const cv::Mat &amp;<a class="el" href="classsvo_1_1Frame.html#aa3decba4684fb097d1121ba14fe5024e">img</a>)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize new frame and create image pyramid.  <a href="#aec87eb10b07bc6f19e9a91b064e991a3"></a><br/></td></tr>
@@ -149,9 +150,13 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#a9d180b87837af63a66f86896387cd645">f2w</a> (const Vector3d &amp;f) const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Transforms point from frame unit sphere (f) frame to world coordinate frame (w).  <a href="#a9d180b87837af63a66f86896387cd645"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">Vector2d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#af31527b012b1b3c5691eca5625847d00">f2c</a> (const Vector3d &amp;f) const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Projects <a class="el" href="classsvo_1_1Point.html" title="A 3D point that was triangulated from at least two corresponding image features.">Point</a> from unit sphere (f) in camera pixels (c).  <a href="#af31527b012b1b3c5691eca5625847d00"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Projects <a class="el" href="classsvo_1_1Point.html" title="A 3D point on the surface of the scene.">Point</a> from unit sphere (f) in camera pixels (c).  <a href="#af31527b012b1b3c5691eca5625847d00"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">Vector3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#a71e4312c548a2d3d776eef408795bd19">pos</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the pose of the frame in the (w)orld coordinate frame.  <a href="#a71e4312c548a2d3d776eef408795bd19"></a><br/></td></tr>
+<tr><td colspan="2"><h2><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#ae9745ac3477b6c20c8f75369ceb73303">jacobian_xyz2uv</a> (const Vector3d &amp;xyz_in_f, Matrix&lt; double, 2, 6 &gt; &amp;J)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a> jacobian for projection of 3D point in (f)rame coordinate to unit plane coordinates uv (focal length = 1).  <a href="#ae9745ac3477b6c20c8f75369ceb73303"></a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#a3220d0fd39e2c2b6b502ebe5e56fe3e0">id_</a></td></tr>
@@ -172,7 +177,7 @@ Public Attributes</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Five features and associated 3D points which are used to detect if two frames have overlapping field of view.  <a href="#a97618aeda08f505222bd4fc18eaf8504"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#a4ae56e6cb7e35f1ec17aedb9f00ac3d0">is_keyframe_</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Was this frames selected as keyframe?  <a href="#a4ae56e6cb7e35f1ec17aedb9f00ac3d0"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">g2oFrameSE3</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#a31796338a0929c8b18c108cfaba07708">v_kf_</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesvo.html#a469ea351de55547bb26f9b827aad6059">g2oFrameSE3</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#a31796338a0929c8b18c108cfaba07708">v_kf_</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Temporary pointer to the g2o node object of the keyframe.  <a href="#a31796338a0929c8b18c108cfaba07708"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1Frame.html#a137c490d744a7002f7608801714edba9">last_published_ts_</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Timestamp of last publishing.  <a href="#a137c490d744a7002f7608801714edba9"></a><br/></td></tr>
@@ -186,12 +191,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>A frame saves the image, the associated features and the estimated pose. </p>
 </div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="abe7bb31fb82e199726b9887f4e77d961"></a><!-- doxytag: member="svo::Frame::Frame" ref="abe7bb31fb82e199726b9887f4e77d961" args="(vk::AbstractCamera *cam, const cv::Mat &amp;img, double timestamp=0.0)" -->
+<a class="anchor" id="a59d35ca0a2bae528292c7fc6b8089c48"></a><!-- doxytag: member="svo::Frame::Frame" ref="a59d35ca0a2bae528292c7fc6b8089c48" args="(vk::AbstractCamera *cam, const cv::Mat &amp;img, double timestamp)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classsvo_1_1Frame.html#abe7bb31fb82e199726b9887f4e77d961">svo::Frame::Frame</a> </td>
+          <td class="memname"><a class="el" href="classsvo_1_1Frame.html#a59d35ca0a2bae528292c7fc6b8089c48">svo::Frame::Frame</a> </td>
           <td>(</td>
           <td class="paramtype">vk::AbstractCamera *&#160;</td>
           <td class="paramname"><em>cam</em>, </td>
@@ -206,7 +211,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>timestamp</em> = <code>0.0</code>&#160;</td>
+          <td class="paramname"><em>timestamp</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -337,7 +342,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div>
 <div class="memdoc">
 
-<p>Projects <a class="el" href="classsvo_1_1Point.html" title="A 3D point that was triangulated from at least two corresponding image features.">Point</a> from unit sphere (f) in camera pixels (c). </p>
+<p>Projects <a class="el" href="classsvo_1_1Point.html" title="A 3D point on the surface of the scene.">Point</a> from unit sphere (f) in camera pixels (c). </p>
 
 </div>
 </div>
@@ -434,6 +439,35 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 </div>
 </div>
+<a class="anchor" id="ae9745ac3477b6c20c8f75369ceb73303"></a><!-- doxytag: member="svo::Frame::jacobian_xyz2uv" ref="ae9745ac3477b6c20c8f75369ceb73303" args="(const Vector3d &amp;xyz_in_f, Matrix&lt; double, 2, 6 &gt; &amp;J)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classsvo_1_1Frame.html#ae9745ac3477b6c20c8f75369ceb73303">svo::Frame::jacobian_xyz2uv</a> </td>
+          <td>(</td>
+          <td class="paramtype">const Vector3d &amp;&#160;</td>
+          <td class="paramname"><em>xyz_in_f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Matrix&lt; double, 2, 6 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>J</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [inline, static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p><a class="el" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a> jacobian for projection of 3D point in (f)rame coordinate to unit plane coordinates uv (focal length = 1). </p>
+
+</div>
+</div>
 <a class="anchor" id="a7a197d075bfb643f49e01c40cbf529b8"></a><!-- doxytag: member="svo::Frame::nObs" ref="a7a197d075bfb643f49e01c40cbf529b8" args="() const " -->
 <div class="memitem">
 <div class="memproto">
@@ -442,7 +476,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
           <td class="memname">size_t <a class="el" href="classsvo_1_1Frame.html#a7a197d075bfb643f49e01c40cbf529b8">svo::Frame::nObs</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td> const<code> [inline]</code></td>
         </tr>
       </table>
 </div>
@@ -735,7 +769,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="frame_8h.html#ac6b302bbac77814fa1088eef37fc5439">g2oFrameSE3</a>* <a class="el" href="classsvo_1_1Frame.html#a31796338a0929c8b18c108cfaba07708">svo::Frame::v_kf_</a></td>
+          <td class="memname"><a class="el" href="namespacesvo.html#a469ea351de55547bb26f9b827aad6059">g2oFrameSE3</a>* <a class="el" href="classsvo_1_1Frame.html#a31796338a0929c8b18c108cfaba07708">svo::Frame::v_kf_</a></td>
         </tr>
       </table>
 </div>
@@ -766,7 +800,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

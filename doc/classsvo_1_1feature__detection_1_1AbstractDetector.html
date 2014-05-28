@@ -100,7 +100,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pro-static-attribs">Static Protected Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">svo::feature_detection::AbstractDetector Class Reference</div>  </div>
 </div><!--header-->
@@ -124,12 +127,71 @@ Inheritance diagram for svo::feature_detection::AbstractDetector:</div>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#ac4c189ec7e2eb29795f98331b3eff390">AbstractDetector</a> (const int img_width, const int img_height, const int cell_size, const int n_pyr_levels)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#af0687c0ad25170c3b0ed92457dae5de5">~AbstractDetector</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#aec115bff5427b80291b45da719bbd459">detect</a> (const <a class="el" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a> &amp;img_pyr, const <a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a> &amp;fts, const int cell_size, const int n_levels, const double detection_threshold, <a class="el" href="namespacesvo_1_1feature__detection.html#a482e8ccc77302400c438e1654ef03242">Corners</a> *corners) const =0</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a8138783a78e2348d26ceb0f4b677a29f">detect</a> (<a class="el" href="classsvo_1_1Frame.html">Frame</a> *frame, const <a class="el" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a> &amp;img_pyr, const double detection_threshold, <a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a> &amp;fts)=0</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#ab38b6a94286860973e19a981a87e15d2">setGridOccpuancy</a> (const Vector2d &amp;px)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag the grid cell as occupied.  <a href="#ab38b6a94286860973e19a981a87e15d2"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a52879b24b02bdef2bece2fd8541d7034">setExistingFeatures</a> (const <a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a> &amp;fts)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set grid cells of existing features as occupied.  <a href="#a52879b24b02bdef2bece2fd8541d7034"></a><br/></td></tr>
+<tr><td colspan="2"><h2><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#adb44f8da3321c9e6d2be41b79a61d6d4">resetGrid</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a9b92cd4ed10ac24ec139702ceff676c3">getCellIndex</a> (int x, int y, int level)</td></tr>
+<tr><td colspan="2"><h2><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a857e8ae3c0f3432c66b35028d891ff6b">cell_size_</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a0d2833ddf90be25baf177f1757a17be8">n_pyr_levels_</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a5e92f0ddafaca566230c7f68e723245e">grid_n_cols_</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a185fb2a0bbece69232c4510259868e89">grid_n_rows_</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">vector&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#ade1810c2147f34eaa6da46df5cfb7449">grid_occupancy_</a></td></tr>
+<tr><td colspan="2"><h2><a name="pro-static-attribs"></a>
+Static Protected Attributes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#aab46b48276f04ece25252c552f32a44b">border_</a> = 8</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">no feature should be within 8px of border.  <a href="#aab46b48276f04ece25252c552f32a44b"></a><br/></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>All detectors should derive from this abstract class. </p>
 </div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ac4c189ec7e2eb29795f98331b3eff390"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::AbstractDetector" ref="ac4c189ec7e2eb29795f98331b3eff390" args="(const int img_width, const int img_height, const int cell_size, const int n_pyr_levels)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#ac4c189ec7e2eb29795f98331b3eff390">svo::feature_detection::AbstractDetector::AbstractDetector</a> </td>
+          <td>(</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>img_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>img_height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>cell_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>n_pyr_levels</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="af0687c0ad25170c3b0ed92457dae5de5"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::~AbstractDetector" ref="af0687c0ad25170c3b0ed92457dae5de5" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -147,33 +209,21 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/><h2>Member Function Documentation</h2>
-<a class="anchor" id="aec115bff5427b80291b45da719bbd459"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::detect" ref="aec115bff5427b80291b45da719bbd459" args="(const ImgPyr &amp;img_pyr, const Features &amp;fts, const int cell_size, const int n_levels, const double detection_threshold, Corners *corners) const =0" -->
+<a class="anchor" id="a8138783a78e2348d26ceb0f4b677a29f"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::detect" ref="a8138783a78e2348d26ceb0f4b677a29f" args="(Frame *frame, const ImgPyr &amp;img_pyr, const double detection_threshold, Features &amp;fts)=0" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#aec115bff5427b80291b45da719bbd459">svo::feature_detection::AbstractDetector::detect</a> </td>
+          <td class="memname">virtual void <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a8138783a78e2348d26ceb0f4b677a29f">svo::feature_detection::AbstractDetector::detect</a> </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="classsvo_1_1Frame.html">Frame</a> *&#160;</td>
+          <td class="paramname"><em>frame</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const <a class="el" href="namespacesvo.html#a6aff24492b90ba45d93194764c92a58e">ImgPyr</a> &amp;&#160;</td>
           <td class="paramname"><em>img_pyr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a> &amp;&#160;</td>
-          <td class="paramname"><em>fts</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>cell_size</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>n_levels</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -184,19 +234,187 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacesvo_1_1feature__detection.html#a482e8ccc77302400c438e1654ef03242">Corners</a> *&#160;</td>
-          <td class="paramname"><em>corners</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a> &amp;&#160;</td>
+          <td class="paramname"><em>fts</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td> const<code> [pure virtual]</code></td>
+          <td></td><td><code> [pure virtual]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Implemented in <a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#aeb23532f1622fb3149bd156e4cf1151a">svo::feature_detection::FastDetector</a>.</p>
+<p>Implemented in <a class="el" href="classsvo_1_1feature__detection_1_1FastDetector.html#a8197fbd4ec44086e482cf70c498f8cf4">svo::feature_detection::FastDetector</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9b92cd4ed10ac24ec139702ceff676c3"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::getCellIndex" ref="a9b92cd4ed10ac24ec139702ceff676c3" args="(int x, int y, int level)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a9b92cd4ed10ac24ec139702ceff676c3">svo::feature_detection::AbstractDetector::getCellIndex</a> </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>level</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [inline, protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adb44f8da3321c9e6d2be41b79a61d6d4"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::resetGrid" ref="adb44f8da3321c9e6d2be41b79a61d6d4" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#adb44f8da3321c9e6d2be41b79a61d6d4">svo::feature_detection::AbstractDetector::resetGrid</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a52879b24b02bdef2bece2fd8541d7034"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::setExistingFeatures" ref="a52879b24b02bdef2bece2fd8541d7034" args="(const Features &amp;fts)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a52879b24b02bdef2bece2fd8541d7034">svo::feature_detection::AbstractDetector::setExistingFeatures</a> </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacesvo.html#a32124197ea465b3af2568fe6d625f00c">Features</a> &amp;&#160;</td>
+          <td class="paramname"><em>fts</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Set grid cells of existing features as occupied. </p>
+
+</div>
+</div>
+<a class="anchor" id="ab38b6a94286860973e19a981a87e15d2"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::setGridOccpuancy" ref="ab38b6a94286860973e19a981a87e15d2" args="(const Vector2d &amp;px)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#ab38b6a94286860973e19a981a87e15d2">svo::feature_detection::AbstractDetector::setGridOccpuancy</a> </td>
+          <td>(</td>
+          <td class="paramtype">const Vector2d &amp;&#160;</td>
+          <td class="paramname"><em>px</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Flag the grid cell as occupied. </p>
+
+</div>
+</div>
+<hr/><h2>Member Data Documentation</h2>
+<a class="anchor" id="aab46b48276f04ece25252c552f32a44b"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::border_" ref="aab46b48276f04ece25252c552f32a44b" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#aab46b48276f04ece25252c552f32a44b">svo::feature_detection::AbstractDetector::border_</a> = 8<code> [static, protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>no feature should be within 8px of border. </p>
+
+</div>
+</div>
+<a class="anchor" id="a857e8ae3c0f3432c66b35028d891ff6b"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::cell_size_" ref="a857e8ae3c0f3432c66b35028d891ff6b" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a857e8ae3c0f3432c66b35028d891ff6b">svo::feature_detection::AbstractDetector::cell_size_</a><code> [protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5e92f0ddafaca566230c7f68e723245e"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::grid_n_cols_" ref="a5e92f0ddafaca566230c7f68e723245e" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a5e92f0ddafaca566230c7f68e723245e">svo::feature_detection::AbstractDetector::grid_n_cols_</a><code> [protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a185fb2a0bbece69232c4510259868e89"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::grid_n_rows_" ref="a185fb2a0bbece69232c4510259868e89" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a185fb2a0bbece69232c4510259868e89">svo::feature_detection::AbstractDetector::grid_n_rows_</a><code> [protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ade1810c2147f34eaa6da46df5cfb7449"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::grid_occupancy_" ref="ade1810c2147f34eaa6da46df5cfb7449" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;bool&gt; <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#ade1810c2147f34eaa6da46df5cfb7449">svo::feature_detection::AbstractDetector::grid_occupancy_</a><code> [protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0d2833ddf90be25baf177f1757a17be8"></a><!-- doxytag: member="svo::feature_detection::AbstractDetector::n_pyr_levels_" ref="a0d2833ddf90be25baf177f1757a17be8" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int <a class="el" href="classsvo_1_1feature__detection_1_1AbstractDetector.html#a0d2833ddf90be25baf177f1757a17be8">svo::feature_detection::AbstractDetector::n_pyr_levels_</a><code> [protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
 
 </div>
 </div>
@@ -221,7 +439,7 @@ Public Member Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

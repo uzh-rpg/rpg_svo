@@ -97,7 +97,7 @@ This is the complete list of members for <a class="el" href="classsvo_1_1Frame.h
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a180ef7501283f92a0b0277b462841332">Cov_</a></td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#af31527b012b1b3c5691eca5625847d00">f2c</a>(const Vector3d &amp;f) const </td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a9d180b87837af63a66f86896387cd645">f2w</a>(const Vector3d &amp;f) const </td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td><code> [inline]</code></td></tr>
-  <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#abe7bb31fb82e199726b9887f4e77d961">Frame</a>(vk::AbstractCamera *cam, const cv::Mat &amp;img, double timestamp=0.0)</td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a59d35ca0a2bae528292c7fc6b8089c48">Frame</a>(vk::AbstractCamera *cam, const cv::Mat &amp;img, double timestamp)</td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a644cc7768e0f17887e708f1811365810">frame_counter_</a></td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td><code> [static]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#ae092429d42e150568d176fb3c4f24e42">fts_</a></td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a3220d0fd39e2c2b6b502ebe5e56fe3e0">id_</a></td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
@@ -107,9 +107,10 @@ This is the complete list of members for <a class="el" href="classsvo_1_1Frame.h
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a4ae56e6cb7e35f1ec17aedb9f00ac3d0">is_keyframe_</a></td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a8800d7c7cd58266e17b5fd186a34ae30">isKeyframe</a>() const </td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#aff35d299a0c6b2ed2901ae5c5c1a295f">isVisible</a>(const Vector3d &amp;xyz_w) const </td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#ae9745ac3477b6c20c8f75369ceb73303">jacobian_xyz2uv</a>(const Vector3d &amp;xyz_in_f, Matrix&lt; double, 2, 6 &gt; &amp;J)</td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td><code> [inline, static]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a97618aeda08f505222bd4fc18eaf8504">key_pts_</a></td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a137c490d744a7002f7608801714edba9">last_published_ts_</a></td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
-  <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a7a197d075bfb643f49e01c40cbf529b8">nObs</a>() const </td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a7a197d075bfb643f49e01c40cbf529b8">nObs</a>() const </td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a71e4312c548a2d3d776eef408795bd19">pos</a>() const </td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td><code> [inline]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a68b7b28632bf04bc04caa243ce71c28d">removeKeyPoint</a>(Feature *ftr)</td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classsvo_1_1Frame.html#a90c4503d84f89bad3a1ed7971902b000">setKeyframe</a>()</td><td><a class="el" href="classsvo_1_1Frame.html">svo::Frame</a></td><td></td></tr>
@@ -138,7 +139,7 @@ This is the complete list of members for <a class="el" href="classsvo_1_1Frame.h
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

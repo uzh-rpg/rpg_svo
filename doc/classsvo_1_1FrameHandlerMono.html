@@ -126,9 +126,11 @@ Inheritance diagram for svo::FrameHandlerMono:</div>
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#ae58f15c4b464ebad11bf387ee5069888">FrameHandlerMono</a> (vk::AbstractCamera *cam)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a4a9d2b8e05f084de38e6063fda2bdfdf">~FrameHandlerMono</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a6686d0cead09b98961b7ab4a0be66e99">~FrameHandlerMono</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#ae4134cc89d596d83f79ff92a57012067">addImage</a> (const cv::Mat &amp;img, double timestamp)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Provide an image.  <a href="#ae4134cc89d596d83f79ff92a57012067"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#ac9a3131877fd3ffcffc542d970733abd">setFirstFrame</a> (const <a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> &amp;first_frame)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the first frame (used for synthetic datasets in benchmark node)  <a href="#ac9a3131877fd3ffcffc542d970733abd"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a3a22abef39b68817f6c26c4e4927c132">lastFrame</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the last frame that has been processed.  <a href="#a3a22abef39b68817f6c26c4e4927c132"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const set&lt; <a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a0b12d6eff654ffa8dad2a7dad663a498">coreKeyframes</a> ()</td></tr>
@@ -136,24 +138,33 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const vector&lt; cv::Point2f &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#ad166cce0c93b5725f33fbb182ab1512c">initFeatureTrackRefPx</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the feature track to visualize the KLT tracking during initialization.  <a href="#ad166cce0c93b5725f33fbb182ab1512c"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const vector&lt; cv::Point2f &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a26827dcc33032846cfcbabde63283e96">initFeatureTrackCurPx</a> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1DepthFilter.html">DepthFilter</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a7c3e794d1bc95697ef9b0d3505845006">depthFilter</a> () const </td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Access the depth filter.  <a href="#a7c3e794d1bc95697ef9b0d3505845006"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a12b7473bb4ac2d71f00c898c9b99446f">relocalizeFrameAtPose</a> (const int keyframe_id, const SE3 &amp;T_kf_f, const cv::Mat &amp;img, const double timestamp)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">An external place recognition module may know where to relocalize.  <a href="#a12b7473bb4ac2d71f00c898c9b99446f"></a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a3775f25208dac773c7250229e409dfc8">processFirstFrame</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the first frame and sets it as a keyframe.  <a href="#a3775f25208dac773c7250229e409dfc8"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a3746827ba73872427026b1e349deb77e">processSecondFrame</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes all frames after the first frame until a keyframe is selected.  <a href="#a3746827ba73872427026b1e349deb77e"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#ab45bc735f725b613e649c4a6b92fd6a5">processFrame</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes all frames after the first two keyframes.  <a href="#ab45bc735f725b613e649c4a6b92fd6a5"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a04e6b5bb6b88e7a514750d02513dc73d">initialize</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the visual odometry algorithm.  <a href="#a04e6b5bb6b88e7a514750d02513dc73d"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#add46432fbe7cb1cd4fd6d770eeae99a5">processFirstFrame</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the first frame and sets it as a keyframe.  <a href="#add46432fbe7cb1cd4fd6d770eeae99a5"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a6a9a9f4b688fe85bd7330b6ac27baa41">processSecondFrame</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes all frames after the first frame until a keyframe is selected.  <a href="#a6a9a9f4b688fe85bd7330b6ac27baa41"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a5903c50396002b345d3cb295d7586dd2">processFrame</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes all frames after the first two keyframes.  <a href="#a5903c50396002b345d3cb295d7586dd2"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a039e5c794e5d086fb54fbaa23b7b1c5c">relocalizeFrame</a> (const SE3 &amp;T_cur_ref, <a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> ref_keyframe)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Try relocalizing the frame at relative position to provided keyframe.  <a href="#a039e5c794e5d086fb54fbaa23b7b1c5c"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#aff15938863a6b00592684b531b1851be">resetAll</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the frame handler. Implement in derived class.  <a href="#aff15938863a6b00592684b531b1851be"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#abcf8c1592644cc075ae87deb15cc368d">needNewKf</a> (double scene_depth_mean)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Keyframe selection criterion.  <a href="#abcf8c1592644cc075ae87deb15cc368d"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a4ca648441968974e1a33b1a4c419d0b4">setCoreKfs</a> (size_t n_closest)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a4622d7f590122b79c09d292db1b52475">needNewKf</a> (double scene_depth_mean)</td></tr>
 <tr><td colspan="2"><h2><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">vk::AbstractCamera *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#abb2bfd1a9d2f434908269b03434993d8">cam_</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Camera model, can be ATAN, Pinhole or Ocam (see vikit).  <a href="#abb2bfd1a9d2f434908269b03434993d8"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html">reprojection::Grid</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#ae21520e1c541f17e94bc48a471499639">reprojection_grid_</a></td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Grid used for reprojection to make sure we have evenly distributed features.  <a href="#ae21520e1c541f17e94bc48a471499639"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1Reprojector.html">Reprojector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a37103f5c1f7e1028dda0e886fac9e5aa">reprojector_</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Projects points from other keyframes into the current frame.  <a href="#a37103f5c1f7e1028dda0e886fac9e5aa"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a6bdafa4f85eff256a974e8610cd16d82">new_frame_</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Current frame.  <a href="#a6bdafa4f85eff256a974e8610cd16d82"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#aeb400215e83f97d13aa23e2488680eba">last_frame_</a></td></tr>
@@ -164,6 +175,8 @@ Protected Attributes</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">All keyframes with overlapping field of view. the paired number specifies how many common mappoints are observed TODO: why vector!?  <a href="#a59d0615bc922fc20fbd4c9aada8c2307"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1initialization_1_1KltHomographyInit.html">initialization::KltHomographyInit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#abc65772171a1302f932175bfca012c52">klt_homography_init_</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to estimate pose of the first two keyframes by estimating a homography.  <a href="#abc65772171a1302f932175bfca012c52"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsvo_1_1DepthFilter.html">DepthFilter</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1FrameHandlerMono.html#af1692086d4c52afa8edc0e72b1fdc44c">depth_filter_</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Depth estimation algorithm runs in a parallel thread and is used to initialize new 3D points.  <a href="#af1692086d4c52afa8edc0e72b1fdc44c"></a><br/></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Monocular Visual Odometry Pipeline as described in the SVO paper. </p>
@@ -185,15 +198,15 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a4a9d2b8e05f084de38e6063fda2bdfdf"></a><!-- doxytag: member="svo::FrameHandlerMono::~FrameHandlerMono" ref="a4a9d2b8e05f084de38e6063fda2bdfdf" args="()" -->
+<a class="anchor" id="a6686d0cead09b98961b7ab4a0be66e99"></a><!-- doxytag: member="svo::FrameHandlerMono::~FrameHandlerMono" ref="a6686d0cead09b98961b7ab4a0be66e99" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classsvo_1_1FrameHandlerMono.html#a4a9d2b8e05f084de38e6063fda2bdfdf">svo::FrameHandlerMono::~FrameHandlerMono</a> </td>
+          <td class="memname">virtual <a class="el" href="classsvo_1_1FrameHandlerMono.html#a6686d0cead09b98961b7ab4a0be66e99">svo::FrameHandlerMono::~FrameHandlerMono</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td><code> [virtual]</code></td>
         </tr>
       </table>
 </div>
@@ -249,6 +262,24 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a7c3e794d1bc95697ef9b0d3505845006"></a><!-- doxytag: member="svo::FrameHandlerMono::depthFilter" ref="a7c3e794d1bc95697ef9b0d3505845006" args="() const " -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsvo_1_1DepthFilter.html">DepthFilter</a>* <a class="el" href="classsvo_1_1FrameHandlerMono.html#a7c3e794d1bc95697ef9b0d3505845006">svo::FrameHandlerMono::depthFilter</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const<code> [inline]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Access the depth filter. </p>
+
+</div>
+</div>
 <a class="anchor" id="a26827dcc33032846cfcbabde63283e96"></a><!-- doxytag: member="svo::FrameHandlerMono::initFeatureTrackCurPx" ref="a26827dcc33032846cfcbabde63283e96" args="() const " -->
 <div class="memitem">
 <div class="memproto">
@@ -283,6 +314,24 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a04e6b5bb6b88e7a514750d02513dc73d"></a><!-- doxytag: member="svo::FrameHandlerMono::initialize" ref="a04e6b5bb6b88e7a514750d02513dc73d" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classsvo_1_1FrameHandlerMono.html#a04e6b5bb6b88e7a514750d02513dc73d">svo::FrameHandlerMono::initialize</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [protected, virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Initialize the visual odometry algorithm. </p>
+
+</div>
+</div>
 <a class="anchor" id="a3a22abef39b68817f6c26c4e4927c132"></a><!-- doxytag: member="svo::FrameHandlerMono::lastFrame" ref="a3a22abef39b68817f6c26c4e4927c132" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -301,32 +350,34 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a4622d7f590122b79c09d292db1b52475"></a><!-- doxytag: member="svo::FrameHandlerMono::needNewKf" ref="a4622d7f590122b79c09d292db1b52475" args="(double scene_depth_mean)" -->
+<a class="anchor" id="abcf8c1592644cc075ae87deb15cc368d"></a><!-- doxytag: member="svo::FrameHandlerMono::needNewKf" ref="abcf8c1592644cc075ae87deb15cc368d" args="(double scene_depth_mean)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classsvo_1_1FrameHandlerMono.html#a4622d7f590122b79c09d292db1b52475">svo::FrameHandlerMono::needNewKf</a> </td>
+          <td class="memname">virtual bool <a class="el" href="classsvo_1_1FrameHandlerMono.html#abcf8c1592644cc075ae87deb15cc368d">svo::FrameHandlerMono::needNewKf</a> </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>scene_depth_mean</em></td><td>)</td>
-          <td><code> [protected]</code></td>
+          <td><code> [protected, virtual]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
+<p>Keyframe selection criterion. </p>
+
 </div>
 </div>
-<a class="anchor" id="a3775f25208dac773c7250229e409dfc8"></a><!-- doxytag: member="svo::FrameHandlerMono::processFirstFrame" ref="a3775f25208dac773c7250229e409dfc8" args="()" -->
+<a class="anchor" id="add46432fbe7cb1cd4fd6d770eeae99a5"></a><!-- doxytag: member="svo::FrameHandlerMono::processFirstFrame" ref="add46432fbe7cb1cd4fd6d770eeae99a5" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> <a class="el" href="classsvo_1_1FrameHandlerMono.html#a3775f25208dac773c7250229e409dfc8">svo::FrameHandlerMono::processFirstFrame</a> </td>
+          <td class="memname">virtual <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> <a class="el" href="classsvo_1_1FrameHandlerMono.html#add46432fbe7cb1cd4fd6d770eeae99a5">svo::FrameHandlerMono::processFirstFrame</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td><code> [protected]</code></td>
+          <td><code> [protected, virtual]</code></td>
         </tr>
       </table>
 </div>
@@ -336,15 +387,15 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ab45bc735f725b613e649c4a6b92fd6a5"></a><!-- doxytag: member="svo::FrameHandlerMono::processFrame" ref="ab45bc735f725b613e649c4a6b92fd6a5" args="()" -->
+<a class="anchor" id="a5903c50396002b345d3cb295d7586dd2"></a><!-- doxytag: member="svo::FrameHandlerMono::processFrame" ref="a5903c50396002b345d3cb295d7586dd2" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> <a class="el" href="classsvo_1_1FrameHandlerMono.html#ab45bc735f725b613e649c4a6b92fd6a5">svo::FrameHandlerMono::processFrame</a> </td>
+          <td class="memname">virtual <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> <a class="el" href="classsvo_1_1FrameHandlerMono.html#a5903c50396002b345d3cb295d7586dd2">svo::FrameHandlerMono::processFrame</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td><code> [protected]</code></td>
+          <td><code> [protected, virtual]</code></td>
         </tr>
       </table>
 </div>
@@ -354,21 +405,91 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3746827ba73872427026b1e349deb77e"></a><!-- doxytag: member="svo::FrameHandlerMono::processSecondFrame" ref="a3746827ba73872427026b1e349deb77e" args="()" -->
+<a class="anchor" id="a6a9a9f4b688fe85bd7330b6ac27baa41"></a><!-- doxytag: member="svo::FrameHandlerMono::processSecondFrame" ref="a6a9a9f4b688fe85bd7330b6ac27baa41" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> <a class="el" href="classsvo_1_1FrameHandlerMono.html#a3746827ba73872427026b1e349deb77e">svo::FrameHandlerMono::processSecondFrame</a> </td>
+          <td class="memname">virtual <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> <a class="el" href="classsvo_1_1FrameHandlerMono.html#a6a9a9f4b688fe85bd7330b6ac27baa41">svo::FrameHandlerMono::processSecondFrame</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td><code> [protected]</code></td>
+          <td><code> [protected, virtual]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>Processes all frames after the first frame until a keyframe is selected. </p>
+
+</div>
+</div>
+<a class="anchor" id="a039e5c794e5d086fb54fbaa23b7b1c5c"></a><!-- doxytag: member="svo::FrameHandlerMono::relocalizeFrame" ref="a039e5c794e5d086fb54fbaa23b7b1c5c" args="(const SE3 &amp;T_cur_ref, FramePtr ref_keyframe)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classsvo_1_1FrameHandlerBase.html#abb178c7e61a44ace3798bd1b68d053ff">UpdateResult</a> <a class="el" href="classsvo_1_1FrameHandlerMono.html#a039e5c794e5d086fb54fbaa23b7b1c5c">svo::FrameHandlerMono::relocalizeFrame</a> </td>
+          <td>(</td>
+          <td class="paramtype">const SE3 &amp;&#160;</td>
+          <td class="paramname"><em>T_cur_ref</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a>&#160;</td>
+          <td class="paramname"><em>ref_keyframe</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [protected, virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Try relocalizing the frame at relative position to provided keyframe. </p>
+
+</div>
+</div>
+<a class="anchor" id="a12b7473bb4ac2d71f00c898c9b99446f"></a><!-- doxytag: member="svo::FrameHandlerMono::relocalizeFrameAtPose" ref="a12b7473bb4ac2d71f00c898c9b99446f" args="(const int keyframe_id, const SE3 &amp;T_kf_f, const cv::Mat &amp;img, const double timestamp)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classsvo_1_1FrameHandlerMono.html#a12b7473bb4ac2d71f00c898c9b99446f">svo::FrameHandlerMono::relocalizeFrameAtPose</a> </td>
+          <td>(</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>keyframe_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const SE3 &amp;&#160;</td>
+          <td class="paramname"><em>T_kf_f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const cv::Mat &amp;&#160;</td>
+          <td class="paramname"><em>img</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>timestamp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>An external place recognition module may know where to relocalize. </p>
 
 </div>
 </div>
@@ -409,6 +530,25 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ac9a3131877fd3ffcffc542d970733abd"></a><!-- doxytag: member="svo::FrameHandlerMono::setFirstFrame" ref="ac9a3131877fd3ffcffc542d970733abd" args="(const FramePtr &amp;first_frame)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classsvo_1_1FrameHandlerMono.html#ac9a3131877fd3ffcffc542d970733abd">svo::FrameHandlerMono::setFirstFrame</a> </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> &amp;&#160;</td>
+          <td class="paramname"><em>first_frame</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Set the first frame (used for synthetic datasets in benchmark node) </p>
+
+</div>
+</div>
 <hr/><h2>Member Data Documentation</h2>
 <a class="anchor" id="abb2bfd1a9d2f434908269b03434993d8"></a><!-- doxytag: member="svo::FrameHandlerMono::cam_" ref="abb2bfd1a9d2f434908269b03434993d8" args="" -->
 <div class="memitem">
@@ -437,6 +577,21 @@ Protected Attributes</h2></td></tr>
 <div class="memdoc">
 
 <p>Keyframes in the closer neighbourhood. </p>
+
+</div>
+</div>
+<a class="anchor" id="af1692086d4c52afa8edc0e72b1fdc44c"></a><!-- doxytag: member="svo::FrameHandlerMono::depth_filter_" ref="af1692086d4c52afa8edc0e72b1fdc44c" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsvo_1_1DepthFilter.html">DepthFilter</a>* <a class="el" href="classsvo_1_1FrameHandlerMono.html#af1692086d4c52afa8edc0e72b1fdc44c">svo::FrameHandlerMono::depth_filter_</a><code> [protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Depth estimation algorithm runs in a parallel thread and is used to initialize new 3D points. </p>
 
 </div>
 </div>
@@ -500,18 +655,18 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae21520e1c541f17e94bc48a471499639"></a><!-- doxytag: member="svo::FrameHandlerMono::reprojection_grid_" ref="ae21520e1c541f17e94bc48a471499639" args="" -->
+<a class="anchor" id="a37103f5c1f7e1028dda0e886fac9e5aa"></a><!-- doxytag: member="svo::FrameHandlerMono::reprojector_" ref="a37103f5c1f7e1028dda0e886fac9e5aa" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structsvo_1_1reprojection_1_1Grid.html">reprojection::Grid</a> <a class="el" href="classsvo_1_1FrameHandlerMono.html#ae21520e1c541f17e94bc48a471499639">svo::FrameHandlerMono::reprojection_grid_</a><code> [protected]</code></td>
+          <td class="memname"><a class="el" href="classsvo_1_1Reprojector.html">Reprojector</a> <a class="el" href="classsvo_1_1FrameHandlerMono.html#a37103f5c1f7e1028dda0e886fac9e5aa">svo::FrameHandlerMono::reprojector_</a><code> [protected]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Grid used for reprojection to make sure we have evenly distributed features. </p>
+<p>Projects points from other keyframes into the current frame. </p>
 
 </div>
 </div>
@@ -536,7 +691,7 @@ Protected Attributes</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

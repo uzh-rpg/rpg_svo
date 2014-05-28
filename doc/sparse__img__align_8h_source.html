@@ -132,31 +132,33 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00051"></a>00051       <a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> ref_frame,
 <a name="l00052"></a>00052       <a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> cur_frame);
 <a name="l00053"></a>00053 
-<a name="l00054"></a>00054 <span class="keyword">protected</span>:
-<a name="l00055"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#ac2fc1fe8fc80acd23cd8a13fe4796824">00055</a>   <a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> <a class="code" href="classsvo_1_1SparseImgAlign.html#ac2fc1fe8fc80acd23cd8a13fe4796824" title="reference frame, has depth for gradient pixels.">ref_frame_</a>;            
-<a name="l00056"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a68c2267fe471acd5609121602e2a4984">00056</a>   <a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> <a class="code" href="classsvo_1_1SparseImgAlign.html#a68c2267fe471acd5609121602e2a4984" title="only the image is known!">cur_frame_</a>;            
-<a name="l00057"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a898c784d2783d81e5683c8f1a351ad0e">00057</a>   <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a898c784d2783d81e5683c8f1a351ad0e" title="current pyramid level on which the optimization runs.">level_</a>;                     
-<a name="l00058"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a98c9e1d36fe72168ca96dc30366e36f3">00058</a>   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a98c9e1d36fe72168ca96dc30366e36f3" title="display residual image.">display_</a>;                  
-<a name="l00059"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a53ccc17d9338cecd30bdc44c8b26edbe">00059</a>   <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a53ccc17d9338cecd30bdc44c8b26edbe" title="coarsest pyramid level for the alignment.">max_level_</a>;                 
-<a name="l00060"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a65d9bb396967b05c095ab70db447a4e9">00060</a>   <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a65d9bb396967b05c095ab70db447a4e9" title="finest pyramid level for the alignment.">min_level_</a>;                 
-<a name="l00061"></a>00061 
-<a name="l00062"></a>00062   <span class="comment">// cache:</span>
-<a name="l00063"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a4f88dbffd358ce6a7a3da4a8b0fc28e4">00063</a>   Matrix&lt;double, 6, Dynamic, ColMajor&gt; <a class="code" href="classsvo_1_1SparseImgAlign.html#a4f88dbffd358ce6a7a3da4a8b0fc28e4" title="the first row is a flag whether the jacobian has been computed.">jacobian_cache_</a>; 
-<a name="l00064"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a4b893f6ad907706207e81b0aa87fe6f6">00064</a>   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a4b893f6ad907706207e81b0aa87fe6f6">have_ref_patch_cache_</a>;
-<a name="l00065"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a1ae2dc0fe3bbac05221793286d67ddf1">00065</a>   cv::Mat <a class="code" href="classsvo_1_1SparseImgAlign.html#a1ae2dc0fe3bbac05221793286d67ddf1">ref_patch_cache_</a>;
-<a name="l00066"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a28a5be4827b1ca16913af2f66304e153">00066</a>   std::vector&lt;bool&gt; <a class="code" href="classsvo_1_1SparseImgAlign.html#a28a5be4827b1ca16913af2f66304e153">visible_fts_</a>;
-<a name="l00067"></a>00067 
-<a name="l00068"></a>00068   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a173c06f07a8f6c4d88cfde610d2d78da">precomputeReferencePatches</a>();
-<a name="l00069"></a>00069   <span class="keyword">virtual</span> <span class="keywordtype">double</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a069ad62fc9956cd4afe8f6c4c1ad7d6d">computeResiduals</a>(<span class="keyword">const</span> SE3&amp; model, <span class="keywordtype">bool</span> linearize_system, <span class="keywordtype">bool</span> compute_weight_scale = <span class="keyword">false</span>);
-<a name="l00070"></a>00070   <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#ab8b5a6ba266676e6bebafe178a3bc47d">solve</a>();
-<a name="l00071"></a>00071   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#ad342c8bef5978bc5c5f40ffa76e48f7f">update</a> (<span class="keyword">const</span> ModelType&amp; old_model, ModelType&amp; new_model);
-<a name="l00072"></a>00072   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a74d1a3c554a6efbb2eed70df1c637fe2">startIteration</a>();
-<a name="l00073"></a>00073   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#ab3b91aaba303cb1b1f10a55a62b54c17">finishIteration</a>();
-<a name="l00074"></a>00074 };
-<a name="l00075"></a>00075 
-<a name="l00076"></a>00076 } <span class="comment">// namespace svo</span>
-<a name="l00077"></a>00077 
-<a name="l00078"></a>00078 <span class="preprocessor">#endif // SVO_SPARSE_IMG_ALIGN_H_</span>
+<a name="l00056"></a>00056   Matrix&lt;double, 6, 6&gt; <a class="code" href="classsvo_1_1SparseImgAlign.html#aee65245232c336d4ee90aa910001473d" title="Return fisher information matrix, i.e.">getFisherInformation</a>();
+<a name="l00057"></a>00057 
+<a name="l00058"></a>00058 <span class="keyword">protected</span>:
+<a name="l00059"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#ac2fc1fe8fc80acd23cd8a13fe4796824">00059</a>   <a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> <a class="code" href="classsvo_1_1SparseImgAlign.html#ac2fc1fe8fc80acd23cd8a13fe4796824" title="reference frame, has depth for gradient pixels.">ref_frame_</a>;            
+<a name="l00060"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a68c2267fe471acd5609121602e2a4984">00060</a>   <a class="code" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> <a class="code" href="classsvo_1_1SparseImgAlign.html#a68c2267fe471acd5609121602e2a4984" title="only the image is known!">cur_frame_</a>;            
+<a name="l00061"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a898c784d2783d81e5683c8f1a351ad0e">00061</a>   <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a898c784d2783d81e5683c8f1a351ad0e" title="current pyramid level on which the optimization runs.">level_</a>;                     
+<a name="l00062"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a98c9e1d36fe72168ca96dc30366e36f3">00062</a>   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a98c9e1d36fe72168ca96dc30366e36f3" title="display residual image.">display_</a>;                  
+<a name="l00063"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a53ccc17d9338cecd30bdc44c8b26edbe">00063</a>   <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a53ccc17d9338cecd30bdc44c8b26edbe" title="coarsest pyramid level for the alignment.">max_level_</a>;                 
+<a name="l00064"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a65d9bb396967b05c095ab70db447a4e9">00064</a>   <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a65d9bb396967b05c095ab70db447a4e9" title="finest pyramid level for the alignment.">min_level_</a>;                 
+<a name="l00065"></a>00065 
+<a name="l00066"></a>00066   <span class="comment">// cache:</span>
+<a name="l00067"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a4f88dbffd358ce6a7a3da4a8b0fc28e4">00067</a>   Matrix&lt;double, 6, Dynamic, ColMajor&gt; <a class="code" href="classsvo_1_1SparseImgAlign.html#a4f88dbffd358ce6a7a3da4a8b0fc28e4">jacobian_cache_</a>;
+<a name="l00068"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a4b893f6ad907706207e81b0aa87fe6f6">00068</a>   <span class="keywordtype">bool</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a4b893f6ad907706207e81b0aa87fe6f6">have_ref_patch_cache_</a>;
+<a name="l00069"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a1ae2dc0fe3bbac05221793286d67ddf1">00069</a>   cv::Mat <a class="code" href="classsvo_1_1SparseImgAlign.html#a1ae2dc0fe3bbac05221793286d67ddf1">ref_patch_cache_</a>;
+<a name="l00070"></a><a class="code" href="classsvo_1_1SparseImgAlign.html#a28a5be4827b1ca16913af2f66304e153">00070</a>   std::vector&lt;bool&gt; <a class="code" href="classsvo_1_1SparseImgAlign.html#a28a5be4827b1ca16913af2f66304e153">visible_fts_</a>;
+<a name="l00071"></a>00071 
+<a name="l00072"></a>00072   <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a173c06f07a8f6c4d88cfde610d2d78da">precomputeReferencePatches</a>();
+<a name="l00073"></a>00073   <span class="keyword">virtual</span> <span class="keywordtype">double</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a069ad62fc9956cd4afe8f6c4c1ad7d6d">computeResiduals</a>(<span class="keyword">const</span> SE3&amp; model, <span class="keywordtype">bool</span> linearize_system, <span class="keywordtype">bool</span> compute_weight_scale = <span class="keyword">false</span>);
+<a name="l00074"></a>00074   <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#ab8b5a6ba266676e6bebafe178a3bc47d">solve</a>();
+<a name="l00075"></a>00075   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#ad342c8bef5978bc5c5f40ffa76e48f7f">update</a> (<span class="keyword">const</span> ModelType&amp; old_model, ModelType&amp; new_model);
+<a name="l00076"></a>00076   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#a74d1a3c554a6efbb2eed70df1c637fe2">startIteration</a>();
+<a name="l00077"></a>00077   <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classsvo_1_1SparseImgAlign.html#ab3b91aaba303cb1b1f10a55a62b54c17">finishIteration</a>();
+<a name="l00078"></a>00078 };
+<a name="l00079"></a>00079 
+<a name="l00080"></a>00080 } <span class="comment">// namespace svo</span>
+<a name="l00081"></a>00081 
+<a name="l00082"></a>00082 <span class="preprocessor">#endif // SVO_SPARSE_IMG_ALIGN_H_</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -175,7 +177,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

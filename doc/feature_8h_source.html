@@ -107,40 +107,53 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00026"></a>00026 {
 <a name="l00027"></a>00027   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 <a name="l00028"></a>00028 
-<a name="l00029"></a><a class="code" href="structsvo_1_1Feature.html#a41f5263fc3887bff899e239d2979aacc">00029</a>   <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>*   <a class="code" href="structsvo_1_1Feature.html#a41f5263fc3887bff899e239d2979aacc" title="Pointer to frame in which the feature was detected.">frame</a>;       
-<a name="l00030"></a><a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698">00030</a>   Vector2d <a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698" title="Coordinates in pixels on pyramid level 0.">px</a>;          
-<a name="l00031"></a><a class="code" href="structsvo_1_1Feature.html#ac6d6a5c8ff457badf436c439bda63947">00031</a>   Vector3d <a class="code" href="structsvo_1_1Feature.html#ac6d6a5c8ff457badf436c439bda63947" title="Unit-bearing vector of the feature.">f</a>;           
-<a name="l00032"></a><a class="code" href="structsvo_1_1Feature.html#a2e6fa18c1f91a7c31656f1597d13b117">00032</a>   <span class="keywordtype">int</span>      <a class="code" href="structsvo_1_1Feature.html#a2e6fa18c1f91a7c31656f1597d13b117" title="Image pyramid level where feature was extracted.">level</a>;       
-<a name="l00033"></a><a class="code" href="structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced">00033</a>   <a class="code" href="classsvo_1_1Point.html" title="A 3D point that was triangulated from at least two corresponding image features.">Point</a>*   <a class="code" href="structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced" title="Pointer to 3D point which corresponds to the feature.">point</a>;       
-<a name="l00034"></a>00034 
-<a name="l00035"></a><a class="code" href="structsvo_1_1Feature.html#a159218751e0b1258bfc73350f73951c8">00035</a>   <a class="code" href="structsvo_1_1Feature.html#a159218751e0b1258bfc73350f73951c8">Feature</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* _frame, <span class="keyword">const</span> Vector2d&amp; _px, <span class="keywordtype">int</span> _level)
-<a name="l00036"></a>00036    : <a class="code" href="structsvo_1_1Feature.html#a41f5263fc3887bff899e239d2979aacc" title="Pointer to frame in which the feature was detected.">frame</a>(_frame),
-<a name="l00037"></a>00037      <a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698" title="Coordinates in pixels on pyramid level 0.">px</a>(_px),
-<a name="l00038"></a>00038      <a class="code" href="structsvo_1_1Feature.html#ac6d6a5c8ff457badf436c439bda63947" title="Unit-bearing vector of the feature.">f</a>(<a class="code" href="structsvo_1_1Feature.html#a41f5263fc3887bff899e239d2979aacc" title="Pointer to frame in which the feature was detected.">frame</a>-&gt;cam_-&gt;cam2world(<a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698" title="Coordinates in pixels on pyramid level 0.">px</a>)),
-<a name="l00039"></a>00039      <a class="code" href="structsvo_1_1Feature.html#a2e6fa18c1f91a7c31656f1597d13b117" title="Image pyramid level where feature was extracted.">level</a>(_level),
-<a name="l00040"></a>00040      <a class="code" href="structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced" title="Pointer to 3D point which corresponds to the feature.">point</a>(NULL)
-<a name="l00041"></a>00041   {}
-<a name="l00042"></a>00042 
-<a name="l00043"></a><a class="code" href="structsvo_1_1Feature.html#a5e64d68c5ac06d97193c12fdbc017f18">00043</a>   <a class="code" href="structsvo_1_1Feature.html#a159218751e0b1258bfc73350f73951c8">Feature</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* _frame, <span class="keyword">const</span> Vector2d&amp; _px, <span class="keyword">const</span> Vector3d&amp; _f, <span class="keywordtype">int</span> _level)
-<a name="l00044"></a>00044   : <a class="code" href="structsvo_1_1Feature.html#a41f5263fc3887bff899e239d2979aacc" title="Pointer to frame in which the feature was detected.">frame</a>(_frame),
+<a name="l00029"></a><a class="code" href="structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7e">00029</a>   <span class="keyword">enum</span> <a class="code" href="structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7e">FeatureType</a> {
+<a name="l00030"></a><a class="code" href="structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7ea5af63453cd7a0bc96cb060ef6a6677ec">00030</a>     <a class="code" href="structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7ea5af63453cd7a0bc96cb060ef6a6677ec">CORNER</a>,
+<a name="l00031"></a><a class="code" href="structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7ea8b954ecd82dd5acfcb972cdb98a3ceb7">00031</a>     <a class="code" href="structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7ea8b954ecd82dd5acfcb972cdb98a3ceb7">EDGELET</a>
+<a name="l00032"></a>00032   };
+<a name="l00033"></a>00033 
+<a name="l00034"></a><a class="code" href="structsvo_1_1Feature.html#ac74076cb3269ae27ef011fa6fd288fdb">00034</a>   <a class="code" href="structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7e">FeatureType</a> <a class="code" href="structsvo_1_1Feature.html#ac74076cb3269ae27ef011fa6fd288fdb" title="Type can be corner or edgelet.">type</a>;     
+<a name="l00035"></a><a class="code" href="structsvo_1_1Feature.html#a78ae2f6658137b8ac921a2557f00568b">00035</a>   <a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* <a class="code" href="structsvo_1_1Feature.html#a78ae2f6658137b8ac921a2557f00568b" title="Pointer to frame in which the feature was detected.">frame</a>;         
+<a name="l00036"></a><a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698">00036</a>   Vector2d <a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698" title="Coordinates in pixels on pyramid level 0.">px</a>;          
+<a name="l00037"></a><a class="code" href="structsvo_1_1Feature.html#ac6d6a5c8ff457badf436c439bda63947">00037</a>   Vector3d <a class="code" href="structsvo_1_1Feature.html#ac6d6a5c8ff457badf436c439bda63947" title="Unit-bearing vector of the feature.">f</a>;           
+<a name="l00038"></a><a class="code" href="structsvo_1_1Feature.html#a2e6fa18c1f91a7c31656f1597d13b117">00038</a>   <span class="keywordtype">int</span> <a class="code" href="structsvo_1_1Feature.html#a2e6fa18c1f91a7c31656f1597d13b117" title="Image pyramid level where feature was extracted.">level</a>;            
+<a name="l00039"></a><a class="code" href="structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced">00039</a>   <a class="code" href="classsvo_1_1Point.html" title="A 3D point on the surface of the scene.">Point</a>* <a class="code" href="structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced" title="Pointer to 3D point which corresponds to the feature.">point</a>;         
+<a name="l00040"></a><a class="code" href="structsvo_1_1Feature.html#a2a4355602ac971619c61b89667da4547">00040</a>   Vector2d <a class="code" href="structsvo_1_1Feature.html#a2a4355602ac971619c61b89667da4547" title="Dominant gradient direction for edglets, normalized.">grad</a>;        
+<a name="l00041"></a>00041 
+<a name="l00042"></a><a class="code" href="structsvo_1_1Feature.html#a159218751e0b1258bfc73350f73951c8">00042</a>   <a class="code" href="structsvo_1_1Feature.html#a159218751e0b1258bfc73350f73951c8">Feature</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* _frame, <span class="keyword">const</span> Vector2d&amp; _px, <span class="keywordtype">int</span> _level) :
+<a name="l00043"></a>00043     <a class="code" href="structsvo_1_1Feature.html#ac74076cb3269ae27ef011fa6fd288fdb" title="Type can be corner or edgelet.">type</a>(<a class="code" href="structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7ea5af63453cd7a0bc96cb060ef6a6677ec">CORNER</a>),
+<a name="l00044"></a>00044     <a class="code" href="structsvo_1_1Feature.html#a78ae2f6658137b8ac921a2557f00568b" title="Pointer to frame in which the feature was detected.">frame</a>(_frame),
 <a name="l00045"></a>00045     <a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698" title="Coordinates in pixels on pyramid level 0.">px</a>(_px),
-<a name="l00046"></a>00046     <a class="code" href="structsvo_1_1Feature.html#ac6d6a5c8ff457badf436c439bda63947" title="Unit-bearing vector of the feature.">f</a>(_f),
+<a name="l00046"></a>00046     <a class="code" href="structsvo_1_1Feature.html#ac6d6a5c8ff457badf436c439bda63947" title="Unit-bearing vector of the feature.">f</a>(<a class="code" href="structsvo_1_1Feature.html#a78ae2f6658137b8ac921a2557f00568b" title="Pointer to frame in which the feature was detected.">frame</a>-&gt;cam_-&gt;cam2world(<a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698" title="Coordinates in pixels on pyramid level 0.">px</a>)),
 <a name="l00047"></a>00047     <a class="code" href="structsvo_1_1Feature.html#a2e6fa18c1f91a7c31656f1597d13b117" title="Image pyramid level where feature was extracted.">level</a>(_level),
-<a name="l00048"></a>00048     <a class="code" href="structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced" title="Pointer to 3D point which corresponds to the feature.">point</a>(NULL)
-<a name="l00049"></a>00049   {}
-<a name="l00050"></a>00050 
-<a name="l00051"></a><a class="code" href="structsvo_1_1Feature.html#a5d509a9c1d7f0fa2e4913117782650a5">00051</a>   <a class="code" href="structsvo_1_1Feature.html#a159218751e0b1258bfc73350f73951c8">Feature</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* _frame, <a class="code" href="classsvo_1_1Point.html" title="A 3D point that was triangulated from at least two corresponding image features.">Point</a>* _point, <span class="keyword">const</span> Vector2d&amp; _px, <span class="keyword">const</span> Vector3d&amp; _f, <span class="keywordtype">int</span> _level)
-<a name="l00052"></a>00052     : <a class="code" href="structsvo_1_1Feature.html#a41f5263fc3887bff899e239d2979aacc" title="Pointer to frame in which the feature was detected.">frame</a>(_frame),
-<a name="l00053"></a>00053       <a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698" title="Coordinates in pixels on pyramid level 0.">px</a>(_px),
-<a name="l00054"></a>00054       <a class="code" href="structsvo_1_1Feature.html#ac6d6a5c8ff457badf436c439bda63947" title="Unit-bearing vector of the feature.">f</a>(_f),
-<a name="l00055"></a>00055       <a class="code" href="structsvo_1_1Feature.html#a2e6fa18c1f91a7c31656f1597d13b117" title="Image pyramid level where feature was extracted.">level</a>(_level),
-<a name="l00056"></a>00056       <a class="code" href="structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced" title="Pointer to 3D point which corresponds to the feature.">point</a>(_point)
-<a name="l00057"></a>00057   {}
-<a name="l00058"></a>00058 };
-<a name="l00059"></a>00059 
-<a name="l00060"></a>00060 } <span class="comment">// namespace svo</span>
+<a name="l00048"></a>00048     <a class="code" href="structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced" title="Pointer to 3D point which corresponds to the feature.">point</a>(NULL),
+<a name="l00049"></a>00049     <a class="code" href="structsvo_1_1Feature.html#a2a4355602ac971619c61b89667da4547" title="Dominant gradient direction for edglets, normalized.">grad</a>(1.0,0.0)
+<a name="l00050"></a>00050   {}
+<a name="l00051"></a>00051 
+<a name="l00052"></a><a class="code" href="structsvo_1_1Feature.html#a5e64d68c5ac06d97193c12fdbc017f18">00052</a>   <a class="code" href="structsvo_1_1Feature.html#a159218751e0b1258bfc73350f73951c8">Feature</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* _frame, <span class="keyword">const</span> Vector2d&amp; _px, <span class="keyword">const</span> Vector3d&amp; _f, <span class="keywordtype">int</span> _level) :
+<a name="l00053"></a>00053     <a class="code" href="structsvo_1_1Feature.html#ac74076cb3269ae27ef011fa6fd288fdb" title="Type can be corner or edgelet.">type</a>(<a class="code" href="structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7ea5af63453cd7a0bc96cb060ef6a6677ec">CORNER</a>),
+<a name="l00054"></a>00054     <a class="code" href="structsvo_1_1Feature.html#a78ae2f6658137b8ac921a2557f00568b" title="Pointer to frame in which the feature was detected.">frame</a>(_frame),
+<a name="l00055"></a>00055     <a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698" title="Coordinates in pixels on pyramid level 0.">px</a>(_px),
+<a name="l00056"></a>00056     <a class="code" href="structsvo_1_1Feature.html#ac6d6a5c8ff457badf436c439bda63947" title="Unit-bearing vector of the feature.">f</a>(_f),
+<a name="l00057"></a>00057     <a class="code" href="structsvo_1_1Feature.html#a2e6fa18c1f91a7c31656f1597d13b117" title="Image pyramid level where feature was extracted.">level</a>(_level),
+<a name="l00058"></a>00058     <a class="code" href="structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced" title="Pointer to 3D point which corresponds to the feature.">point</a>(NULL),
+<a name="l00059"></a>00059     <a class="code" href="structsvo_1_1Feature.html#a2a4355602ac971619c61b89667da4547" title="Dominant gradient direction for edglets, normalized.">grad</a>(1.0,0.0)
+<a name="l00060"></a>00060   {}
 <a name="l00061"></a>00061 
-<a name="l00062"></a>00062 <span class="preprocessor">#endif // SVO_FEATURE_H_</span>
+<a name="l00062"></a><a class="code" href="structsvo_1_1Feature.html#a5d509a9c1d7f0fa2e4913117782650a5">00062</a>   <a class="code" href="structsvo_1_1Feature.html#a159218751e0b1258bfc73350f73951c8">Feature</a>(<a class="code" href="classsvo_1_1Frame.html" title="A frame saves the image, the associated features and the estimated pose.">Frame</a>* _frame, <a class="code" href="classsvo_1_1Point.html" title="A 3D point on the surface of the scene.">Point</a>* _point, <span class="keyword">const</span> Vector2d&amp; _px, <span class="keyword">const</span> Vector3d&amp; _f, <span class="keywordtype">int</span> _level) :
+<a name="l00063"></a>00063     <a class="code" href="structsvo_1_1Feature.html#ac74076cb3269ae27ef011fa6fd288fdb" title="Type can be corner or edgelet.">type</a>(<a class="code" href="structsvo_1_1Feature.html#a57070dbfab1cb1742c0136feeaf2ac7ea5af63453cd7a0bc96cb060ef6a6677ec">CORNER</a>),
+<a name="l00064"></a>00064     <a class="code" href="structsvo_1_1Feature.html#a78ae2f6658137b8ac921a2557f00568b" title="Pointer to frame in which the feature was detected.">frame</a>(_frame),
+<a name="l00065"></a>00065     <a class="code" href="structsvo_1_1Feature.html#aa6f60f24f0e25b4d9ea5dede92333698" title="Coordinates in pixels on pyramid level 0.">px</a>(_px),
+<a name="l00066"></a>00066     <a class="code" href="structsvo_1_1Feature.html#ac6d6a5c8ff457badf436c439bda63947" title="Unit-bearing vector of the feature.">f</a>(_f),
+<a name="l00067"></a>00067     <a class="code" href="structsvo_1_1Feature.html#a2e6fa18c1f91a7c31656f1597d13b117" title="Image pyramid level where feature was extracted.">level</a>(_level),
+<a name="l00068"></a>00068     <a class="code" href="structsvo_1_1Feature.html#ae36bc3fc368d359702235bc747caeced" title="Pointer to 3D point which corresponds to the feature.">point</a>(_point),
+<a name="l00069"></a>00069     <a class="code" href="structsvo_1_1Feature.html#a2a4355602ac971619c61b89667da4547" title="Dominant gradient direction for edglets, normalized.">grad</a>(1.0,0.0)
+<a name="l00070"></a>00070   {}
+<a name="l00071"></a>00071 };
+<a name="l00072"></a>00072 
+<a name="l00073"></a>00073 } <span class="comment">// namespace svo</span>
+<a name="l00074"></a>00074 
+<a name="l00075"></a>00075 <span class="preprocessor">#endif // SVO_FEATURE_H_</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -159,7 +172,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:18 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

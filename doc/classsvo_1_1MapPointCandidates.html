@@ -122,8 +122,8 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1MapPointCandidates.html#adc390e6d0ddc3f5aa976575777755348">MapPointCandidates</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1MapPointCandidates.html#a7409d7dae9a403ac0496e00b5a4f1343">~MapPointCandidates</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1MapPointCandidates.html#a94dbddf5452208f4af583cc200936d4d">newCandidatePoint</a> (const <a class="el" href="structsvo_1_1Seed.html">Seed</a> &amp;seed, const Vector3d &amp;xyz_world)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a candidate point.  <a href="#a94dbddf5452208f4af583cc200936d4d"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1MapPointCandidates.html#aec26dcabcf2205538e3bffd3b375fbfd">newCandidatePoint</a> (<a class="el" href="classsvo_1_1Point.html">Point</a> *point, double depth_sigma2)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a candidate point.  <a href="#aec26dcabcf2205538e3bffd3b375fbfd"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1MapPointCandidates.html#a35d94bda3a00e052e04c07bfe493ec91">addCandidatePointToFrame</a> (<a class="el" href="namespacesvo.html#a4bf85f5104551c727d1f5700ad947176">FramePtr</a> frame)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds the feature to the frame and deletes candidate from list.  <a href="#a35d94bda3a00e052e04c07bfe493ec91"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsvo_1_1MapPointCandidates.html#a69a159e668c06aca33cb098c476510d5">deleteCandidatePoint</a> (<a class="el" href="classsvo_1_1Point.html">Point</a> *point)</td></tr>
@@ -276,21 +276,21 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a94dbddf5452208f4af583cc200936d4d"></a><!-- doxytag: member="svo::MapPointCandidates::newCandidatePoint" ref="a94dbddf5452208f4af583cc200936d4d" args="(const Seed &amp;seed, const Vector3d &amp;xyz_world)" -->
+<a class="anchor" id="aec26dcabcf2205538e3bffd3b375fbfd"></a><!-- doxytag: member="svo::MapPointCandidates::newCandidatePoint" ref="aec26dcabcf2205538e3bffd3b375fbfd" args="(Point *point, double depth_sigma2)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classsvo_1_1MapPointCandidates.html#a94dbddf5452208f4af583cc200936d4d">svo::MapPointCandidates::newCandidatePoint</a> </td>
+          <td class="memname">void <a class="el" href="classsvo_1_1MapPointCandidates.html#aec26dcabcf2205538e3bffd3b375fbfd">svo::MapPointCandidates::newCandidatePoint</a> </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structsvo_1_1Seed.html">Seed</a> &amp;&#160;</td>
-          <td class="paramname"><em>seed</em>, </td>
+          <td class="paramtype"><a class="el" href="classsvo_1_1Point.html">Point</a> *&#160;</td>
+          <td class="paramname"><em>point</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Vector3d &amp;&#160;</td>
-          <td class="paramname"><em>xyz_world</em>&#160;</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>depth_sigma2</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -409,7 +409,7 @@ Public Attributes</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 13 2014 09:33:34 for svo by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed May 28 2014 16:22:19 for svo by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
