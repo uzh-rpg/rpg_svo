@@ -1,9 +1,8 @@
 ################################################################################
 # user build settings
 
-SET(DEBUG FALSE)
-SET(TRACE FALSE)
-SET(HAVE_G2O FALSE) 
+SET(TRACE TRUE)
+SET(HAVE_G2O TRUE) 
 
 ################################################################################
 
@@ -14,18 +13,7 @@ SET(CMAKE_BUILD_TYPE Release) # Release, RelWithDebInfo
 SET(CMAKE_VERBOSE_MAKEFILE OFF)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/CMakeModules/")
 
-# Set ARM_ARCHITECTURE environment variable on Odroid
-IF(DEFINED ENV{ARM_ARCHITECTURE})
-  SET(IS_ARM TRUE)
-#  ADD_DEFINITIONS(-DHAVE_FAST_NEON)
-ELSE()
-  SET(IS_ARM FALSE)
-ENDIF()
-
 # Set definitions
-IF(DEBUG)
-  ADD_DEFINITIONS(-DSVO_DEBUG)
-ENDIF()
 IF(TRACE)
   ADD_DEFINITIONS(-DSVO_TRACE)
 ENDIF()
@@ -34,10 +22,9 @@ IF(HAVE_G2O)
 ENDIF()
 ADD_DEFINITIONS(-DSVO_USE_ROS)
 
-# Set build flags
+# Set build flags, set ARM_ARCHITECTURE environment variable on Odroid
 SET(CMAKE_CXX_FLAGS "-Wall -Werror -D_LINUX -D_REENTRANT -march=native -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unknown-pragmas")
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g")
-IF(IS_ARM)
+IF(DEFINED ENV{ARM_ARCHITECTURE})
   SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -mfpu=neon -march=armv7-a -fomit-frame-pointer -fsee -funsafe-loop-optimizations -fno-signed-zeros -fno-math-errno -funroll-loops")
 ELSE()
   SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -mmmx -msse -msse -msse2 -msse3 -mssse3 -fomit-frame-pointer -fsee -funsafe-loop-optimizations -fno-signed-zeros -fno-math-errno -funroll-loops")
@@ -48,11 +35,10 @@ ELSE()
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ENDIF()
 
-# Add catkin and required ROS packages
+# Add catkin and required ROS packages 
 FIND_PACKAGE(catkin REQUIRED COMPONENTS roscpp roslib cmake_modules vikit_common vikit_ros)
 
 # Add plain cmake packages 
-FIND_PACKAGE(G2O REQUIRED)
 FIND_PACKAGE(OpenCV REQUIRED)
 FIND_PACKAGE(Eigen REQUIRED)
 FIND_PACKAGE(Sophus REQUIRED)
@@ -74,15 +60,9 @@ INCLUDE_DIRECTORIES(
   ${OpenCV_INCLUDE_DIRS}
   ${Sophus_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
-  ${catkin_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS} 
   ${fast_INCLUDE_DIRS}
 )
-IF(HAVE_G2O)
-  INCLUDE_DIRECTORIES(
-    ${G2O_ROOT}/include
-    /usr/include/suitesparse # for cholmod
-  )
-ENDIF()
 
 # Set link libraries
 LIST(APPEND LINK_LIBS 
@@ -92,12 +72,6 @@ LIST(APPEND LINK_LIBS
   ${catkin_LIBRARIES}
   ${fast_LIBRARIES}
 )
-IF(HAVE_G2O)
-  LIST(APPEND LINK_LIBS
-    g2o_core g2o_stuff g2o_solver_cholmod g2o_solver_csparse g2o_solver_dense g2o_solver_pcg g2o_types_sba
-    cholmod cxsparse
-  )
-ENDIF()
 
 # Set sourcefiles
 LIST(APPEND SOURCEFILES
@@ -115,7 +89,18 @@ LIST(APPEND SOURCEFILES
   src/depth_filter.cpp
   src/config.cpp
   src/sparse_img_align.cpp)
+
+# Add g2o if available
 IF(HAVE_G2O)
+  FIND_PACKAGE(G2O REQUIRED)
+  INCLUDE_DIRECTORIES(
+    ${G2O_ROOT}/include
+    /usr/include/suitesparse # for cholmod
+  )
+  LIST(APPEND LINK_LIBS
+    g2o_core g2o_stuff g2o_solver_cholmod g2o_solver_csparse g2o_solver_dense
+    g2o_solver_pcg g2o_types_sba cholmod cxsparse
+  )
   LIST(APPEND SOURCEFILES src/bundle_adjustment.cpp)
 ENDIF(HAVE_G2O)
 

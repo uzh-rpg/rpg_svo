@@ -39,11 +39,7 @@
   #define SVO_ERROR_STREAM(x) ROS_ERROR_STREAM(x)
 #else
   #define SVO_INFO_STREAM(x) std::cerr<<"\033[0;0m[INFO] "<<x<<"\033[0;0m"<<std::endl;
-  #ifdef SVO_DEBUG
-    #define SVO_DEBUG_STREAM(x) SVO_INFO_STREAM(x)
-  #else
-    #define SVO_DEBUG_STREAM(x)
-  #endif
+  #define SVO_DEBUG_STREAM(x) SVO_INFO_STREAM(x)
   #define SVO_WARN_STREAM(x) std::cerr<<"\033[0;33m[WARN] "<<x<<"\033[0;0m"<<std::endl;
   #define SVO_ERROR_STREAM(x) std::cerr<<"\033[1;31m[ERROR] "<<x<<"\033[0;0m"<<std::endl;
   #include <chrono> // Adapted from rosconsole. Copyright (c) 2008, Willow Garage, Inc.
