@@ -1,25 +1,34 @@
 SVO
 ===
 
-This code implements a semi-direct visual odometry pipeline that is described in the paper 
-
-*   C. Forster, M. Pizzoli, D. Scaramuzza,
-    "__SVO: Fast Semi-Direct Monocular Visual Odometry__,"
-    IEEE International Conference on Robotics and Automation (ICRA), 2014.
+This code implements a semi-direct monocular visual odometry pipeline.
 
 Video: http://youtu.be/2YnIMfw6bJY
 
-Disclaimer
-----------
+Paper: http://rpg.ifi.uzh.ch/docs/ICRA14_Forster.pdf
 
-SVO has been tested under ROS Groovy and Hydro and Ubuntu 12.04 and 13.04. This is research code, any fitness for a particular purpose is disclaimed.
+#### Disclaimer
+
+SVO has been tested under ROS Groovy, Hydro and Indigo with Ubuntu 12.04, 13.04 and 14.04. This is research code, any fitness for a particular purpose is disclaimed.
 
 
-Licence
--------
+#### Licence
 
-The source code is released under a GPLv3 licence. A professional edition license for closed-source projects is also available. Please contact `forster at ifi dot uzh dot ch` for further information.
+The source code is released under a GPLv3 licence. A professional edition license for closed-source projects is also available. For commercial use, please contact the authors.
 
+
+#### Citing
+
+If you use SVO in an academic context, please cite the following publication:
+
+    @inproceedings{Forster2014ICRA,
+      author = {Forster, Christian and Pizzoli, Matia and Scaramuzza, Davide},
+      title = {{SVO}: Fast Semi-Direct Monocular Visual Odometry},
+      booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+      year = {2014}
+    }
+    
+    
 Documentation
 -------------
 
@@ -176,15 +185,3 @@ Contributing
 
 You are very welcome to contribute to SVO by opening a pull request via Github.
 I try to follow the ROS C++ style guide http://wiki.ros.org/CppStyleGuide
-
-Citing
-------
-
-If you use SVO in an academic context, please cite the following publication:
-
-    @inproceedings{Forster2014ICRA,
-      author = {Forster, Christian and Pizzoli, Matia and Scaramuzza, Davide},
-      title = {{SVO}: Fast Semi-Direct Monocular Visual Odometry},
-      booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
-      year = {2014}
-    }
