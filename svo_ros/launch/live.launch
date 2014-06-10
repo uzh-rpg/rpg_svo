@@ -3,7 +3,7 @@
     <node pkg="svo_ros" type="vo" name="svo" clear_params="true" output="screen">
     
         <param name="cam_topic" value="/camera/image_raw" type="str" />
-        <rosparam file="$(find rpg_calib)/cameras/bluefox_847_cfo_atan.yaml" />
+        <rosparam file="$(find svo_ros)/param/camera_atan.yaml" />
         <rosparam file="$(find svo_ros)/param/vo_fast.yaml" />
 
         <param name="map_scale" value="0.5" />
