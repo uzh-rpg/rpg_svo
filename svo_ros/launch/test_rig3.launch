@@ -18,6 +18,4 @@
 
   </node>
 
-  <node name="svo_ros_rviz" pkg="rviz" type="rviz" args=" -d $(find svo_ros)/rviz_config.rviz" /> 
-
 </launch>
