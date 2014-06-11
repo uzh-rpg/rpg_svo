@@ -45,7 +45,7 @@ public:
   svo::Visualizer visualizer_;
   bool publish_markers_;                 //!< publish only the minimal amount of info (choice for embedded devices)
   bool publish_dense_input_;
-  vk::UserInputThread* user_input_thread_;
+  boost::shared_ptr<vk::UserInputThread> user_input_thread_;
   ros::Subscriber sub_remote_key_;
   std::string remote_input_;
   vk::AbstractCamera* cam_;
@@ -61,11 +61,14 @@ VoNode::VoNode() :
   vo_(NULL),
   publish_markers_(vk::getParam<bool>("svo/publish_markers", true)),
   publish_dense_input_(vk::getParam<bool>("svo/publish_dense_input", false)),
-  user_input_thread_(new vk::UserInputThread()),
   remote_input_(""),
   cam_(NULL),
   quit_(false)
 {
+  // Start user input thread in parallel thread that listens to console keys
+  if(vk::getParam<bool>("svo/accept_console_user_input", true))
+    user_input_thread_ = boost::make_shared<vk::UserInputThread>();
+
   // Create Camera
   if(!vk::camera_loader::loadFromRosNs("svo", cam_))
     throw std::runtime_error("Camera model not correctly specified.");
@@ -87,8 +90,9 @@ VoNode::VoNode() :
 VoNode::~VoNode()
 {
   delete vo_;
-  delete user_input_thread_;
   delete cam_;
+  if(user_input_thread_ != NULL)
+    user_input_thread_->stop();
 }
 
 void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg)
@@ -118,9 +122,12 @@ void VoNode::processUserActions()
   char input = remote_input_.c_str()[0];
   remote_input_ = "";
 
-  char console_input = user_input_thread_->getInput();
-  if(console_input != 0)
-    input = console_input;
+  if(user_input_thread_ != NULL)
+  {
+    char console_input = user_input_thread_->getInput();
+    if(console_input != 0)
+      input = console_input;
+  }
 
   switch(input)
   {
