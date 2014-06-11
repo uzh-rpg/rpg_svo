@@ -54,7 +54,7 @@ void generateRefPatchNoWarpInterpolate(const cv::Mat& img, const Vector2d& px,
 int main(int argc, char **argv)
 {
 
-  std::string img_name(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1/img/frame_000001_0.png");
+  std::string img_name(svo::test_utils::getDatasetDir() + "/sin2_tex2_h1_v8_d/img/frame_000002_0.png");
   printf("Loading image '%s'\n", img_name.c_str());
   cv::Mat img(cv::imread(img_name, 0));
   assert(img.type() == CV_8UC1);
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
     svo::feature_alignment::align1D(img, dir, ref_patch_with_border.data, ref_patch, 3, px_est, h_inv);
   }
   Vector2d e = px_est-px_true;
-  printf("1000Xalign 1D took %fms, error = %fpx \t (ref i7-W520: 1.637000ms, Odroid-U2: ?, 0.008788px) \n", t.stop()*1000, e.norm());
+  printf("1000Xalign 1D took %fms, error = %fpx \t (ref i7-W520: 1.982000ms, 0.000033px) \n", t.stop()*1000, e.norm());
 
   t.start();
   for(int i=0; i<1000; ++i)
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
     svo::feature_alignment::align2D(img, ref_patch_with_border.data, ref_patch, 3, px_est, true);
   }
   e = px_est-px_true;
-  printf("1000Xalign 2D took %fms, error = %fpx \t (ref i7-W520: 2.147000ms, Odroid-U2: ?, 0.009632px)\n", t.stop()*1000, e.norm());
+  printf("1000Xalign 2D took %fms, error = %fpx \t (ref i7-W520: 2.306000ms, 0.015102px)\n", t.stop()*1000, e.norm());
 
 #ifdef __SSE2__
   // Note, this KLT implementation is not invariant to illuminatino changes!
@@ -106,7 +106,7 @@ int main(int argc, char **argv)
     svo::feature_alignment::align2D_SSE2(img, ref_patch_with_border.data, ref_patch, 3, px_est);
   }
   e = px_est-px_true;
-  printf("1000Xalign 2D SSE2 %fms, error = %fpx \t (ref i7-W520: 0.548000ms, 0.023032px)\n", t.stop()*1000, e.norm());
+  printf("1000Xalign 2D SSE2 %fms, error = %fpx \t (ref i7-W520: 0.460000ms, 0.021881px)\n", t.stop()*1000, e.norm());
 #endif
 
 #ifdef __ARM_NEON__

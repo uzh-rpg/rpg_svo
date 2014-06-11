@@ -31,14 +31,14 @@ class MatcherTest {
  public:
   MatcherTest()
   {
-    cam_ = new vk::PinholeCamera(752, 480, 217.083701215, 217.083701215, 376, 240);
+    cam_ = new vk::PinholeCamera(752, 480, 315.5, 315.5, 376.0, 240.0);
 
     // load images
-    std::string dataset_dir(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1");
-    std::string img_name(dataset_dir+"/img/frame_000071_0.png");
+    std::string dataset_dir(svo::test_utils::getDatasetDir() + "/sin2_tex2_h1_v8_d");
+    std::string img_name(dataset_dir+"/img/frame_000002_0.png");
     printf("Loading image '%s'\n", img_name.c_str());
     cv::Mat img_ref(cv::imread(img_name, 0));
-    img_name = std::string(dataset_dir+"/img/frame_000097_0.png");
+    img_name = std::string(dataset_dir+"/img/frame_000006_0.png");
     printf("Loading image '%s'\n", img_name.c_str());
     cv::Mat img_cur(cv::imread(img_name, 0));
     assert(!img_ref.empty() && !img_cur.empty());
@@ -49,15 +49,15 @@ class MatcherTest {
     ref_ftr_ = new svo::Feature(frame_ref_, Eigen::Vector2d(300, 260), 0);
 
     // set poses
-    Eigen::Vector3d t_w_ref(1.0054399967193604, 1.75655996799469, 4.610799789428711);
-    Eigen::Vector3d t_w_cur(-0.046640001237392426, 2.163439989089966, 4.6279802322387695);
-    Eigen::Quaterniond q_w_ref(0.015279541723430157, 0.7095794081687927, 0.7044594287872314, 0.0006494877743534744);
-    Eigen::Quaterniond q_w_cur(0.004395846277475357, -0.7776520252227783, -0.6286740899085999, -0.0026246386114507914);
-    frame_ref_->T_f_w_ = Sophus::SE3(q_w_ref.toRotationMatrix(), t_w_ref).inverse();
-    frame_cur_->T_f_w_ = Sophus::SE3(q_w_cur.toRotationMatrix(), t_w_cur).inverse();
+    Eigen::Vector3d t_w_ref(0.1131, 0.1131, 2.0000);
+    Eigen::Vector3d t_w_cur(0.5673, 0.5641, 2.0000);
+    Eigen::Quaterniond q_w_ref(0.0, 0.8227, 0.2149, 0.0);
+    Eigen::Quaterniond q_w_cur(0.0, 0.8235, 0.2130, 0.0);
+    frame_ref_->T_f_w_ = Sophus::SE3(q_w_ref, t_w_ref).inverse();
+    frame_cur_->T_f_w_ = Sophus::SE3(q_w_cur, t_w_cur).inverse();
 
     // load ground-truth depth
-    vk::blender_utils::loadBlenderDepthmap(dataset_dir+"/depth/frame_000071_0.depth", *cam_, depth_ref_);
+    vk::blender_utils::loadBlenderDepthmap(dataset_dir+"/depth/frame_000002_0.depth", *cam_, depth_ref_);
   }
 
   virtual ~MatcherTest()
@@ -114,17 +114,17 @@ void MatcherTest::testEpipolarSearchFullImg()
   }
 
   // compute mean, median and variance of error in converged area
-  printf("n converged:  \t %zu mm (ref: 169936)\n", n_converged);
-  printf("mean error:   \t %f mm (ref: 1.912410)\n", sum_error*100/n_converged);
+  printf("n converged:  \t %zu mm (ref: 216114)\n", n_converged);
+  printf("mean error:   \t %f mm (ref: 0.410084)\n", sum_error*100/n_converged);
   std::vector<double>::iterator it = errors.begin()+0.5*errors.size();
   std::nth_element(errors.begin(), it, errors.end());
-  printf("50-percentile: \t %f mm (ref: 1.462241)\n", *it*100);
+  printf("50-percentile: \t %f mm (ref: 0.083203)\n", *it*100);
   it = errors.begin()+0.8*errors.size();
   std::nth_element(errors.begin(), it, errors.end());
-  printf("80-percentile: \t %f mm (ref: 2.620957)\n", *it*100);
+  printf("80-percentile: \t %f mm (ref: 0.161824)\n", *it*100);
   it = errors.begin()+0.95*errors.size();
   std::nth_element(errors.begin(), it, errors.end());
-  printf("95-percentile: \t %f mm (ref: 4.154051)\n", *it*100);
+  printf("95-percentile: \t %f mm (ref: 0.263539)\n", *it*100);
 
   // save results to file
   std::ofstream output_stream;

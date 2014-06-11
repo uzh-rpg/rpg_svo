@@ -47,7 +47,7 @@ class SparseImgAlignTest {
 };
 
 SparseImgAlignTest::SparseImgAlignTest() :
-    cam_(new vk::PinholeCamera(752, 480, 217.083701215, 217.083701215, 376, 240))
+    cam_(new vk::PinholeCamera(752, 480, 315.5, 315.5, 376.0, 240.0))
 {}
 
 SparseImgAlignTest::~SparseImgAlignTest()
@@ -82,7 +82,7 @@ void SparseImgAlignTest::testSequence(
     assert(!img.empty());
 
     // load pose
-    Sophus::SE3 T_w_gt = Sophus::SE3(iter->q_.toRotationMatrix(), iter->t_);
+    Sophus::SE3 T_w_gt(iter->q_, iter->t_);
     Sophus::SE3 T_gt_w = T_w_gt.inverse(); // ground-truth
 
     if(i==0)
@@ -152,7 +152,7 @@ void SparseImgAlignTest::testSequence(
 int main(int argc, char** argv)
 {
   std::string experiment_name("flying_room_1_rig_1_fast_minlev0");
-  std::string dataset_dir(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1");
+  std::string dataset_dir(svo::test_utils::getDatasetDir() + "/sin2_tex2_h1_v8_d");
   svo::Config::triangMinCornerScore() = 20;
   svo::Config::kltMinLevel() = 0;
   SparseImgAlignTest test;

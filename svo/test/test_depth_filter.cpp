@@ -54,7 +54,6 @@ class DepthFilterTest {
 
   std::list<ConvergedSeed> results_;
   std::vector<double> errors_;
-  double error_sum_;
   size_t n_converged_seeds_;
   vk::PinholeCamera* cam_;
   svo::DepthFilter* depth_filter_;
@@ -65,7 +64,7 @@ class DepthFilterTest {
 
 DepthFilterTest::DepthFilterTest() :
     n_converged_seeds_(0),
-    cam_(new vk::PinholeCamera(752, 480, 217.083701215, 217.083701215, 376, 240)),
+    cam_(new vk::PinholeCamera(752, 480, 315.5, 315.5, 376.0, 240.0)),
     depth_filter_(NULL)
 {
   errors_.reserve(1000);
@@ -91,7 +90,6 @@ void DepthFilterTest::depthFilterCb(svo::Point* point, double depth_sigma2)
 
 void DepthFilterTest::testReconstruction(
     std::string dataset_dir,
-
     std::string experiment_name)
 {
   vk::FileReader<vk::blender_utils::file_format::ImageNameAndPose> sequence_file_reader(dataset_dir+"/trajectory.txt");
@@ -110,28 +108,28 @@ void DepthFilterTest::testReconstruction(
           cam_->width(), cam_->height(), svo::Config::gridSize(), svo::Config::nPyrLevels()));
   svo::DepthFilter::callback_t depth_filter_cb = boost::bind(&DepthFilterTest::depthFilterCb, this, _1, _2);
   depth_filter_ = new svo::DepthFilter(feature_detector, depth_filter_cb);
+  depth_filter_->options_.verbose = true;
 
-  for(int i=0; it != sequence.end() && i<50; ++it, ++i)
+  for(int i=0; it != sequence.end() && i<20; ++it, ++i)
   {
     std::string img_name(dataset_dir+"/img/" + (*it).image_name_ + "_0.png");
-    if(i==0)
-      printf("reading image: '%s'\n", img_name.c_str());
+    printf("reading image: '%s'\n", img_name.c_str());
     cv::Mat img(cv::imread(img_name, 0));
     assert(!img.empty());
 
-    Sophus::SE3 T_w_f = Sophus::SE3(it->q_.toRotationMatrix(), it->t_);
+    Sophus::SE3 T_w_f(it->q_, it->t_);
     if(i == 0)
     {
       // create reference frame and load ground truth depthmap
-      frame_ref_.reset(new svo::Frame(cam_, img, 0.0));
+      frame_ref_ = boost::make_shared<svo::Frame>(cam_, img, 0.0);
       frame_ref_->T_f_w_ = T_w_f.inverse();
-      depth_filter_->addKeyframe(frame_ref_, 3, 1);
+      depth_filter_->addKeyframe(frame_ref_, 2, 0.5);
       vk::blender_utils::loadBlenderDepthmap(dataset_dir+"/depth/" + (*it).image_name_ + "_0.depth", *cam_, depth_ref_);
       continue;
     }
 
-    n_converged_seeds_=0;
-    frame_cur_ = svo::FramePtr(new svo::Frame(cam_, img, 0.0));
+    n_converged_seeds_ = 0;
+    frame_cur_ = boost::make_shared<svo::Frame>(cam_, img, 0.0);
     frame_cur_->T_f_w_ = T_w_f.inverse();
     depth_filter_->addFrame(frame_cur_);
     n_converged_per_iteration.push_back(n_converged_seeds_);
@@ -140,19 +138,19 @@ void DepthFilterTest::testReconstruction(
 
   // compute mean, median and variance of error in converged area
   {
-    printf("# converged:  \t %zu (ref: 349)\n", errors_.size());
+    printf("# converged:  \t %zu (ref: 287)\n", errors_.size());
     double sum_error = 0;
     std::for_each(errors_.begin(), errors_.end(), [&](double& e){sum_error+=e;});
-    printf("mean error:   \t %f cm (ref: 1.510507)\n", sum_error*100/errors_.size());
+    printf("mean error:   \t %f cm (ref: 0.080357)\n", sum_error*100/errors_.size());
     std::vector<double>::iterator it = errors_.begin()+0.5*errors_.size();
     std::nth_element(errors_.begin(), it, errors_.end());
-    printf("50-percentile: \t %f cm (ref: 0.809308)\n", *it*100);
+    printf("50-percentile: \t %f cm (ref: 0.062042)\n", *it*100);
     it = errors_.begin()+0.8*errors_.size();
     std::nth_element(errors_.begin(), it, errors_.end());
-    printf("80-percentile: \t %f cm (ref: 1.580725)\n", *it*100);
+    printf("80-percentile: \t %f cm (ref: 0.124526)\n", *it*100);
     it = errors_.begin()+0.95*errors_.size();
     std::nth_element(errors_.begin(), it, errors_.end());
-    printf("95-percentile: \t %f cm (ref: 2.557531)\n", *it*100);
+    printf("95-percentile: \t %f cm (ref: 0.200417)\n", *it*100);
   }
 
   // trace error
@@ -199,8 +197,8 @@ void DepthFilterTest::testReconstruction(
 int main(int argc, char** argv)
 {
   DepthFilterTest test;
-  std::string dataset_dir(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1");
-  std::string experiment_name("synth_fast_2d");
+  std::string dataset_dir(svo::test_utils::getDatasetDir() + "/sin2_tex2_h1_v8_d");
+  std::string experiment_name("sin2_tex2_h1_v8_d");
   test.testReconstruction(dataset_dir, experiment_name);
   return 0;
 }

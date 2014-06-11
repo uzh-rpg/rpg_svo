@@ -37,11 +37,11 @@ class PoseOptimizerTest {
  public:
   PoseOptimizerTest()
   {
-    cam_ = new vk::PinholeCamera(752, 480, 217.083701215, 217.083701215, 376, 240);
+    cam_ = new vk::PinholeCamera(752, 480, 315.5, 315.5, 376.0, 240.0);
 
     // load image
-    std::string dataset_dir(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1");
-    std::string img_name(dataset_dir+"/img/frame_000001_0.png");
+    std::string dataset_dir(svo::test_utils::getDatasetDir() + "/sin2_tex2_h1_v8_d");
+    std::string img_name(dataset_dir+"/img/frame_000002_0.png");
     printf("Loading image '%s'\n", img_name.c_str());
     cv::Mat img(cv::imread(img_name, 0));
     assert(!img.empty());
@@ -50,12 +50,12 @@ class PoseOptimizerTest {
     frame_.reset(new svo::Frame(cam_, img, 1.0));
 
     // set pose
-    Eigen::Vector3d t_w_ref(2.139359951019287, -1.9544399976730347, 2.8595199584960938  );
-    Eigen::Quaterniond q_w_ref(0.0027939670253545046, 0.8382523059844971, 0.5443645715713501, -0.03150530532002449);
-    frame_->T_f_w_ = Sophus::SE3(q_w_ref.toRotationMatrix(), t_w_ref).inverse();
+    Eigen::Vector3d t_w_ref(0.1131, 0.1131, 2.0000);
+    Eigen::Quaterniond q_w_ref(0.0, 0.8227, 0.2149, 0.0);
+    frame_->T_f_w_ = Sophus::SE3(q_w_ref, t_w_ref).inverse();
 
     // load ground-truth depth
-    vk::blender_utils::loadBlenderDepthmap(dataset_dir + "/depth/frame_000001_0.depth", *cam_, depthmap_);
+    vk::blender_utils::loadBlenderDepthmap(dataset_dir + "/depth/frame_000002_0.depth", *cam_, depthmap_);
 
     // detect features
     feature_detection::FastDetector detector(

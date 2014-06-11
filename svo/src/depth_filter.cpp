@@ -126,7 +126,9 @@ void DepthFilter::initializeSeeds(FramePtr frame)
     seeds_.push_back(Seed(ftr, new_keyframe_mean_depth_, new_keyframe_min_depth_));
   });
 
-  SVO_DEBUG_STREAM("DepthFilter: Initialized "<<new_features.size()<<" new seeds");
+  if(options_.verbose)
+    SVO_INFO_STREAM("DepthFilter: Initialized "<<new_features.size()<<" new seeds");
+  seeds_updating_halt_ = false;
 }
 
 void DepthFilter::removeKeyframe(FramePtr frame)
@@ -160,7 +162,8 @@ void DepthFilter::reset()
     frame_queue_.pop();
   seeds_updating_halt_ = false;
 
-  SVO_DEBUG_STREAM("DepthFilter: RESET.");
+  if(options_.verbose)
+    SVO_INFO_STREAM("DepthFilter: RESET.");
 }
 
 void DepthFilter::updateSeedsLoop()

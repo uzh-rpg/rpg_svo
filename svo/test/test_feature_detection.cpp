@@ -34,7 +34,7 @@ using namespace std;
 
 void testCornerDetector()
 {
-  std::string img_name(svo::test_utils::getDatasetDir() + "/flying_room_1_rig_1/img/frame_000001_0.png");
+  std::string img_name(svo::test_utils::getDatasetDir() + "/sin2_tex2_h1_v8_d/img/frame_000002_0.png");
   printf("Loading image '%s'\n", img_name.c_str());
   cv::Mat img(cv::imread(img_name, 0));
   assert(img.type() == CV_8UC1 && !img.empty());
@@ -51,7 +51,7 @@ void testCornerDetector()
   {
     fast_detector.detect(frame.get(), frame->img_pyr_, svo::Config::triangMinCornerScore(), fts);
   }
-  printf("Fast corner detection took %f ms, %zu corners detected (ref i7-W520: 8.06878ms, 416)\n", t.stop()*10, fts.size());
+  printf("Fast corner detection took %f ms, %zu corners detected (ref i7-W520: 7.166360ms, 40000)\n", t.stop()*10, fts.size());
   printf("Note, in this case, feature detection also contains the cam2world projection of the feature.\n");
   cv::Mat img_rgb = cv::Mat(img.size(), CV_8UC3);
   cv::cvtColor(img, img_rgb, CV_GRAY2RGB);
