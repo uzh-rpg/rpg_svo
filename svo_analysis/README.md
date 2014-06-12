@@ -12,7 +12,7 @@ In your `.bashrc` script, create a new environment variable pointing to the data
 
 Source your new `.bashrc` script, go to the new dataset folder and download the test data:
 
-    source `~/.bashrc`
+    source ~/.bashrc
     cd ${SVO_DATASET_DIR}
     wget http://rpg.ifi.uzh.ch/datasets/sin2_tex2_h1_v8_d.tar.gz -O - | tar -xz
 
