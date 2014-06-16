@@ -28,6 +28,8 @@ namespace svo {
 class FrameHandlerMono : public FrameHandlerBase
 {
 public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
   FrameHandlerMono(vk::AbstractCamera* cam);
   virtual ~FrameHandlerMono();
 

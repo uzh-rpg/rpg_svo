@@ -35,7 +35,8 @@ typedef Matrix<double, 2, 3> Matrix23d;
 class Point : boost::noncopyable
 {
 public:
-
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  
   enum PointType {
     TYPE_DELETED,
     TYPE_CANDIDATE,
