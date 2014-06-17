@@ -14,7 +14,7 @@ SVO has been tested under ROS Groovy, Hydro and Indigo with Ubuntu 12.04, 13.04 
 
 #### Licence
 
-The source code is released under a GPLv3 licence. A professional edition license for closed-source projects is also available. For commercial use, please contact the authors.
+The source code is released under a GPLv3 licence. A closed-source professional edition is available for commercial purposes. In this case, please contact the authors for further info.
 
 
 #### Citing
