@@ -19,9 +19,9 @@
 
 #include <string.h>
 #include <cstdlib> // for getenv
-#include <ros/package.h>
 #ifdef SVO_USE_ROS
-  #include <vikit/params_helper.h>
+# include <ros/package.h>
+# include <vikit/params_helper.h>
 #endif
 
 namespace svo {

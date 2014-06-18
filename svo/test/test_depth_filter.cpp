@@ -18,6 +18,8 @@
 #include <vector>
 #include <string>
 #include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/shared_ptr.hpp>
 #include <vikit/pinhole_camera.h>
 #include <vikit/abstract_camera.h>
 #include <vikit/atan_camera.h>
