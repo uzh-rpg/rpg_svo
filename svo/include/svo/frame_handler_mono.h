@@ -17,6 +17,7 @@
 #ifndef SVO_FRAME_HANDLER_H_
 #define SVO_FRAME_HANDLER_H_
 
+#include <set>
 #include <vikit/abstract_camera.h>
 #include <svo/frame_handler_base.h>
 #include <svo/reprojector.h>
