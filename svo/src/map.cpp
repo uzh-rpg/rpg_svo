@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <set>
 #include <svo/map.h>
 #include <svo/point.h>
 #include <svo/frame.h>
@@ -342,7 +343,7 @@ void mapStatistics(Map* map)
   // compute average number of observations that each point has
   size_t n_frame_obs(0);
   size_t n_pts(0);
-  set<Point*> points;
+  std::set<Point*> points;
   for(auto it=map->keyframes_.begin(); it!=map->keyframes_.end(); ++it)
   {
     for(auto ftr=(*it)->fts_.begin(); ftr!=(*it)->fts_.end(); ++ftr)
