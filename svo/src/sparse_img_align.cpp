@@ -107,6 +107,10 @@ void SparseImgAlign::precomputeReferencePatches()
     const double depth(((*it)->point->pos_ - ref_pos).norm());
     const Vector3d xyz_ref((*it)->f*depth);
 
+    // evaluate projection jacobian
+    Matrix<double,2,6> frame_jac;
+    Frame::jacobian_xyz2uv(xyz_ref, frame_jac);
+
     // compute bilateral interpolation weights for reference image
     const float subpix_u_ref = u_ref-u_ref_i;
     const float subpix_v_ref = v_ref-v_ref_i;
@@ -130,10 +134,6 @@ void SparseImgAlign::precomputeReferencePatches()
                           -(w_ref_tl*ref_img_ptr[-1] + w_ref_tr*ref_img_ptr[0] + w_ref_bl*ref_img_ptr[stride-1] + w_ref_br*ref_img_ptr[stride]));
         float dy = 0.5f * ((w_ref_tl*ref_img_ptr[stride] + w_ref_tr*ref_img_ptr[1+stride] + w_ref_bl*ref_img_ptr[stride*2] + w_ref_br*ref_img_ptr[stride*2+1])
                           -(w_ref_tl*ref_img_ptr[-stride] + w_ref_tr*ref_img_ptr[1-stride] + w_ref_bl*ref_img_ptr[0] + w_ref_br*ref_img_ptr[1]));
-
-        // evaluate jacobian and cache
-        Matrix<double,2,6> frame_jac;
-        Frame::jacobian_xyz2uv(xyz_ref, frame_jac);
 
         // cache the jacobian
         jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter) =
