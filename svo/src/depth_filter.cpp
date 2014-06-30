@@ -309,7 +309,7 @@ void DepthFilter::getSeedsCopy(const FramePtr& frame, std::list<Seed>& seeds)
 void DepthFilter::updateSeed(const float x, const float tau2, Seed* seed)
 {
   float norm_scale = sqrt(seed->sigma2 + tau2);
-  if(isnanf(norm_scale))
+  if(std::isnan(norm_scale))
     return;
   boost::math::normal_distribution<float> nd(seed->mu, norm_scale);
   float s2 = 1./(1./seed->sigma2 + 1./tau2);
