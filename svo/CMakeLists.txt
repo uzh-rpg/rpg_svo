@@ -76,7 +76,7 @@ INCLUDE_DIRECTORIES(
 
 # Set link libraries
 LIST(APPEND LINK_LIBS 
-  ${OpenCV_LIBRARIES}
+  ${OpenCV_LIBS}
   ${Sophus_LIBRARIES}
   ${Boost_LIBRARIES}
   ${fast_LIBRARIES}
