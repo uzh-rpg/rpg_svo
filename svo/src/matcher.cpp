@@ -18,7 +18,6 @@
 #include <vikit/abstract_camera.h>
 #include <vikit/vision.h>
 #include <vikit/math_utils.h>
-#include <vikit/aligned_mem.h>
 #include <vikit/patch_score.h>
 #include <svo/matcher.h>
 #include <svo/frame.h>
@@ -106,19 +105,6 @@ void warpAffine(
 }
 
 } // namespace warp
-
-
-Matcher::Matcher()
-{
-  patch_ = vk::aligned_mem::aligned_alloc<uint8_t>(patch_size_*patch_size_, 16);
-  patch_with_border_ = vk::aligned_mem::aligned_alloc<uint8_t>((patch_size_+2)*(patch_size_+2), 16);
-}
-
-Matcher::~Matcher()
-{
-  free(patch_);
-  free(patch_with_border_);
-}
 
 bool depthFromTriangulation(
     const SE3& T_search_ref,
