@@ -144,7 +144,7 @@ void trackKlt(
                            px_ref, px_cur,
                            status, error,
                            cv::Size2i(klt_win_size, klt_win_size),
-                           4, termcrit);
+                           4, termcrit, cv::OPTFLOW_USE_INITIAL_FLOW);
 
   vector<cv::Point2f>::iterator px_ref_it = px_ref.begin();
   vector<cv::Point2f>::iterator px_cur_it = px_cur.begin();
