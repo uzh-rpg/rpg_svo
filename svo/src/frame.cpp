@@ -87,8 +87,8 @@ void Frame::checkKeyPoints(Feature* ftr)
   // center pixel
   if(key_pts_[0] == NULL)
     key_pts_[0] = ftr;
-  else if(max(abs(ftr->px[0]-cu), abs(ftr->px[1]-cv))
-        < max(abs(key_pts_[0]->px[0]-cu), abs(key_pts_[0]->px[1]-cv)))
+  else if(std::max(std::fabs(ftr->px[0]-cu), std::fabs(ftr->px[1]-cv))
+        < std::max(std::fabs(key_pts_[0]->px[0]-cu), std::fabs(key_pts_[0]->px[1]-cv)))
     key_pts_[0] = ftr;
 
   if(ftr->px[0] >= cu && ftr->px[1] >= cv)
@@ -96,7 +96,7 @@ void Frame::checkKeyPoints(Feature* ftr)
     if(key_pts_[1] == NULL)
       key_pts_[1] = ftr;
     else if((ftr->px[0]-cu) * (ftr->px[1]-cv)
-          > (key_pts_[1]->px[0]-cu) * (key_pts_[1]->px[0]-cv))
+          > (key_pts_[1]->px[0]-cu) * (key_pts_[1]->px[1]-cv))
       key_pts_[1] = ftr;
   }
   if(ftr->px[0] >= cu && ftr->px[1] < cv)
@@ -104,7 +104,7 @@ void Frame::checkKeyPoints(Feature* ftr)
     if(key_pts_[2] == NULL)
       key_pts_[2] = ftr;
     else if((ftr->px[0]-cu) * (ftr->px[1]-cv)
-          < (key_pts_[2]->px[0]-cu) * (key_pts_[2]->px[0]-cv))
+          > (key_pts_[2]->px[0]-cu) * (key_pts_[2]->px[1]-cv))
       key_pts_[2] = ftr;
   }
   if(ftr->px[0] < cv && ftr->px[1] < cv)
@@ -112,7 +112,7 @@ void Frame::checkKeyPoints(Feature* ftr)
     if(key_pts_[3] == NULL)
       key_pts_[3] = ftr;
     else if((ftr->px[0]-cu) * (ftr->px[1]-cv)
-          > (key_pts_[3]->px[0]-cu) * (key_pts_[3]->px[0]-cv))
+          > (key_pts_[3]->px[0]-cu) * (key_pts_[3]->px[1]-cv))
       key_pts_[3] = ftr;
   }
   if(ftr->px[0] < cv && ftr->px[1] >= cv)
@@ -120,7 +120,7 @@ void Frame::checkKeyPoints(Feature* ftr)
     if(key_pts_[4] == NULL)
       key_pts_[4] = ftr;
     else if((ftr->px[0]-cu) * (ftr->px[1]-cv)
-          < (key_pts_[4]->px[0]-cu) * (key_pts_[4]->px[0]-cv))
+          > (key_pts_[4]->px[0]-cu) * (key_pts_[4]->px[1]-cv))
       key_pts_[4] = ftr;
   }
 }
