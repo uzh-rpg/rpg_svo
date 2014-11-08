@@ -103,23 +103,23 @@ void Map::addKeyframe(FramePtr new_keyframe)
   keyframes_.push_back(new_keyframe);
 }
 
-void Map::getCloseKeyframes(const FramePtr& frame, list< pair<FramePtr,double> >& close_kfs) const
+void Map::getCloseKeyframes(
+    const FramePtr& frame,
+    std::list< std::pair<FramePtr,double> >& close_kfs) const
 {
-  const Vector3d frame_pos(frame->pos());
-  for(auto it_kf=keyframes_.begin(), ite_kf=keyframes_.end(); it_kf!=ite_kf; ++it_kf)
+  for(auto kf : keyframes_)
   {
-    // check first if Point is visible in the Keyframe, use therefore KeyPoints
-    for(auto it=(*it_kf)->key_pts_.begin(), ite=(*it_kf)->key_pts_.end(); it!=ite; ++it)
+    // check if kf has overlaping field of view with frame, use therefore KeyPoints
+    for(auto keypoint : kf->key_pts_)
     {
-      if(*it == NULL)
+      if(keypoint == nullptr)
         continue;
 
-      assert((*it)->point != NULL);
-
-      if((*it_kf)->isVisible((*it)->point->pos_))
+      if(frame->isVisible(keypoint->point->pos_))
       {
-        close_kfs.push_back(pair<FramePtr,double>(*it_kf,
-                            (frame->T_f_w_.translation()-(*it_kf)->T_f_w_.translation()).norm()));
+        close_kfs.push_back(
+            std::make_pair(
+                kf, (frame->T_f_w_.translation()-kf->T_f_w_.translation()).norm()));
         break; // this keyframe has an overlapping field of view -> add to close_kfs
       }
     }
