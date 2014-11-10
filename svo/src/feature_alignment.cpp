@@ -197,7 +197,7 @@ bool align2D(
   // termination condition
   const float min_update_squared = 0.03*0.03;
   const int cur_step = cur_img.step.p[0];
-  float chi2 = 0;
+//  float chi2 = 0;
   Vector3f update; update.setZero();
   for(int iter = 0; iter<n_iter; ++iter)
   {
@@ -221,7 +221,7 @@ bool align2D(
     uint8_t* it_ref = ref_patch;
     float* it_ref_dx = ref_patch_dx;
     float* it_ref_dy = ref_patch_dy;
-    float new_chi2 = 0.0;
+//    float new_chi2 = 0.0;
     Vector3f Jres; Jres.setZero();
     for(int y=0; y<patch_size_; ++y)
     {
@@ -233,12 +233,12 @@ bool align2D(
         Jres[0] -= res*(*it_ref_dx);
         Jres[1] -= res*(*it_ref_dy);
         Jres[2] -= res;
-        new_chi2 += res*res;
+//        new_chi2 += res*res;
       }
     }
 
 
-
+/*
     if(iter > 0 && new_chi2 > chi2)
     {
 #if SUBPIX_VERBOSE
@@ -248,8 +248,8 @@ bool align2D(
       v -= update[1];
       break;
     }
-
     chi2 = new_chi2;
+*/
     update = Hinv * Jres;
     u += update[0];
     v += update[1];
@@ -259,7 +259,7 @@ bool align2D(
     cout << "Iter " << iter << ":"
          << "\t u=" << u << ", v=" << v
          << "\t update = " << update[0] << ", " << update[1]
-         << "\t new chi2 = " << new_chi2 << endl;
+//         << "\t new chi2 = " << new_chi2 << endl;
 #endif
 
     if(update[0]*update[0]+update[1]*update[1] < min_update_squared)
