@@ -240,6 +240,11 @@ FrameHandlerMono::UpdateResult FrameHandlerMono::relocalizeFrame(
     FramePtr ref_keyframe)
 {
   SVO_WARN_STREAM_THROTTLE(1.0, "Relocalizing frame");
+  if(ref_keyframe == nullptr)
+  {
+    SVO_INFO_STREAM("Relocalization successful.");
+    return RESULT_FAILURE;
+  }
   SparseImgAlign img_align(Config::kltMaxLevel(), Config::kltMinLevel(),
                            30, SparseImgAlign::GaussNewton, false, false);
   size_t img_align_n_tracked = img_align.run(ref_keyframe, new_frame_);
