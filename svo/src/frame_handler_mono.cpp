@@ -242,7 +242,7 @@ FrameHandlerMono::UpdateResult FrameHandlerMono::relocalizeFrame(
   SVO_WARN_STREAM_THROTTLE(1.0, "Relocalizing frame");
   if(ref_keyframe == nullptr)
   {
-    SVO_INFO_STREAM("Relocalization successful.");
+    SVO_INFO_STREAM("No reference keyframe.");
     return RESULT_FAILURE;
   }
   SparseImgAlign img_align(Config::kltMaxLevel(), Config::kltMinLevel(),
