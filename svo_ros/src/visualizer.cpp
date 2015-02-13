@@ -58,7 +58,7 @@ Visualizer() :
 
   // create video publisher
   image_transport::ImageTransport it(pnh_);
-  pub_images_ = it.advertise("image", 10);
+  pub_images_ = it.advertise("image_output", 10);
 }
 
 void Visualizer::publishMinimal(

@@ -1,0 +1,99 @@
+# BUILD PRODUCTS
+*.d
+*.o
+*.disasm
+*.map
+*.elf
+*.bin
+*.hex
+*.slo
+*.lo
+*.obj
+
+# Compiled python code
+*.pyc
+
+# CMAKE TEMPORARY FILES
+CMakeCache.txt
+CMakeFiles/
+CMakeFiles/*
+
+# BUILD FOLDERS
+bin/
+bin/*
+build/
+build/*
+
+# ROS GENERATED PRODUCTS
+msg_gen/
+msg_gen/*
+srv_gen/
+srv_gen/*
+
+# ROS GENERATED PYTHON
+_*.py
+_*.pyc
+
+# ROS BAG FILES
+*.bag
+
+# ROS LOG FILES
+*.log
+
+# XCODE BUILD PRODUCTS
+*.build/
+*.build/*
+
+# XCODE USER SETTINGS
+*.xcuserdatad/
+*.xcuserdatad/*
+*.pbxuser
+*.pbxuser/*
+
+# QTCREATOR PROJECT
+*.includes
+*.creator
+*.creator.user
+*.creator.user.*
+*.config
+*.files
+
+# GEANY PROJECTS
+*.geany
+
+# JETBRAINS
+*.idea
+
+# ZEND/ECLIPSE
+*.buildpath
+*.settings
+*.project
+*.pydevproject
+
+# MACOSX SETTINGS
+*.DS_Store
+
+# GENERATED DOCUMENTATION
+html_docs/
+html_docs/*
+
+# ANDROID SDK GENERATED JAVA
+gen/
+gen/*
+
+# COMPILED DYNAMIC LIBRARIES
+*.so
+*.dylib
+*.dll
+
+# COMPILED STATIC LIBRARIES
+*.lai
+*.la
+*.a
+*.lib
+
+# EXECUTABLES
+*.exe
+*.out
+*.app
+*.pcd

@@ -13,7 +13,7 @@ ENDIF()
 
 
 # Add catkin and required ROS packages
-FIND_PACKAGE(catkin REQUIRED COMPONENTS 
+FIND_PACKAGE(catkin REQUIRED COMPONENTS
   roscpp
   cmake_modules
   nav_msgs
@@ -21,6 +21,7 @@ FIND_PACKAGE(catkin REQUIRED COMPONENTS
   visualization_msgs
   sensor_msgs
   image_transport
+  image_geometry
   cv_bridge
   tf
   svo
@@ -38,7 +39,7 @@ FIND_PACKAGE(Boost REQUIRED COMPONENTS thread)
 # Describe catkin Project
 catkin_package(
   DEPENDS Eigen OpenCV Sophus Boost
-  CATKIN_DEPENDS roscpp nav_msgs std_msgs visualization_msgs sensor_msgs image_transport cv_bridge tf svo svo_msgs vikit_common vikit_ros
+  CATKIN_DEPENDS roscpp nav_msgs std_msgs visualization_msgs sensor_msgs image_transport image_geometry cv_bridge tf svo svo_msgs vikit_common vikit_ros
   INCLUDE_DIRS include
   LIBRARIES svo_visualizer
 )

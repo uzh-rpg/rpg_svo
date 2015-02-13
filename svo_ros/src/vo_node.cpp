@@ -26,14 +26,17 @@
 #include <std_msgs/String.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
+#include <message_filters/sync_policies/exact_time.h>
 #include <image_transport/image_transport.h>
+#include <image_transport/subscriber_filter.h>
 #include <boost/thread.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <Eigen/Core>
 #include <vikit/abstract_camera.h>
+#include <vikit/pinhole_camera.h>
 #include <vikit/camera_loader.h>
 #include <vikit/user_input_thread.h>
+#include <image_geometry/pinhole_camera_model.h>
 
 namespace svo {
 
@@ -52,7 +55,7 @@ public:
   bool quit_;
   VoNode();
   ~VoNode();
-  void imgCb(const sensor_msgs::ImageConstPtr& msg);
+  void imgCb(const sensor_msgs::ImageConstPtr& msg, const sensor_msgs::CameraInfoConstPtr &info);
   void processUserActions();
   void remoteKeyCb(const std_msgs::StringConstPtr& key_input);
 };
@@ -66,12 +69,12 @@ VoNode::VoNode() :
   quit_(false)
 {
   // Start user input thread in parallel thread that listens to console keys
-  if(vk::getParam<bool>("svo/accept_console_user_input", true))
+  if(vk::getParam<bool>("svo/accept_console_user_input", false))
     user_input_thread_ = boost::make_shared<vk::UserInputThread>();
 
   // Create Camera
-  if(!vk::camera_loader::loadFromRosNs("svo", cam_))
-    throw std::runtime_error("Camera model not correctly specified.");
+  //if(!vk::camera_loader::loadFromRosNs("svo", cam_))
+  //  throw std::runtime_error("Camera model not correctly specified.");
 
   // Get initial position and orientation
   visualizer_.T_world_from_vision_ = Sophus::SE3(
@@ -83,8 +86,8 @@ VoNode::VoNode() :
                       vk::getParam<double>("svo/init_tz", 0.0)));
 
   // Init VO and start
-  vo_ = new svo::FrameHandlerMono(cam_);
-  vo_->start();
+  //vo_ = new svo::FrameHandlerMono(cam_);
+  //vo_->start();
 }
 
 VoNode::~VoNode()
@@ -95,14 +98,41 @@ VoNode::~VoNode()
     user_input_thread_->stop();
 }
 
-void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg)
+void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg,
+                   const sensor_msgs::CameraInfoConstPtr& info)
 {
+  ROS_INFO("image callback!!");
   cv::Mat img;
   try {
     img = cv_bridge::toCvShare(msg, "mono8")->image;
   } catch (cv_bridge::Exception& e) {
     ROS_ERROR("cv_bridge exception: %s", e.what());
   }
+  
+  //  configure camera calibration
+  if (!cam_) {
+    //  assume these parameters will not change throughout the odometry
+    image_geometry::PinholeCameraModel mdl; 
+    if (!mdl.fromCameraInfo(info)) {
+      ROS_ERROR("Failed to initialize camera info");
+      return;
+    }
+    const cv::Matx33d K = mdl.intrinsicMatrix();
+    const cv::Mat_<double> dist = mdl.distortionCoeffs();
+    
+    cam_ = new vk::PinholeCamera(img.cols, img.rows, 
+                                 K(0,0), K(1,1),  //  fx,fy
+                                 K(0,2), K(1,2),  //  cx,cy
+                                 dist(0), dist(1), dist(2), dist(3), dist(4));
+    ROS_INFO("Initialized camera model");
+    
+    //  now we can initialize the VO
+    vo_ = new svo::FrameHandlerMono(cam_);
+    vo_->start();
+  }
+  
+  ROS_INFO("Processing frame!");
+  
   processUserActions();
   vo_->addImage(img, msg->header.stamp.toSec());
   visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, msg->header.stamp.toSec());
@@ -154,17 +184,33 @@ void VoNode::remoteKeyCb(const std_msgs::StringConstPtr& key_input)
 
 } // namespace svo
 
+typedef message_filters::sync_policies::ExactTime<
+  sensor_msgs::Image,
+  sensor_msgs::CameraInfo> TimeSyncPolicy;
+
+typedef message_filters::Synchronizer<TimeSyncPolicy> Synchronizer;
+
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "svo");
   ros::NodeHandle nh;
+  ros::NodeHandle pnh("~");
   std::cout << "create vo_node" << std::endl;
   svo::VoNode vo_node;
 
   // subscribe to cam msgs
-  std::string cam_topic(vk::getParam<std::string>("svo/cam_topic", "camera/image_raw"));
-  image_transport::ImageTransport it(nh);
-  image_transport::Subscriber it_sub = it.subscribe(cam_topic, 5, &svo::VoNode::imgCb, &vo_node);
+  image_transport::ImageTransport it(pnh);
+  image_transport::SubscriberFilter sub_image;
+  sub_image.subscribe(it, "image", 5);
+  message_filters::Subscriber<sensor_msgs::CameraInfo> sub_info;
+  sub_info.subscribe(pnh, "camera_info", 5);
+  std::shared_ptr<Synchronizer> sync;
+  sync.reset( new Synchronizer(100, sub_image, sub_info) );
+  sync->registerCallback( boost::bind(&svo::VoNode::imgCb, &vo_node, _1, _2) );
+  
+//  image_transport::Subscriber it_sub = it.subscribe("image", 5, 
+//                                                    &svo::VoNode::imgCb, 
+//                                                    &vo_node);
 
   // subscribe to remote input
   vo_node.sub_remote_key_ = nh.subscribe("svo/remote_key", 5, &svo::VoNode::remoteKeyCb, &vo_node);
