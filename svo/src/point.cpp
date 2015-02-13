@@ -89,7 +89,7 @@ void Point::initNormal()
   assert(!obs_.empty());
   const Feature* ftr = obs_.back();
   assert(ftr->frame != NULL);
-  normal_ = ftr->frame->T_f_w_.rotation_matrix().transpose()*(-ftr->f);
+  normal_ = ftr->frame->T_f_w_.rotationMatrix().transpose()*(-ftr->f);
   normal_information_ = DiagonalMatrix<double,3,3>(pow(20/(pos_-ftr->frame->pos()).norm(),2), 1.0, 1.0);
   normal_set_ = true;
 }
@@ -134,7 +134,7 @@ void Point::optimize(const size_t n_iter)
     {
       Matrix23d J;
       const Vector3d p_in_f((*it)->frame->T_f_w_ * pos_);
-      Point::jacobian_xyz2uv(p_in_f, (*it)->frame->T_f_w_.rotation_matrix(), J);
+      Point::jacobian_xyz2uv(p_in_f, (*it)->frame->T_f_w_.rotationMatrix(), J);
       const Vector2d e(vk::project2d((*it)->f) - vk::project2d(p_in_f));
       new_chi2 += e.squaredNorm();
       A.noalias() += J.transpose() * J;
