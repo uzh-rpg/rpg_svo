@@ -55,10 +55,11 @@ FrameHandlerMono::~FrameHandlerMono()
   delete depth_filter_;
 }
 
-void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
+FrameHandlerBase::AddImageResult 
+FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
 {
   if(!startFrameProcessingCommon(timestamp))
-    return;
+    return RESULT_NORMAL;
 
   // some cleanup from last iteration, can't do before because of visualization
   core_kfs_.clear();
@@ -71,15 +72,28 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
 
   // process frame
   UpdateResult res = RESULT_FAILURE;
-  if(stage_ == STAGE_DEFAULT_FRAME)
+  AddImageResult ai_res = FrameHandlerBase::RESULT_NORMAL;
+  if(stage_ == STAGE_DEFAULT_FRAME) {
     res = processFrame();
-  else if(stage_ == STAGE_SECOND_FRAME)
+  }
+  else if(stage_ == STAGE_SECOND_FRAME) {
     res = processSecondFrame();
-  else if(stage_ == STAGE_FIRST_FRAME)
+    if (res == RESULT_IS_KEYFRAME) {
+      //  inserted the second keyframe
+      ai_res = FrameHandlerBase::RESULT_ADDED_SECOND;
+    }
+  }
+  else if(stage_ == STAGE_FIRST_FRAME) {
     res = processFirstFrame();
-  else if(stage_ == STAGE_RELOCALIZING)
+    if (res == RESULT_IS_KEYFRAME) {
+      //  insert the first keyframe
+      ai_res = FrameHandlerBase::RESULT_ADDED_FIRST;
+    }
+  }
+  else if(stage_ == STAGE_RELOCALIZING) {
     res = relocalizeFrame(SE3(Matrix3d::Identity(), Vector3d::Zero()),
                           map_.getClosestKeyframe(last_frame_));
+  }
 
   // set last frame
   last_frame_ = new_frame_;
@@ -87,6 +101,7 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
 
   // finish processing
   finishFrameProcessingCommon(last_frame_->id_, res, last_frame_->nObs());
+  return ai_res;
 }
 
 FrameHandlerMono::UpdateResult FrameHandlerMono::processFirstFrame()

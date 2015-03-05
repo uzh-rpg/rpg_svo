@@ -1,37 +1,36 @@
 <launch>
 
-    <arg name="bag" default="vicon_fix/gareth1_2014-12-15-18-59-45"/>
-    <arg name="bag_rate" value="1"/>
-    <arg name="bag_start" value="0"/>
+  <arg name="bag" default="vicon_fix/gareth1_2014-12-15-18-59-45"/>
+  <arg name="bag_rate" value="1"/>
+  <arg name="bag_start" value="15"/>
 
-    <!-- include galt stuff -->
-    <include file="$(find galt_setup)/launch/process/process_base.launch">
-      <arg name="bag" value="$(arg bag)"/>
-      <arg name="bag_rate" value="$(arg bag_rate)"/>
-      <arg name="bag_start" value="$(arg bag_start)"/>
-      <arg name="profile" value="steadicam/v4"/>
-      <arg name="vicon" value="true"/>
-      <arg name="include_laser" value="false"/>
-    </include>
+  <!-- plays the bag file -->
+  <include file="$(find galt_setup)/launch/process/play_bag.launch">
+    <arg name="bag" value="$(arg bag)"/>
+    <arg name="bag_rate" value="$(arg bag_rate)"/>
+    <arg name="bag_start" value="$(arg bag_start)"/>
+  </include>
 
-    <!-- camera to use for odometry -->
-    <arg name="camera_name" value="/stereo/left"/>
+  <!-- publishes TF -->
+  <include file="$(find galt_setup)/launch/process/process_base.launch">
+    <arg name="profile" value="steadicam/v4"/>
+    <arg name="vicon" value="true"/>
+  </include>
 
-    <node pkg="svo_ros" type="vo" name="svo"
-      clear_params="true" output="screen">
+  <!-- camera to use for odometry -->
+  <arg name="camera_name" value="/stereo/left"/>
 
-      <param name="publish_dense_input" type="bool" value="true"/>
-      <param name="publish_markers" type="bool" value="true"/>
+  <node pkg="svo_ros" type="vo" name="svo"
+    clear_params="true" output="screen">
 
-      <remap from="~image" to="$(arg camera_name)/image_raw"/>
-      <remap from="~camera_info" to="$(arg camera_name)/camera_info"/>
+    <param name="publish_dense_input" type="bool" value="true"/>
+    <param name="publish_markers" type="bool" value="true"/>
 
-        <!-- Camera calibration file -->
-        <!--
-        <rosparam file="$(find svo_ros)/param/camera_atan.yaml" />
-        -->
+    <remap from="~image" to="$(arg camera_name)/image_raw"/>
+    <remap from="~camera_info" to="$(arg camera_name)/camera_info"/>
+    <remap from="~vicon_odom" to="/vicon/antares/odom"/>
 
-        <!-- Default parameter settings: choose between vo_fast and vo_accurate -->
-        <rosparam file="$(find svo_ros)/param/vo_fast.yaml" />
-    </node>
+    <!-- Default parameter settings: choose between vo_fast and vo_accurate -->
+    <rosparam file="$(find svo_ros)/param/vo_fast.yaml" />
+  </node>
 </launch>

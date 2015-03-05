@@ -27,6 +27,7 @@
   <build_depend>svo_msgs</build_depend>
   <build_depend>vikit_common</build_depend>
   <build_depend>vikit_ros</build_depend>
+  <build_depend>vo_test</build_depend>
   
   <!-- Dependencies needed after this package is compiled. -->
   <run_depend>roscpp</run_depend>
@@ -42,4 +43,5 @@
   <run_depend>svo_msgs</run_depend>
   <run_depend>vikit_common</run_depend>
   <run_depend>vikit_ros</run_depend>
+  <run_depend>vo_test</run_depend>
 </package>
