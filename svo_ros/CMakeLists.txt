@@ -28,7 +28,6 @@ FIND_PACKAGE(catkin REQUIRED COMPONENTS
   svo_msgs
   vikit_common
   vikit_ros
-  vo_test
 )
 
 # Add plain cmake packages 

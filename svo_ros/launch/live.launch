@@ -1,8 +1,10 @@
 <launch>
 
-  <arg name="bag" default="vicon_fix/gareth1_2014-12-15-18-59-45"/>
+  <!--<arg name="bag" default="vicon_fix/gareth1_2014-12-15-18-59-45"/>-->
+  <arg name="bag" default="statefarm/small"/>
+  <!--<arg name="bag" default="vicon_fix/gareth6_2014-12-15-19-04-46"/>-->
   <arg name="bag_rate" value="1"/>
-  <arg name="bag_start" value="15"/>
+  <arg name="bag_start" value="65"/>
 
   <!-- plays the bag file -->
   <include file="$(find galt_setup)/launch/process/play_bag.launch">
@@ -28,9 +30,8 @@
 
     <remap from="~image" to="$(arg camera_name)/image_raw"/>
     <remap from="~camera_info" to="$(arg camera_name)/camera_info"/>
-    <remap from="~vicon_odom" to="/vicon/antares/odom"/>
 
     <!-- Default parameter settings: choose between vo_fast and vo_accurate -->
-    <rosparam file="$(find svo_ros)/param/vo_fast.yaml" />
+    <rosparam file="$(find svo_ros)/param/vo_accurate.yaml" />
   </node>
 </launch>

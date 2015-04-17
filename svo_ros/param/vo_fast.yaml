@@ -1,3 +1,5 @@
 grid_size: 10
 max_n_kfs: 10
 loba_num_iter: 0
+map_scale: 2
+kfselect_mindist: 0.05

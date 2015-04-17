@@ -39,9 +39,7 @@
 #include <vikit/camera_loader.h>
 #include <vikit/user_input_thread.h>
 #include <image_geometry/pinhole_camera_model.h>
-
-#define ROS_CONVERSIONS
-#include <vo_test/error_calculator.hpp>
+#include <tf2_ros/transform_listener.h>
 
 namespace svo {
 
@@ -58,16 +56,10 @@ public:
   std::string remote_input_;
   vk::AbstractCamera* cam_;
   bool quit_;
-  svo::FramePtr first_frame_;
-  svo::FramePtr second_frame_;
-  vo::PoseT<Eigen::Matrix3d> first_odom_, second_odom_;
-  double rel_scale_;
-  vo::test::ErrorCalculator error_;
   VoNode();
   ~VoNode();
   void imgCb(const sensor_msgs::ImageConstPtr& msg, 
-             const sensor_msgs::CameraInfoConstPtr &info,
-             const nav_msgs::OdometryConstPtr& odom);
+             const sensor_msgs::CameraInfoConstPtr &info);
   void processUserActions();
   void remoteKeyCb(const std_msgs::StringConstPtr& key_input);
   
@@ -79,15 +71,11 @@ VoNode::VoNode() :
   publish_dense_input_(vk::getParam<bool>("svo/publish_dense_input", false)),
   remote_input_(""),
   cam_(NULL),
-  quit_(false), rel_scale_(-1)
+  quit_(false)
 {
   // Start user input thread in parallel thread that listens to console keys
   if(vk::getParam<bool>("svo/accept_console_user_input", false))
     user_input_thread_ = boost::make_shared<vk::UserInputThread>();
-
-  // Create Camera
-  //if(!vk::camera_loader::loadFromRosNs("svo", cam_))
-  //  throw std::runtime_error("Camera model not correctly specified.");
 
   // Get initial position and orientation
   visualizer_.T_world_from_vision_ = Sophus::SE3(
@@ -97,10 +85,6 @@ VoNode::VoNode() :
       Eigen::Vector3d(vk::getParam<double>("svo/init_tx", 0.0),
                       vk::getParam<double>("svo/init_ty", 0.0),
                       vk::getParam<double>("svo/init_tz", 0.0)));
-
-  // Init VO and start
-  //vo_ = new svo::FrameHandlerMono(cam_);
-  //vo_->start();
 }
 
 VoNode::~VoNode()
@@ -112,8 +96,7 @@ VoNode::~VoNode()
 }
 
 void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg,
-                   const sensor_msgs::CameraInfoConstPtr& info,
-                   const nav_msgs::OdometryConstPtr& odom)
+                   const sensor_msgs::CameraInfoConstPtr& info)
 {
   cv::Mat img;
   try {
@@ -147,65 +130,6 @@ void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg,
   processUserActions();
   const FrameHandlerBase::AddImageResult res = 
       vo_->addImage(img, msg->header.stamp.toSec());
-  if (res == FrameHandlerBase::RESULT_ADDED_FIRST) {
-    first_frame_ = vo_->lastFrame();
-    first_odom_ = vo::PoseT<Eigen::Matrix3d>(odom->pose.pose);
-  }
-  else if (res == FrameHandlerBase::RESULT_ADDED_SECOND) {
-    //  done initializing
-    second_frame_ = vo_->lastFrame();
-    
-    //  add second vicon odom frame
-    second_odom_ = vo::PoseT<Eigen::Matrix3d>(odom->pose.pose);
-    const double vicon_scale = (second_odom_.t() - first_odom_.t()).norm();
-    
-    //  calculate the relative scale factor
-    const Vector3d p0 = first_frame_->pos();
-    const Vector3d p1 = second_frame_->pos();
-    const double vision_scale = (p1 - p0).norm();
-    
-    rel_scale_ = vicon_scale / vision_scale;
-    ROS_INFO("Added second frame. Relative scale: %f", rel_scale_);
-    
-    ROS_INFO_STREAM("SVO position 0: " << p0);
-    ROS_INFO_STREAM("SVO position 1: " << p1);
-    
-    ROS_INFO_STREAM("Vicon position 0: " << first_odom_.t());
-    ROS_INFO_STREAM("Vicon position 1: " << second_odom_.t());
-  } else {
-    if (rel_scale_ > 0) {
-      //  add to error calculator
-      Sophus::SE3 cur = vo_->lastFrame()->T_f_w_.inverse();
-      cur = second_frame_->T_f_w_ * cur;
-      cur.translation() *= rel_scale_;
-      
-      ROS_INFO_STREAM("Translation: " << cur.translation());
-      
-      vo::PoseT<Eigen::Matrix3d> odom_pose(odom->pose.pose);
-      odom_pose = second_odom_.inverse().compose(odom_pose);
-      
-      error_.addFrame(vo::Pose(cur.matrix().template cast<float>()), 
-                      vo::Pose(odom_pose));
-      
-      //  output some error metrics
-      auto rms_x = error_.positionStats(0).rms();
-      auto rms_y = error_.positionStats(1).rms();
-      auto rms_z = error_.positionStats(2).rms();
-      auto rms_rx = error_.rotationStats(0).rms() * 180.0/M_PI;
-      auto rms_ry = error_.rotationStats(1).rms() * 180.0/M_PI;
-      auto rms_rz = error_.rotationStats(2).rms() * 180.0/M_PI;
-      auto len = error_.pathLength();
-      
-      ROS_ERROR_THROTTLE_NAMED(0.5,"path_len", "Path length: %f", len);
-      ROS_ERROR_THROTTLE_NAMED(0.5,"position_error_rms",
-                                 "RMS position error x/y/z: %f/%f/%f (perc: %f/%f/%f)",
-                                  rms_x, rms_y, rms_z, 
-                                  rms_x /  len * 100, rms_y / len * 100, rms_z / len * 100);
-      ROS_ERROR_THROTTLE_NAMED(0.5,"rotation_error_rms",
-                                 "RMS rotation error (deg) x/y/z: %f/%f/%f",
-                                  rms_rx, rms_ry, rms_rz);
-    }
-  }
   
   visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, msg->header.stamp.toSec());
 
@@ -258,8 +182,7 @@ void VoNode::remoteKeyCb(const std_msgs::StringConstPtr& key_input)
 
 typedef message_filters::sync_policies::ApproximateTime<
   sensor_msgs::Image,
-  sensor_msgs::CameraInfo,
-  nav_msgs::Odometry> TimeSyncPolicy;
+  sensor_msgs::CameraInfo> TimeSyncPolicy;
 
 typedef message_filters::Synchronizer<TimeSyncPolicy> Synchronizer;
 
@@ -277,13 +200,11 @@ int main(int argc, char **argv)
   sub_image.subscribe(it, "image", 5);
   message_filters::Subscriber<sensor_msgs::CameraInfo> sub_info;
   sub_info.subscribe(pnh, "camera_info", 5);
-  message_filters::Subscriber<nav_msgs::Odometry> sub_vicon;
-  sub_vicon.subscribe(pnh, "vicon_odom", 5);
   
   std::shared_ptr<Synchronizer> sync;
-  sync.reset( new Synchronizer(300, sub_image, sub_info, sub_vicon) );
+  sync.reset( new Synchronizer(300, sub_image, sub_info) );
   sync->registerCallback( boost::bind(&svo::VoNode::imgCb, &vo_node, 
-                                      _1, _2, _3) );
+                                      _1, _2) );
   
   // subscribe to remote input
   vo_node.sub_remote_key_ = nh.subscribe("svo/remote_key", 5, &svo::VoNode::remoteKeyCb, &vo_node);
