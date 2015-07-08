@@ -225,7 +225,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
       ++it; // behind the camera
       continue;
     }
-    if(!it->ftr->frame->cam_->isInFrame(it->ftr->frame->f2c(xyz_f).cast<int>())) {
+    if(!frame->cam_->isInFrame(frame->f2c(xyz_f).cast<int>())) {
       ++it; // point does not project in image
       continue;
     }
