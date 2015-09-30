@@ -178,7 +178,8 @@ void Visualizer::publishMinimal(
     {
       // publish cam in world frame
       SE3 T_world_from_cam(T_world_from_vision_*frame->T_f_w_.inverse());
-      q = Quaterniond(T_world_from_cam.rotation_matrix()*T_world_from_vision_.rotation_matrix().transpose());
+      //q = Quaterniond(T_world_from_cam.rotation_matrix()*T_world_from_vision_.rotation_matrix().transpose());
+      q = Quaterniond(T_world_from_cam.rotation_matrix() * camera_facing_.transpose());//#####################here remember to derotate the camera facing
       p = T_world_from_cam.translation();
       Cov = T_world_from_cam.Adj()*frame->Cov_*T_world_from_cam.inverse().Adj();
     }
@@ -204,11 +205,12 @@ void Visualizer::visualizeMarkers(
 {
   if(frame == NULL)
     return;
-
+  // Publish /tf
   vk::output_helper::publishTfTransform(
       frame->T_f_w_*T_world_from_vision_.inverse(),
       ros::Time(frame->timestamp_), "cam_pos", "world", br_);
-
+  
+  // Publish markers
   if(pub_frames_.getNumSubscribers() > 0 || pub_points_.getNumSubscribers() > 0)
   {
     vk::output_helper::publishHexacopterMarker(
@@ -242,6 +244,8 @@ void Visualizer::removeDeletedPts(const Map& map)
   }
 }
 
+
+// feature map!!!!!!!!!!!!!!!
 void Visualizer::displayKeyframeWithMps(const FramePtr& frame, int ts)
 {
   // publish keyframe
@@ -266,6 +270,7 @@ void Visualizer::displayKeyframeWithMps(const FramePtr& frame, int ts)
     (*it)->point->last_published_ts_ = ts;
   }
 }
+
 
 void Visualizer::exportToDense(const FramePtr& frame)
 {

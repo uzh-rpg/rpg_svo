@@ -35,6 +35,9 @@
 #include <vikit/camera_loader.h>
 #include <vikit/user_input_thread.h>
 
+#include <geometry_msgs/TransformStamped.h>//#####################################3
+#include <std_msgs/Bool.h>//#####################
+
 namespace svo {
 
 /// SVO Interface
@@ -55,6 +58,8 @@ public:
   void imgCb(const sensor_msgs::ImageConstPtr& msg);
   void processUserActions();
   void remoteKeyCb(const std_msgs::StringConstPtr& key_input);
+  void resetCallback(const geometry_msgs::TransformStamped::ConstPtr& msgin);//############################
+  ros::Publisher pub_usereset_;
 };
 
 VoNode::VoNode() :
@@ -74,17 +79,19 @@ VoNode::VoNode() :
     throw std::runtime_error("Camera model not correctly specified.");
 
   // Get initial position and orientation
+  visualizer_.camera_facing_ = vk::rpy2dcm(Vector3d(vk::getParam<double>("svo/init_rx", 0.0),
+						    vk::getParam<double>("svo/init_ry", 0.0),
+						    vk::getParam<double>("svo/init_rz", 0.0))); // #############log the camera setup (downward facing)
   visualizer_.T_world_from_vision_ = Sophus::SE3(
-      vk::rpy2dcm(Vector3d(vk::getParam<double>("svo/init_rx", 0.0),
-                           vk::getParam<double>("svo/init_ry", 0.0),
-                           vk::getParam<double>("svo/init_rz", 0.0))),
+      visualizer_.camera_facing_,
       Eigen::Vector3d(vk::getParam<double>("svo/init_tx", 0.0),
                       vk::getParam<double>("svo/init_ty", 0.0),
                       vk::getParam<double>("svo/init_tz", 0.0)));
 
+
   // Init VO and start
   vo_ = new svo::FrameHandlerMono(cam_);
-  vo_->start();
+  vo_->reset();
 }
 
 VoNode::~VoNode()
@@ -140,17 +147,37 @@ void VoNode::processUserActions()
       printf("SVO user input: RESET\n");
       break;
     case 's':
-      vo_->start();
+      pub_usereset_.publish(1);
+      //vo_->start();
       printf("SVO user input: START\n");
       break;
     default: ;
   }
 }
 
+// reset call back here!!####
 void VoNode::remoteKeyCb(const std_msgs::StringConstPtr& key_input)
 {
   remote_input_ = key_input->data;
 }
+
+//______________________________###############################################
+// Filter reset callback function
+//void VoNode::resetCallback(const std_msgs::Bool::ConstPtr& msgin)
+void VoNode::resetCallback(const geometry_msgs::TransformStamped::ConstPtr& msgin)
+{
+  visualizer_.T_world_from_vision_ = Sophus::SE3(
+	vk::quat2dcm(Vector4d((double)msgin->transform.rotation.w,
+			      (double)msgin->transform.rotation.x,
+			      (double)msgin->transform.rotation.y,
+                              (double)msgin->transform.rotation.z)) * visualizer_.camera_facing_,
+	Eigen::Vector3d((double)msgin->transform.translation.x,
+                        (double)msgin->transform.translation.y,
+                        (double)msgin->transform.translation.z));
+  vo_->start();
+  printf("SVO user input: START\n");
+}
+
 
 } // namespace svo
 
@@ -166,9 +193,11 @@ int main(int argc, char **argv)
   image_transport::ImageTransport it(nh);
   image_transport::Subscriber it_sub = it.subscribe(cam_topic, 5, &svo::VoNode::imgCb, &vo_node);
 
-  // subscribe to remote input
-  vo_node.sub_remote_key_ = nh.subscribe("svo/remote_key", 5, &svo::VoNode::remoteKeyCb, &vo_node);
-
+  // subscribe to remote input#######################################################
+  //vo_node.sub_remote_key_ = nh.subscribe("svo/remote_key", 5, &svo::VoNode::remoteKeyCb, &vo_node);
+  vo_node.sub_remote_key_ = nh.subscribe("/Allreset", 10, &svo::VoNode::resetCallback, &vo_node);
+  vo_node.pub_usereset_   = nh.advertise<std_msgs::Bool>("/svo/usereset", 10);;
+  
   // start processing callbacks
   while(ros::ok() && !vo_node.quit_)
   {
