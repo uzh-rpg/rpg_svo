@@ -136,7 +136,10 @@ int FrameHandlerBase::finishFrameProcessingCommon(
     tracking_quality_ = TRACKING_INSUFFICIENT;
   }
   else if (dropout == RESULT_FAILURE)
+  {
     resetAll();
+    stage_ = STAGE_FIRST_FRAME;
+  }
   if(set_reset_)
     resetAll();
 
