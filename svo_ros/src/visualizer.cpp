@@ -79,7 +79,7 @@ void Visualizer::publishMinimal(
     svo_msgs::Info msg_info;
     msg_info.header = header_msg;
     msg_info.processing_time = slam.lastProcessingTime();
-    msg_info.keyframes.resize(slam.map().keyframes_.size());
+    msg_info.keyframes.reserve(slam.map().keyframes_.size());
     for(list<FramePtr>::const_iterator it=slam.map().keyframes_.begin(); it!=slam.map().keyframes_.end(); ++it)
       msg_info.keyframes.push_back((*it)->id_);
     msg_info.stage = static_cast<int>(slam.stage());
