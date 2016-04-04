@@ -88,9 +88,9 @@ void twoViewBA(
   printf("2-View BA: Error before/after = %f / %f\n", init_error, final_error);
 
   // Update Keyframe Positions
-  frame1->T_f_w_.rotation_matrix() = v_frame1->estimate().rotation().toRotationMatrix();
+  frame1->T_f_w_.rotationMatrix() = v_frame1->estimate().rotation().toRotationMatrix();
   frame1->T_f_w_.translation() = v_frame1->estimate().translation();
-  frame2->T_f_w_.rotation_matrix() = v_frame2->estimate().rotation().toRotationMatrix();
+  frame2->T_f_w_.rotationMatrix() = v_frame2->estimate().rotation().toRotationMatrix();
   frame2->T_f_w_.translation() = v_frame2->estimate().translation();
 
   // Update Mappoint Positions

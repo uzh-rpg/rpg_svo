@@ -26,7 +26,7 @@
 
 #include <Eigen/Core>
 #include <opencv2/opencv.hpp>
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 #include <vikit/performance_monitor.h>
 #include <boost/shared_ptr.hpp>
 
