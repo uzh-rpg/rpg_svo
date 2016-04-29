@@ -78,6 +78,6 @@ void computeHomography(
     SE3& T_cur_from_ref);
 
 } // namespace initialization
-} // namespace nslam
+} // namespace svo
 
-#endif // NSLAM_INITIALIZATION_H
+#endif // SVO_INITIALIZATION_H
