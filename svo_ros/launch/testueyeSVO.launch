@@ -1,0 +1,40 @@
+<launch>
+  <arg name="nodelet_manager_name" value="nodelet_manager" />
+  <arg name="camera_name" value="camera" />
+
+<node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager_name)" args="manager" output="screen" launch-prefix="taskset -c 0"/>
+
+<node pkg="nodelet" type="nodelet" name="ueye_cam_nodelet" args="load ueye_cam/ueye_cam_nodelet $(arg nodelet_manager_name)" launch-prefix="taskset -c 4">
+        
+    <param name="camera_name" type="str" value="$(arg camera_name)" /> <!-- == namespace for topics and services -->
+    <param name="camera_topic" type="str" value="image_raw" />
+    <param name="camera_id" type="int" value="0" /> <!-- 0 = any camera; 1+: camera ID -->
+
+    <param name="ext_trigger_mode" type="bool" value="False" />
+    <param name="color_mode" type="str" value="mono8" /> <!-- valid options: 'rgb8', 'mono8', 'bayer_rggb8' -->
+
+    <param name="image_width" type="int" value="752" />
+    <param name="image_height" type="int" value="480" />
+
+    <param name="auto_gain" type="bool" value="False" />
+    <param name="master_gain" type="int" value="0" />
+    <param name="gain_boost" type="bool" value="False" />
+
+    <param name="auto_exposure" type="bool" value="False" />
+    <param name="exposure" type="int" value="2" />  <!-- in ms -->
+
+    <param name="auto_frame_rate" type="bool" value="False" />
+    <param name="frame_rate" type="double" value="50.0" />
+    
+
+</node>
+ 
+ 
+<node pkg="svo_ros" type="vo" name="svo" clear_params="true"  launch-prefix="taskset -c 4">
+        <param name="cam_topic" value="/camera/image_raw" type="str" />
+        <rosparam file="$(find svo_ros)/param/ueyeIR_atan.yaml" />
+        <rosparam file="$(find svo_ros)/param/vo_mine.yaml" />
+	<param name="accept_console_user_input" value="true" />
+	<param name="publish_world_in_cam_frame" value="false" />
+	<param name="init_rx" value="3.14159265" />
+</node>
