@@ -64,6 +64,8 @@ public:
   SE3 T_world_from_vision_;
   Matrix3d camera_facing_;
   
+  double quality_reading_;//############## stores active slam quality estimation
+  
   Visualizer();
 
   ~Visualizer() {};

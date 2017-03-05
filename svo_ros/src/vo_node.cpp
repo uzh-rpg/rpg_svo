@@ -37,6 +37,7 @@
 
 #include <geometry_msgs/TransformStamped.h>//#####################################3
 #include <std_msgs/Bool.h>//#####################
+#include <math.h>
 
 namespace svo {
 
@@ -59,6 +60,10 @@ public:
   void processUserActions();
   void remoteKeyCb(const std_msgs::StringConstPtr& key_input);
   void resetCallback(const geometry_msgs::TransformStamped::ConstPtr& msgin);//############################
+  
+  ros::Subscriber sub_quality_;
+  void qualityCallback(const geometry_msgs::Vector3& msgin); // receive message from active slam
+  
   ros::Publisher pub_usereset_;
 };
 
@@ -91,7 +96,7 @@ VoNode::VoNode() :
 
   // Init VO and start
   vo_ = new svo::FrameHandlerMono(cam_);
-  vo_->reset();
+  vo_->start();
 }
 
 VoNode::~VoNode()
@@ -178,9 +183,22 @@ void VoNode::resetCallback(const geometry_msgs::TransformStamped::ConstPtr& msgi
   printf("SVO user input: START\n");
 }
 
+//__________________________________#####################
+// active slam quality message
+void VoNode::qualityCallback(const geometry_msgs::Vector3& msgin)
+{
+  if (msgin.x > 0.001) return;
+  visualizer_.quality_reading_ = msgin.x*700.0;
+  std::cout << "The scaled quality is" << visualizer_.quality_reading_ << std::endl;
+}
 
 } // namespace svo
 
+
+
+//_________________________
+// MIAN
+//_____________________________
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "svo");
@@ -191,12 +209,13 @@ int main(int argc, char **argv)
   // subscribe to cam msgs
   std::string cam_topic(vk::getParam<std::string>("svo/cam_topic", "camera/image_raw"));
   image_transport::ImageTransport it(nh);
-  image_transport::Subscriber it_sub = it.subscribe(cam_topic, 5, &svo::VoNode::imgCb, &vo_node);
+  image_transport::Subscriber it_sub = it.subscribe(cam_topic, 1, &svo::VoNode::imgCb, &vo_node);
 
   // subscribe to remote input#######################################################
   //vo_node.sub_remote_key_ = nh.subscribe("svo/remote_key", 5, &svo::VoNode::remoteKeyCb, &vo_node);
   vo_node.sub_remote_key_ = nh.subscribe("/Allreset", 10, &svo::VoNode::resetCallback, &vo_node);
   vo_node.pub_usereset_   = nh.advertise<std_msgs::Bool>("/svo/usereset", 10);;
+  vo_node.sub_quality_    = nh.subscribe("/aslam/quality", 100, &svo::VoNode::qualityCallback, &vo_node);
   
   // start processing callbacks
   while(ros::ok() && !vo_node.quit_)

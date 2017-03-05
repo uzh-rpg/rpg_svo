@@ -1,3 +1,10 @@
 grid_size: 30
 max_n_kfs: 10
 loba_num_iter: 0
+
+init_min_disparity: 30
+init_min_tracked: 35
+init_min_inliers: 20
+triang_min_corner_score: 10.0
+quality_min_fts: 30
+quality_max_drop_fts: 50
