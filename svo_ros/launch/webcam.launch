@@ -1,0 +1,38 @@
+<launch>
+
+    <arg name="width" default="640" />
+    <arg name="height" default="480" />
+  
+    <node pkg="svo_ros" type="vo" name="svo" clear_params="true" output="screen">
+
+        <!-- Camera topic to subscribe to -->
+        <param name="cam_topic" value="/webcam/image_mono" type="str" />
+
+        <!-- Camera calibration file -->
+        <rosparam file="$(find svo_ros)/param/camera_webcam.yaml" />
+        <param name="cam_width" value="$(arg width)" />
+        <param name="cam_height" value="$(arg height)" />
+
+        <!-- Default parameter settings: choose between vo_fast and vo_accurate -->
+        <rosparam file="$(find svo_ros)/param/vo_fast.yaml" />
+
+        <rosparam name="publish_dense_input" value="1" type="int" />
+
+    </node>
+
+    <!--include file="$(find video_stream_opencv)/launch/webcam.launch">
+        <arg name="width" value="$(arg width)" />
+        <arg name="height" value="$(arg height)" />
+    </include-->
+
+    <!--include file="$(find image_proc)/launch/image_proc.launch" ns="webcam">
+        <arg name="manager" value="svo_image_proc" />
+    </include-->
+
+    <node pkg="libuvc_camera" type="camera_node" name="camera_stream" ns="webcam">
+        <param name="vendor" value="0x05a3" />
+    </node>
+
+    <node pkg="image_proc" type="image_proc" name="svo_image_proc" ns="webcam" />
+        
+</launch>
