@@ -27,7 +27,7 @@ generate_messages(
 
 # export the dependencis of this package for who ever depends on us
 catkin_package(
-  CATKIN_DEPENDS message_runtime geometry_msgs
+  CATKIN_DEPENDS message_runtime geometry_msgs sensor_msgs
 )
 
 include_directories(
