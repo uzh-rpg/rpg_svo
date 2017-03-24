@@ -116,7 +116,7 @@ public:
   /// Can be used to compute the Next-Best-View in parallel.
   /// IMPORTANT! Make sure you hold a valid reference counting pointer to frame
   /// so it is not being deleted while you use it.
-  void getSeedsCopy(const FramePtr& frame, std::list<Seed>& seeds);
+  void getSeedsCopy(const FramePtr& frame, std::list<Seed, aligned_allocator<Seed> >& seeds);
 
   /// Return a reference to the seeds. This is NOT THREAD SAFE!
   std::list<Seed, aligned_allocator<Seed> >& getSeeds() { return seeds_; }

@@ -25,6 +25,10 @@
 #include <math.h>
 
 #include <Eigen/Core>
+template <class T, class Allocator =  Eigen::aligned_allocator<std::pair<const int,T>>   >
+using vectorA = std::vector< T, Allocator > ;
+template <class T, class Allocator =  Eigen::aligned_allocator<std::pair<const int,T>>   >
+using listA = std::list< T, Allocator > ;
 #include <opencv2/opencv.hpp>
 #include <sophus/se3.h>
 #include <vikit/performance_monitor.h>

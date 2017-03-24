@@ -107,7 +107,7 @@ void KltHomographyInit::reset()
 void detectFeatures(
     FramePtr frame,
     vector<cv::Point2f>& px_vec,
-    vector<Vector3d>& f_vec)
+    vectorA<Vector3d>& f_vec)
 {
   Features new_features;
   feature_detection::FastDetector detector(
@@ -129,8 +129,8 @@ void trackKlt(
     FramePtr frame_cur,
     vector<cv::Point2f>& px_ref,
     vector<cv::Point2f>& px_cur,
-    vector<Vector3d>& f_ref,
-    vector<Vector3d>& f_cur,
+    vectorA<Vector3d>& f_ref,
+    vectorA<Vector3d>& f_cur,
     vector<double>& disparities)
 {
   const double klt_win_size = 30.0;
@@ -148,7 +148,7 @@ void trackKlt(
 
   vector<cv::Point2f>::iterator px_ref_it = px_ref.begin();
   vector<cv::Point2f>::iterator px_cur_it = px_cur.begin();
-  vector<Vector3d>::iterator f_ref_it = f_ref.begin();
+  vectorA<Vector3d>::iterator f_ref_it = f_ref.begin();
   f_cur.clear(); f_cur.reserve(px_cur.size());
   disparities.clear(); disparities.reserve(px_cur.size());
   for(size_t i=0; px_ref_it != px_ref.end(); ++i)
@@ -169,16 +169,16 @@ void trackKlt(
 }
 
 void computeHomography(
-    const vector<Vector3d>& f_ref,
-    const vector<Vector3d>& f_cur,
+    const vectorA<Vector3d>& f_ref,
+    const vectorA<Vector3d>& f_cur,
     double focal_length,
     double reprojection_threshold,
     vector<int>& inliers,
-    vector<Vector3d>& xyz_in_cur,
+    vectorA<Vector3d>& xyz_in_cur,
     SE3& T_cur_from_ref)
 {
-  vector<Vector2d, aligned_allocator<Vector2d> > uv_ref(f_ref.size());
-  vector<Vector2d, aligned_allocator<Vector2d> > uv_cur(f_cur.size());
+  vectorA<Vector2d > uv_ref(f_ref.size());
+  vectorA<Vector2d > uv_cur(f_cur.size());
   for(size_t i=0, i_max=f_ref.size(); i<i_max; ++i)
   {
     uv_ref[i] = vk::project2d(f_ref[i]);
