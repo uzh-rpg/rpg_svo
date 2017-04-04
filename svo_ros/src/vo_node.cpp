@@ -213,9 +213,9 @@ int main(int argc, char **argv)
 
   // subscribe to remote input#######################################################
   //vo_node.sub_remote_key_ = nh.subscribe("svo/remote_key", 5, &svo::VoNode::remoteKeyCb, &vo_node);
-  vo_node.sub_remote_key_ = nh.subscribe("/Allreset", 10, &svo::VoNode::resetCallback, &vo_node);
-  vo_node.pub_usereset_   = nh.advertise<std_msgs::Bool>("/svo/usereset", 10);;
-  vo_node.sub_quality_    = nh.subscribe("/aslam/quality", 100, &svo::VoNode::qualityCallback, &vo_node);
+  vo_node.sub_remote_key_ = nh.subscribe("Allreset", 10, &svo::VoNode::resetCallback, &vo_node);
+  vo_node.pub_usereset_   = nh.advertise<std_msgs::Bool>("svo/usereset", 10);;
+  vo_node.sub_quality_    = nh.subscribe("aslam/quality", 100, &svo::VoNode::qualityCallback, &vo_node);
   
   // start processing callbacks
   while(ros::ok() && !vo_node.quit_)
