@@ -1,0 +1,12 @@
+cam_model: Pinhole
+# Set in launch file webcam.launch instead.
+cam_width: 640
+cam_height: 480
+cam_fx: 346.0229416619373
+cam_fy: 343.426914274612
+cam_cx: 318.0860682913412
+cam_cy: 236.7022431168731
+cam_d0: -0.3731376888278783
+cam_d1: 0.08374307890580708
+cam_d2: 0.006608615041262322
+cam_d3: -0.0006764314755213373

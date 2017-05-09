@@ -49,6 +49,7 @@ public:
   std::string remote_input_;
   vk::AbstractCamera* cam_;
   bool quit_;
+  ros::Time last_frame_t_;
   VoNode();
   ~VoNode();
   void imgCb(const sensor_msgs::ImageConstPtr& msg);
@@ -62,7 +63,8 @@ VoNode::VoNode() :
   publish_dense_input_(vk::getParam<bool>("svo/publish_dense_input", false)),
   remote_input_(""),
   cam_(NULL),
-  quit_(false)
+  quit_(false),
+  last_frame_t_(ros::Time::now())
 {
   // Start user input thread in parallel thread that listens to console keys
   if(vk::getParam<bool>("svo/accept_console_user_input", true))
@@ -97,14 +99,15 @@ VoNode::~VoNode()
 void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg)
 {
   cv::Mat img;
+  last_frame_t_ = (msg->header.stamp != ros::Time(0)) ? msg->header.stamp : ros::Time::now();
   try {
     img = cv_bridge::toCvShare(msg, "mono8")->image;
   } catch (cv_bridge::Exception& e) {
     ROS_ERROR("cv_bridge exception: %s", e.what());
   }
   processUserActions();
-  vo_->addImage(img, msg->header.stamp.toSec());
-  visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, msg->header.stamp.toSec());
+  vo_->addImage(img, last_frame_t_.toSec());
+  visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, last_frame_t_.toSec());
 
   if(publish_markers_ && vo_->stage() != FrameHandlerBase::STAGE_PAUSED)
     visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
@@ -157,7 +160,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "svo");
   ros::NodeHandle nh;
-  std::cout << "create vo_node" << std::endl;
+  std::cout << "Creating vo_node" << std::endl;
   svo::VoNode vo_node;
 
   // subscribe to cam msgs
@@ -172,7 +175,9 @@ int main(int argc, char **argv)
   while(ros::ok() && !vo_node.quit_)
   {
     ros::spinOnce();
-    // TODO check when last image was processed. when too long ago. publish warning that no msgs are received!
+    if (ros::Time::now() - vo_node.last_frame_t_ > ros::Duration(5)) {
+        ROS_WARN_DELAYED_THROTTLE(1.0, "Not receiving any image callbacks, hung camera?");
+    }
   }
 
   printf("SVO terminated.\n");

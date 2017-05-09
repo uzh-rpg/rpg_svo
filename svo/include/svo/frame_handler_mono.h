@@ -41,17 +41,17 @@ public:
   void setFirstFrame(const FramePtr& first_frame);
 
   /// Get the last frame that has been processed.
-  FramePtr lastFrame() { return last_frame_; }
+  FramePtr lastFrame();
 
   /// Get the set of spatially closest keyframes of the last frame.
-  const set<FramePtr>& coreKeyframes() { return core_kfs_; }
+  const set<FramePtr>& coreKeyframes();
 
   /// Return the feature track to visualize the KLT tracking during initialization.
-  const vector<cv::Point2f>& initFeatureTrackRefPx() const { return klt_homography_init_.px_ref_; }
-  const vector<cv::Point2f>& initFeatureTrackCurPx() const { return klt_homography_init_.px_cur_; }
+  const vector<cv::Point2f>& initFeatureTrackRefPx() const;
+  const vector<cv::Point2f>& initFeatureTrackCurPx() const;
 
   /// Access the depth filter.
-  DepthFilter* depthFilter() const { return depth_filter_; }
+  DepthFilter* depthFilter() const;
 
   /// An external place recognition module may know where to relocalize.
   bool relocalizeFrameAtPose(
