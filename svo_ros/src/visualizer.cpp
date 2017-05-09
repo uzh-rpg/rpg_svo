@@ -134,26 +134,25 @@ void Visualizer::publishMinimal(
                    cv::Point2f((*it)->px[0]+3*(*it)->grad[1], (*it)->px[1]-3*(*it)->grad[0]),
                    cv::Point2f((*it)->px[0]-3*(*it)->grad[1], (*it)->px[1]+3*(*it)->grad[0]),
                    cv::Scalar(255,0,255), 2);
-        else
+        else//point size 5x5
           cv::rectangle(img_rgb,
                         cv::Point2f((*it)->px[0]-2, (*it)->px[1]-2),
                         cv::Point2f((*it)->px[0]+2, (*it)->px[1]+2),
                         cv::Scalar(0,255,0), CV_FILLED);
       }
     }
-    if(img_pub_level_ == 1)
+    else if(img_pub_level_ == 1){//point size 3x3
       for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it)
         cv::rectangle(img_rgb,
                       cv::Point2f((*it)->px[0]/scale-1, (*it)->px[1]/scale-1),
                       cv::Point2f((*it)->px[0]/scale+1, (*it)->px[1]/scale+1),
                       cv::Scalar(0,255,0), CV_FILLED);
-    else
-      for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it)
-        cv::rectangle(img_rgb,
-                      cv::Point2f((*it)->px[0]/scale, (*it)->px[1]/scale),
-                      cv::Point2f((*it)->px[0]/scale, (*it)->px[1]/scale),
-                      cv::Scalar(0,255,0), CV_FILLED);
-
+    }else{ //point size 1x1
+      for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it){
+	cv::Vec3b &p=  img_rgb.at<cv::Vec3b>((*it)->px[1]/scale, (*it)->px[0]/scale);
+	p[0]=0;p[1]=255;p[2]=0;
+      }
+    }
     cv_bridge::CvImage img_msg;
     img_msg.header = header_msg;
     img_msg.image = img_rgb;

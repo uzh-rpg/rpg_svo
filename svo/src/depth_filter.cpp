@@ -135,7 +135,7 @@ void DepthFilter::removeKeyframe(FramePtr frame)
 {
   seeds_updating_halt_ = true;
   lock_t lock(seeds_mut_);
-  list<Seed>::iterator it=seeds_.begin();
+  std::list<Seed>::iterator it=seeds_.begin();
   size_t n_removed = 0;
   while(it!=seeds_.end())
   {
@@ -200,7 +200,7 @@ void DepthFilter::updateSeeds(FramePtr frame)
   // for all the seeds in every frame!
   size_t n_updates=0, n_failed_matches=0, n_seeds = seeds_.size();
   lock_t lock(seeds_mut_);
-  list<Seed>::iterator it=seeds_.begin();
+  std::list<Seed>::iterator it=seeds_.begin();
 
   const double focal_length = frame->cam_->errorMultiplier2();
   double px_noise = 1.0;

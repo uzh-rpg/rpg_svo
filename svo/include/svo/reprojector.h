@@ -72,7 +72,7 @@ private:
     Vector2d px;     //!< projected 2D pixel location.
     Candidate(Point* pt, Vector2d& px) : pt(pt), px(px) {}
   };
-  typedef std::list<Candidate, aligned_allocator<Candidate> > Cell;
+  typedef std::list<Candidate > Cell;
   typedef std::vector<Cell*> CandidateGrid;
 
   /// The grid stores a set of candidate matches. For every grid cell we try to find one match.
