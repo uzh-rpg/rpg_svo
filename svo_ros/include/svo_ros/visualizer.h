@@ -62,7 +62,10 @@ public:
   bool publish_map_every_frame_;
   ros::Duration publish_points_display_time_;
   SE3 T_world_from_vision_;
-
+  Matrix3d camera_facing_;
+  
+  double quality_reading_;//############## stores active slam quality estimation
+  
   Visualizer();
 
   ~Visualizer() {};

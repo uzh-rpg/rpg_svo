@@ -47,12 +47,13 @@ Visualizer() :
     publish_world_in_cam_frame_(vk::getParam<bool>("svo/publish_world_in_cam_frame", true)),
     publish_map_every_frame_(vk::getParam<bool>("svo/publish_map_every_frame", false)),
     publish_points_display_time_(vk::getParam<double>("svo/publish_point_display_time", 0)),
-    T_world_from_vision_(Matrix3d::Identity(), Vector3d::Zero())
+    T_world_from_vision_(Matrix3d::Identity(), Vector3d::Zero()),
+    quality_reading_(0.006)
 {
   // Init ROS Marker Publishers
   pub_frames_ = pnh_.advertise<visualization_msgs::Marker>("keyframes", 10);
   pub_points_ = pnh_.advertise<visualization_msgs::Marker>("points", 1000);
-  pub_pose_ = pnh_.advertise<geometry_msgs::PoseWithCovarianceStamped>("pose",10);
+  pub_pose_ = pnh_.advertise<geometry_msgs::PoseWithCovarianceStamped>("pose",1);
   pub_info_ = pnh_.advertise<svo_msgs::Info>("info", 10);
   pub_dense_ = pnh_.advertise<svo_msgs::DenseInput>("dense_input",10);
 
@@ -82,13 +83,16 @@ void Visualizer::publishMinimal(
     msg_info.keyframes.reserve(slam.map().keyframes_.size());
     for(list<FramePtr>::const_iterator it=slam.map().keyframes_.begin(); it!=slam.map().keyframes_.end(); ++it)
       msg_info.keyframes.push_back((*it)->id_);
+      
     msg_info.stage = static_cast<int>(slam.stage());
     msg_info.tracking_quality = static_cast<int>(slam.trackingQuality());
+    
     if(frame != NULL)
       msg_info.num_matches = slam.lastNumObservations();
     else
       msg_info.num_matches = 0;
     pub_info_.publish(msg_info);
+    
   }
 
   if(frame == NULL)
@@ -177,7 +181,8 @@ void Visualizer::publishMinimal(
     {
       // publish cam in world frame
       SE3 T_world_from_cam(T_world_from_vision_*frame->T_f_w_.inverse());
-      q = Quaterniond(T_world_from_cam.rotation_matrix()*T_world_from_vision_.rotation_matrix().transpose());
+      //q = Quaterniond(T_world_from_cam.rotation_matrix()*T_world_from_vision_.rotation_matrix().transpose());
+      q = Quaterniond(T_world_from_cam.rotation_matrix() * camera_facing_.transpose());//#####################here remember to derotate the camera facing
       p = T_world_from_cam.translation();
       Cov = T_world_from_cam.Adj()*frame->Cov_*T_world_from_cam.inverse().Adj();
     }
@@ -203,19 +208,20 @@ void Visualizer::visualizeMarkers(
 {
   if(frame == NULL)
     return;
-
+  // Publish /tf
   vk::output_helper::publishTfTransform(
       frame->T_f_w_*T_world_from_vision_.inverse(),
       ros::Time(frame->timestamp_), "cam_pos", "world", br_);
-
+  
+  // Publish markers
   if(pub_frames_.getNumSubscribers() > 0 || pub_points_.getNumSubscribers() > 0)
   {
-    vk::output_helper::publishCameraMarker(
+    vk::output_helper::publishHexacopterMarker(
         pub_frames_, "cam_pos", "cams", ros::Time(frame->timestamp_),
-        1, 0.3, Vector3d(0.,0.,1.));
+        1, 0, 0.3, Vector3d(0.,0.,1.));
     vk::output_helper::publishPointMarker(
         pub_points_, T_world_from_vision_*frame->pos(), "trajectory",
-        ros::Time::now(), trace_id_, 0, 0.006, Vector3d(0.,0.,0.5));
+        ros::Time::now(), trace_id_, 0, quality_reading_, Vector3d(0.,0.,0.5)); //###########
     if(frame->isKeyframe() || publish_map_every_frame_)
       publishMapRegion(core_kfs);
     removeDeletedPts(map);
@@ -241,6 +247,8 @@ void Visualizer::removeDeletedPts(const Map& map)
   }
 }
 
+
+// feature map!!!!!!!!!!!!!!!
 void Visualizer::displayKeyframeWithMps(const FramePtr& frame, int ts)
 {
   // publish keyframe
@@ -260,11 +268,12 @@ void Visualizer::displayKeyframeWithMps(const FramePtr& frame, int ts)
 
     vk::output_helper::publishPointMarker(
         pub_points_, T_world_from_vision_*(*it)->point->pos_, "pts",
-        ros::Time::now(), (*it)->point->id_, 0, 0.005, Vector3d(1.0, 0., 1.0),
+        ros::Time::now(), (*it)->point->id_, 0, 0.02, Vector3d(1.0, 0., 1.0),
         publish_points_display_time_);
     (*it)->point->last_published_ts_ = ts;
   }
 }
+
 
 void Visualizer::exportToDense(const FramePtr& frame)
 {
