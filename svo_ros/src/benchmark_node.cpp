@@ -17,7 +17,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <opencv2/opencv.hpp>
@@ -108,7 +108,7 @@ void BenchmarkNode::tracePoseError(const SE3& T_f_gt, const double timestamp)
   trace_trans_error_ << timestamp << " ";
   trace_trans_error_.precision(6);
   trace_trans_error_ << et.x() << " " << et.y() << " " << et.z() << " " << std::endl;
-  Vector3d er(vk::dcm2rpy(T_f_gt.rotation_matrix())); // rotation error in roll-pitch-yaw
+  Vector3d er(vk::dcm2rpy(T_f_gt.rotationMatrix())); // rotation error in roll-pitch-yaw
   trace_rot_error_.precision(15);
   trace_rot_error_.setf(std::ios::fixed, std::ios::floatfield );
   trace_rot_error_ << timestamp << " ";
