@@ -59,6 +59,11 @@ public:
     RESULT_IS_KEYFRAME,
     RESULT_FAILURE
   };
+  enum AddImageResult {
+    RESULT_ADDED_FIRST,
+    RESULT_ADDED_SECOND,
+    RESULT_NORMAL
+  };
 
   FrameHandlerBase();
 
