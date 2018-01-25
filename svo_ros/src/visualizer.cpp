@@ -64,7 +64,7 @@ Visualizer() :
 void Visualizer::publishMinimal(
     const cv::Mat& img,
     const FramePtr& frame,
-    const FrameHandlerMono& slam,
+    const FrameHandlerStereo& slam,
     const double timestamp)
 {
   ++trace_id_;
@@ -113,17 +113,17 @@ void Visualizer::publishMinimal(
     cv::Mat img_rgb(frame->img_pyr_[img_pub_level_].size(), CV_8UC3);
     cv::cvtColor(frame->img_pyr_[img_pub_level_], img_rgb, CV_GRAY2RGB);
 
-    if(slam.stage() == FrameHandlerBase::STAGE_SECOND_FRAME)
-    {
-      // During initialization, draw lines.
-      const vector<cv::Point2f>& px_ref(slam.initFeatureTrackRefPx());
-      const vector<cv::Point2f>& px_cur(slam.initFeatureTrackCurPx());
-      for(vector<cv::Point2f>::const_iterator it_ref=px_ref.begin(), it_cur=px_cur.begin();
-          it_ref != px_ref.end(); ++it_ref, ++it_cur)
-        cv::line(img_rgb,
-                 cv::Point2f(it_cur->x/scale, it_cur->y/scale),
-                 cv::Point2f(it_ref->x/scale, it_ref->y/scale), cv::Scalar(0,255,0), 2);
-    }
+    // if(slam.stage() == FrameHandlerBase::STAGE_SECOND_FRAME)
+    // {
+    //   // During initialization, draw lines.
+    //   const vector<cv::Point2f>& px_ref(slam.initFeatureTrackRefPx());
+    //   const vector<cv::Point2f>& px_cur(slam.initFeatureTrackCurPx());
+    //   for(vector<cv::Point2f>::const_iterator it_ref=px_ref.begin(), it_cur=px_cur.begin();
+    //       it_ref != px_ref.end(); ++it_ref, ++it_cur)
+    //     cv::line(img_rgb,
+    //              cv::Point2f(it_cur->x/scale, it_cur->y/scale),
+    //              cv::Point2f(it_ref->x/scale, it_ref->y/scale), cv::Scalar(0,255,0), 2);
+    // }
 
     if(img_pub_level_ == 0)
     {
@@ -212,10 +212,10 @@ void Visualizer::visualizeMarkers(
   {
     vk::output_helper::publishCameraMarker(
         pub_frames_, "cam_pos", "cams", ros::Time(frame->timestamp_),
-        1, 0.3, Vector3d(0.,0.,1.));
+        1, 0.6, Vector3d(0.,0.,1.));
     vk::output_helper::publishPointMarker(
         pub_points_, T_world_from_vision_*frame->pos(), "trajectory",
-        ros::Time::now(), trace_id_, 0, 0.006, Vector3d(0.,0.,0.5));
+        ros::Time::now(), trace_id_, 0, 0.06, Vector3d(0.,0.,0.5));
     if(frame->isKeyframe() || publish_map_every_frame_)
       publishMapRegion(core_kfs);
     removeDeletedPts(map);
@@ -237,7 +237,7 @@ void Visualizer::removeDeletedPts(const Map& map)
   if(pub_points_.getNumSubscribers() > 0)
   {
     for(list<Point*>::const_iterator it=map.trash_points_.begin(); it!=map.trash_points_.end(); ++it)
-      vk::output_helper::publishPointMarker(pub_points_, Vector3d(), "pts", ros::Time::now(), (*it)->id_, 2, 0.006, Vector3d());
+      vk::output_helper::publishPointMarker(pub_points_, Vector3d(), "pts", ros::Time::now(), (*it)->id_, 2, 0.06, Vector3d());
   }
 }
 
@@ -247,7 +247,7 @@ void Visualizer::displayKeyframeWithMps(const FramePtr& frame, int ts)
   SE3 T_world_cam(T_world_from_vision_*frame->T_f_w_.inverse());
   vk::output_helper::publishFrameMarker(
       pub_frames_, T_world_cam.rotation_matrix(),
-      T_world_cam.translation(), "kfs", ros::Time::now(), frame->id_*10, 0, 0.015);
+      T_world_cam.translation(), "kfs", ros::Time::now(), frame->id_*10, 0, 0.15);
 
   // publish point cloud and links
   for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it)
@@ -260,7 +260,7 @@ void Visualizer::displayKeyframeWithMps(const FramePtr& frame, int ts)
 
     vk::output_helper::publishPointMarker(
         pub_points_, T_world_from_vision_*(*it)->point->pos_, "pts",
-        ros::Time::now(), (*it)->point->id_, 0, 0.005, Vector3d(1.0, 0., 1.0),
+        ros::Time::now(), (*it)->point->id_, 0, 0.05, Vector3d(1.0, 0., 1.0),
         publish_points_display_time_);
     (*it)->point->last_published_ts_ = ts;
   }

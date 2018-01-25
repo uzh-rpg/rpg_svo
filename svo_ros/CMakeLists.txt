@@ -34,6 +34,7 @@ FIND_PACKAGE(catkin REQUIRED COMPONENTS
   svo_msgs
   vikit_common
   vikit_ros
+  vs_common
 )
 
 # Add plain cmake packages 
@@ -75,5 +76,3 @@ TARGET_LINK_LIBRARIES(svo_visualizer ${LINK_LIBS})
 # Create Executables                      
 ADD_EXECUTABLE(vo src/vo_node.cpp)
 TARGET_LINK_LIBRARIES(vo svo_visualizer)
-ADD_EXECUTABLE(benchmark src/benchmark_node.cpp)
-TARGET_LINK_LIBRARIES(benchmark svo_visualizer)

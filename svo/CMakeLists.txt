@@ -93,6 +93,7 @@ ENDIF()
 
 # Set sourcefiles
 LIST(APPEND SOURCEFILES
+  src/frame_handler_stereo.cpp
   src/frame_handler_mono.cpp
   src/frame_handler_base.cpp
   src/frame.cpp

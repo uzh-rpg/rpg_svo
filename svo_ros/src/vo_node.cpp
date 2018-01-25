@@ -16,6 +16,7 @@
 #include <ros/package.h>
 #include <string>
 #include <svo/frame_handler_mono.h>
+#include <svo/frame_handler_stereo.h>
 #include <svo/map.h>
 #include <svo/config.h>
 #include <svo_ros/visualizer.h>
@@ -33,6 +34,7 @@
 #include <vikit/abstract_camera.h>
 #include <vikit/camera_loader.h>
 #include <vikit/user_input_thread.h>
+#include <vs_common/vs_common.h>
 
 namespace svo {
 
@@ -40,7 +42,7 @@ namespace svo {
 class VoNode
 {
 public:
-  svo::FrameHandlerMono* vo_;
+  svo::FrameHandlerStereo* vo_;
   svo::Visualizer visualizer_;
   bool publish_markers_;                 //!< publish only the minimal amount of info (choice for embedded devices)
   bool publish_dense_input_;
@@ -51,6 +53,7 @@ public:
   bool quit_;
   VoNode();
   ~VoNode();
+  void processImgLR(const cv::Mat& imgl, const cv::Mat& imgr, double timestamp);
   void imgCb(const sensor_msgs::ImageConstPtr& msg);
   void processUserActions();
   void remoteKeyCb(const std_msgs::StringConstPtr& key_input);
@@ -82,7 +85,7 @@ VoNode::VoNode() :
                       vk::getParam<double>("svo/init_tz", 0.0)));
 
   // Init VO and start
-  vo_ = new svo::FrameHandlerMono(cam_);
+  vo_ = new svo::FrameHandlerStereo(cam_);
   vo_->start();
 }
 
@@ -94,17 +97,11 @@ VoNode::~VoNode()
     user_input_thread_->stop();
 }
 
-void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg)
+void VoNode::processImgLR(const cv::Mat& imgl, const cv::Mat& imgr, double timestamp)
 {
-  cv::Mat img;
-  try {
-    img = cv_bridge::toCvShare(msg, "mono8")->image;
-  } catch (cv_bridge::Exception& e) {
-    ROS_ERROR("cv_bridge exception: %s", e.what());
-  }
   processUserActions();
-  vo_->addImage(img, msg->header.stamp.toSec());
-  visualizer_.publishMinimal(img, vo_->lastFrame(), *vo_, msg->header.stamp.toSec());
+  vo_->addImage(imgl, imgr, timestamp);
+  visualizer_.publishMinimal(imgl, vo_->lastFrame(), *vo_, timestamp);
 
   if(publish_markers_ && vo_->stage() != FrameHandlerBase::STAGE_PAUSED)
     visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
@@ -112,8 +109,13 @@ void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg)
   if(publish_dense_input_)
     visualizer_.exportToDense(vo_->lastFrame());
 
-  if(vo_->stage() == FrameHandlerMono::STAGE_PAUSED)
+  if(vo_->stage() == FrameHandlerStereo::STAGE_PAUSED)
     usleep(100000);
+}
+
+void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg)
+{
+  
 }
 
 void VoNode::processUserActions()
@@ -153,17 +155,79 @@ void VoNode::remoteKeyCb(const std_msgs::StringConstPtr& key_input)
 
 } // namespace svo
 
+#define PLAY_VIDEO 1
+
+#if PLAY_VIDEO
+#include "dataset.h"
+int video_demo(svo::VoNode* vo_node)
+{
+  cv::VideoCapture cap(video_file);
+  if(!cap.isOpened())
+  {
+      printf("[ERROR] read source video failed. file '%s' not exists.\n", video_file.c_str());
+      return 0;
+  }
+  int n_img = cap.get(CV_CAP_PROP_FRAME_COUNT);
+  printf("load %d images from video %s\n", n_img, video_file.c_str());
+  std::ifstream fin_imgts(video_ts_file);
+  if(!fin_imgts.is_open())
+  {
+      printf("[ERROR] stereo_video_play: cannot open file %s\n", video_ts_file.c_str());
+      return -1;
+  }
+  usleep(3000000);
+
+  std::vector<float>  frame_costs;
+  cv::Mat image;
+  double tframe;
+  for(int i=0; i<n_img; i++)
+  {
+      cap.read(image);
+      fin_imgts>>tframe;
+      // if(i<100) continue;
+
+      printf("process frame %d\n", i);
+      if(image.channels()==3)
+          cv::cvtColor(image,image,cv::COLOR_BGR2GRAY);
+
+      int r = image.rows/2;
+      cv::Mat imgl = image.rowRange(0,r);
+      cv::Mat imgr = image.rowRange(r,r*2);
+
+      tic("process");
+      vo_node->processImgLR(imgl, imgr, tframe);
+      float cost_ms = toc("process");
+      frame_costs.push_back(cost_ms);
+
+      cv::Mat img_draw;
+      cv::cvtColor(image, img_draw, cv::COLOR_GRAY2BGR);
+      char text[30] = {0};
+      sprintf(text, "%6.1f fps", 1000.0f/vecMean(subvec(frame_costs, std::max(0,(int)frame_costs.size()-30))));
+      cv::putText(img_draw, text, cv::Point(image.cols-90, 15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0,0,255), 1);
+      cv::imshow("image",img_draw);
+      char key = cv::waitKey(100);
+      if(key==27) {break;}
+  }
+  return 0;
+}
+#endif
+
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "svo");
   ros::NodeHandle nh;
-  std::cout << "create vo_node" << std::endl;
+  ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
+  ros::console::notifyLoggerLevelsChanged();
   svo::VoNode vo_node;
 
   // subscribe to cam msgs
+#if PLAY_VIDEO
+  std::thread th_play_video(video_demo, &vo_node);
+#else
   std::string cam_topic(vk::getParam<std::string>("svo/cam_topic", "camera/image_raw"));
   image_transport::ImageTransport it(nh);
   image_transport::Subscriber it_sub = it.subscribe(cam_topic, 5, &svo::VoNode::imgCb, &vo_node);
+#endif
 
   // subscribe to remote input
   vo_node.sub_remote_key_ = nh.subscribe("svo/remote_key", 5, &svo::VoNode::remoteKeyCb, &vo_node);
@@ -178,3 +242,4 @@ int main(int argc, char **argv)
   printf("SVO terminated.\n");
   return 0;
 }
+

@@ -55,6 +55,9 @@ public:
   g2oFrameSE3*                  v_kf_;                  //!< Temporary pointer to the g2o node object of the keyframe.
   int                           last_published_ts_;     //!< Timestamp of last publishing.
 
+  Sophus::SE3 T_body_cam_;
+  Sophus::SE3 T_cam_body_;
+
   Frame(vk::AbstractCamera* cam, const cv::Mat& img, double timestamp);
   ~Frame();
 
@@ -90,6 +93,31 @@ public:
   /// Was this frame selected as keyframe?
   inline bool isKeyframe() const { return is_keyframe_; }
 
+  /// Get camera pose in imu frame.
+  inline const Sophus::SE3& T_imu_cam() const { return T_body_cam_; }
+
+  /// Get imu pose in camera frame.
+  inline const Sophus::SE3& T_cam_imu() const { return T_cam_body_; }
+
+  /// Get pose of world origin in frame coordinates.
+  inline const Sophus::SE3& T_cam_world() const { return T_f_w_; }
+
+  /// Get pose of the cam in world coordinates.
+  inline Sophus::SE3 T_world_cam() const { return T_f_w_.inverse(); }
+
+  /// Get pose of imu in world coordinates.
+  inline Sophus::SE3 T_world_imu() const { return (T_imu_cam()*T_f_w_).inverse(); }
+
+  /// Get pose of world-origin in IMU coordinates.
+  inline Sophus::SE3 T_imu_world() const { return T_imu_cam()*T_f_w_; }
+
+  /// Set camera to imu transformation.
+  inline void set_T_cam_body(const Sophus::SE3& T_cam_imu)
+  {
+    T_cam_body_ = T_cam_imu;
+    T_body_cam_ = T_cam_imu.inverse();
+  }
+
   /// Transforms point coordinates in world-frame (w) to camera pixel coordinates (c).
   inline Vector2d w2c(const Vector3d& xyz_w) const { return cam_->world2cam( T_f_w_ * xyz_w ); }
 
@@ -111,8 +139,18 @@ public:
   /// Return the pose of the frame in the (w)orld coordinate frame.
   inline Vector3d pos() const { return T_f_w_.inverse().translation(); }
 
+  inline static Eigen::Matrix3d skew(const Eigen::Vector3d& v)
+  {
+    Eigen::Matrix3d v_sqew;
+    v_sqew << 0, -v[2], v[1],
+              v[2], 0, -v[0],
+              -v[1], v[0], 0;
+    return v_sqew;
+  }
+
   /// Frame jacobian for projection of 3D point in (f)rame coordinate to
   /// unit plane coordinates uv (focal length = 1).
+  //u_hat对李代数xi的导数，默认u_hat在normalize平面，f为1
   inline static void jacobian_xyz2uv(
       const Vector3d& xyz_in_f,
       Matrix<double,2,6>& J)
@@ -136,6 +174,68 @@ public:
     J(1,4) = -J(0,3);             // -x*y/z^2
     J(1,5) = -x*z_inv;            // x/z
   }
+
+  /// Jacobian of reprojection error (on unit plane) w.r.t. IMU pose.
+  inline static void jacobian_xyz2uv_imu(
+      const Sophus::SE3& T_cam_imu,
+      const Eigen::Vector3d& p_in_imu,
+      Eigen::Matrix<double,2,6>& J)
+  {
+    // G_x: d_p_cam/d_xi
+    Eigen::Matrix<double,3,6> G_x; // Generators times pose
+    G_x.block<3,3>(0,0) = Eigen::Matrix3d::Identity();
+    G_x.block<3,3>(0,3) = -skew(p_in_imu);
+    const Eigen::Vector3d p_in_cam = T_cam_imu * p_in_imu;
+
+    Eigen::Matrix<double,2,3> J_proj; // projection derivative
+    J_proj << 1, 0, -p_in_cam[0]/p_in_cam[2],
+        0, 1, -p_in_cam[1]/p_in_cam[2];
+
+    // J=d_u_hat/d_xi = d_u_hat/d_cam * d_cam/d_imu * d_imu/d_xi
+    J = (- 1.0/p_in_cam[2] * J_proj) * T_cam_imu.rotation_matrix() * G_x;
+  }
+
+  /// Jacobian of reprojection error (on image plane, has focal length) w.r.t. IMU pose.
+  inline static void jacobian_xyz2img_imu(
+      const Sophus::SE3& T_cam_imu,
+      const Eigen::Vector3d& p_in_imu,
+      const Eigen::Matrix<double, 2, 3>& J_cam,
+      Eigen::Matrix<double,2,6>& J)
+  {
+    Eigen::Matrix<double,3,6> G_x; // Generators times pose
+    G_x.block<3,3>(0,0) = Eigen::Matrix3d::Identity();
+    G_x.block<3,3>(0,3) = -skew(p_in_imu);
+
+    // J=d_u/d_xi = d_u/d_cam * d_cam/d_imu * d_imu/d_xi
+    J =  J_cam * T_cam_imu.rotation_matrix() * G_x;
+  }
+
+  /// Jacobian of using unit bearing vector for map point w.r.t IMU pose.
+  inline static void jacobian_xyz2f_imu(
+      const Sophus::SE3& T_cam_imu,
+      const Eigen::Vector3d& p_in_imu,
+      Eigen::Matrix<double, 3, 6>& J)
+  {
+    Eigen::Matrix<double,3,6> G_x;
+    G_x.block<3,3>(0,0) = Eigen::Matrix3d::Identity();
+    G_x.block<3,3>(0,3) = -skew(p_in_imu);
+    const Eigen::Vector3d p_in_cam = T_cam_imu * p_in_imu;
+
+    Eigen::Matrix<double, 3, 3> J_normalize;
+    double x2 = p_in_cam[0]*p_in_cam[0];
+    double y2 = p_in_cam[1]*p_in_cam[1];
+    double z2 = p_in_cam[2]*p_in_cam[2];
+    double xy = p_in_cam[0]*p_in_cam[1];
+    double yz = p_in_cam[1]*p_in_cam[2];
+    double zx = p_in_cam[2]*p_in_cam[0];
+    J_normalize << y2+z2, -xy, -zx,
+        -xy, x2+z2, -yz,
+        -zx, -yz, x2+y2;
+    J_normalize *= 1 / std::pow(x2+y2+z2, 1.5);
+
+    J = J_normalize * T_cam_imu.rotation_matrix() * G_x;
+  }
+
 };
 
 

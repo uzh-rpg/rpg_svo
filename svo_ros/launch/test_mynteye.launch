@@ -1,0 +1,22 @@
+<launch>
+
+  <node pkg="svo_ros" type="vo" name="svo" clear_params="true" output="screen">
+
+    <!-- Camera topic to subscribe to -->
+    <param name="cam_topic" value="/cv_camera/image_left" type="str" />
+    
+    <!-- Camera calibration file -->
+    <rosparam file="$(find svo_ros)/param/camera_mynteye.yaml" />
+
+    <!-- Default parameter settings: choose between vo_fast and vo_accurate -->
+    <rosparam file="$(find svo_ros)/param/vo_accurate.yaml" />
+    
+    <!-- Initial camera orientation, make it point downwards -->
+    <param name="init_rx" value="3.14" />
+    <param name="init_ry" value="0.00" />
+    <param name="init_rz" value="0.00" />
+  </node>
+
+  <node name="rvizvisualisation" pkg="rviz" type="rviz" output="log" args="-d $(find svo_ros)/rviz_config.rviz" />
+
+</launch>

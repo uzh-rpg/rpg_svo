@@ -145,7 +145,6 @@ void trackKlt(
                            status, error,
                            cv::Size2i(klt_win_size, klt_win_size),
                            4, termcrit, cv::OPTFLOW_USE_INITIAL_FLOW);
-
   vector<cv::Point2f>::iterator px_ref_it = px_ref.begin();
   vector<cv::Point2f>::iterator px_cur_it = px_cur.begin();
   vector<Vector3d>::iterator f_ref_it = f_ref.begin();
@@ -194,6 +193,65 @@ void computeHomography(
   T_cur_from_ref = Homography.T_c2_from_c1;
 }
 
+InitResult initFrameStereo(FramePtr frame_left, FramePtr frame_right, float baseline)
+{
+  vector<cv::Point2f> px_left, px_right;
+  vector<Vector3d> f_left, f_right;   //!< bearing vectors corresponding to the keypoints in the reference image.
+  vector<double> disparities;         //!< disparity between first and second frame.
+  detectFeatures(frame_left, px_left, f_left);
+  px_right = px_left;
+  trackKlt(frame_left, frame_right, px_left, px_right, f_left, f_right, disparities);
+  SVO_INFO_STREAM("Init: KLT tracked "<< disparities.size() <<" features");
+  if(disparities.size() < Config::initMinTracked())
+    return FAILURE;
+
+  int inlier_cnt = 0;
+  for(size_t i=0; i<px_left.size(); i++)
+  {
+    cv::Point2f p_left = px_left[i];
+    cv::Point2f p_right = px_right[i];
+    float disp = p_left.x - p_right.x;
+    if(fabs(p_left.y-p_right.y)>3 || disp<=0) {continue;}
+    float z = frame_left->cam_->errorMultiplier2() * baseline / disp;
+
+    Vector3d pos = frame_left->T_f_w_.inverse() * (f_left[i] * z / f_left[i].z());
+    Point* new_point = new Point(pos);
+
+    Feature* ftr_left(new Feature(frame_left.get(), new_point, Vector2d(p_left.x, p_left.y), f_left[i], 0));
+    frame_left->addFeature(ftr_left);
+    new_point->addFrameRef(ftr_left);
+
+    inlier_cnt++;
+  }
+
+  #if 0
+    cv::Mat img_show;
+    cv::hconcat(frame_left->img_pyr_[0], frame_right->img_pyr_[0], img_show);
+    cv::cvtColor(img_show, img_show, cv::COLOR_GRAY2BGR);
+    for(size_t i=0; i<px_left.size(); i++)
+    {
+      cv::Point2f p_left = px_left[i];
+      cv::Point2f p_right = px_right[i];
+      float disp = p_left.x - p_right.x;
+      if(fabs(p_left.y-p_right.y)>3 || disp<=0) {continue;}
+      cv::Point p1(p_left.x,p_left.y);
+      cv::Point p2(p_right.x+img_show.cols/2,p_right.y);
+      cv::circle(img_show, p1, 2, cv::Scalar(0,255,0), -1);
+      cv::circle(img_show, p2, 2, cv::Scalar(0,255,0), -1);
+      cv::line(img_show, p1, p2, cv::Scalar(rand()%256,rand()%256,rand()%256));
+    }
+    cv::imshow("stereo init",img_show);
+    cv::waitKey();
+    printf("track pts size:%d\n", inlier_cnt);
+  #endif
+
+  if(inlier_cnt < Config::initMinInliers())
+  {
+    SVO_WARN_STREAM("Init WARNING: "<<Config::initMinInliers()<<" inliers minimum required.");
+    return FAILURE;
+  }
+  return SUCCESS;
+}
 
 } // namespace initialization
 } // namespace svo

@@ -132,7 +132,8 @@ int FrameHandlerBase::finishFrameProcessingCommon(
   if(dropout == RESULT_FAILURE &&
       (stage_ == STAGE_DEFAULT_FRAME || stage_ == STAGE_RELOCALIZING ))
   {
-    stage_ = STAGE_RELOCALIZING;
+    stage_ = STAGE_PAUSED;
+    // stage_ = STAGE_RELOCALIZING;
     tracking_quality_ = TRACKING_INSUFFICIENT;
   }
   else if (dropout == RESULT_FAILURE)

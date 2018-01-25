@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <svo/config.h>
-#include <svo/frame_handler_mono.h>
+#include <svo/frame_handler_stereo.h>
 #include <svo/map.h>
 #include <svo/frame.h>
 #include <svo/feature.h>
@@ -30,7 +30,7 @@
 
 namespace svo {
 
-FrameHandlerMono::FrameHandlerMono(vk::AbstractCamera* cam) :
+FrameHandlerStereo::FrameHandlerStereo(vk::AbstractCamera* cam) :
   FrameHandlerBase(),
   cam_(cam),
   reprojector_(cam_, map_),
@@ -39,7 +39,7 @@ FrameHandlerMono::FrameHandlerMono(vk::AbstractCamera* cam) :
   initialize();
 }
 
-void FrameHandlerMono::initialize()
+void FrameHandlerStereo::initialize()
 {
   feature_detection::DetectorPtr feature_detector(
       new feature_detection::FastDetector(
@@ -50,12 +50,12 @@ void FrameHandlerMono::initialize()
   depth_filter_->startThread();
 }
 
-FrameHandlerMono::~FrameHandlerMono()
+FrameHandlerStereo::~FrameHandlerStereo()
 {
   delete depth_filter_;
 }
 
-void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
+void FrameHandlerStereo::addImage(const cv::Mat& img_left, const cv::Mat& img_right, const double timestamp)
 {
   if(!startFrameProcessingCommon(timestamp))
     return;
@@ -66,15 +66,15 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
 
   // create new frame
   SVO_START_TIMER("pyramid_creation");
-  new_frame_.reset(new Frame(cam_, img.clone(), timestamp));
+  new_frame_.reset(new Frame(cam_, img_left.clone(), timestamp));
+  new_frame_->set_T_cam_body(SE3(Matrix3d::Identity(), Vector3d::Zero()));
+  new_frame_right_.reset(new Frame(cam_, img_right.clone(), timestamp));
   SVO_STOP_TIMER("pyramid_creation");
 
   // process frame
   UpdateResult res = RESULT_FAILURE;
   if(stage_ == STAGE_DEFAULT_FRAME)
     res = processFrame();
-  else if(stage_ == STAGE_SECOND_FRAME)
-    res = processSecondFrame();
   else if(stage_ == STAGE_FIRST_FRAME)
     res = processFirstFrame();
   else if(stage_ == STAGE_RELOCALIZING)
@@ -88,45 +88,27 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
   finishFrameProcessingCommon(last_frame_->id_, res, last_frame_->nObs());
 }
 
-FrameHandlerMono::UpdateResult FrameHandlerMono::processFirstFrame()
+FrameHandlerStereo::UpdateResult FrameHandlerStereo::processFirstFrame()
 {
   new_frame_->T_f_w_ = SE3(Matrix3d::Identity(), Vector3d::Zero());
-  if(klt_homography_init_.addFirstFrame(new_frame_) == initialization::FAILURE)
-    return RESULT_NO_KEYFRAME;
-  new_frame_->setKeyframe();
-  map_.addKeyframe(new_frame_);
-  stage_ = STAGE_SECOND_FRAME;
-  SVO_INFO_STREAM("Init: Selected first frame.");
-  return RESULT_IS_KEYFRAME;
-}
-
-FrameHandlerBase::UpdateResult FrameHandlerMono::processSecondFrame()
-{
-  initialization::InitResult res = klt_homography_init_.addSecondFrame(new_frame_);
+  
+  initialization::InitResult res = initialization::initFrameStereo(new_frame_,new_frame_right_,0.11944f);
   if(res == initialization::FAILURE)
     return RESULT_FAILURE;
   else if(res == initialization::NO_KEYFRAME)
     return RESULT_NO_KEYFRAME;
-
-  // two-frame bundle adjustment
-#ifdef USE_BUNDLE_ADJUSTMENT
-  ba::twoViewBA(new_frame_.get(), map_.lastKeyframe().get(), Config::lobaThresh(), &map_);
-#endif
 
   new_frame_->setKeyframe();
   double depth_mean, depth_min;
   frame_utils::getSceneDepth(*new_frame_, depth_mean, depth_min);
   depth_filter_->addKeyframe(new_frame_, depth_mean, 0.5*depth_min);
 
-  // add frame to map
   map_.addKeyframe(new_frame_);
   stage_ = STAGE_DEFAULT_FRAME;
-  klt_homography_init_.reset();
-  SVO_INFO_STREAM("Init: Selected second frame, triangulated initial map.");
   return RESULT_IS_KEYFRAME;
 }
 
-FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
+FrameHandlerBase::UpdateResult FrameHandlerStereo::processFrame()
 {
   // Set initial pose TODO use prior
   new_frame_->T_f_w_ = last_frame_->T_f_w_;
@@ -136,6 +118,7 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   SVO_START_TIMER("sparse_img_align");
   SparseImgAlign img_align(Config::kltMaxLevel(), Config::kltMinLevel(),
                            30, SparseImgAlign::GaussNewton, false, false);
+  // size_t img_align_n_tracked = img_align.run(std::vector<FramePtr>({last_frame_}), std::vector<FramePtr>({new_frame_}));
   size_t img_align_n_tracked = img_align.run(last_frame_, new_frame_);
   SVO_STOP_TIMER("sparse_img_align");
   SVO_LOG(img_align_n_tracked);
@@ -196,6 +179,8 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
     depth_filter_->addFrame(new_frame_);
     return RESULT_NO_KEYFRAME;
   }
+
+  // e. 新增关键帧
   new_frame_->setKeyframe();
   SVO_DEBUG_STREAM("New keyframe selected.");
 
@@ -240,7 +225,7 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   return RESULT_IS_KEYFRAME;
 }
 
-FrameHandlerMono::UpdateResult FrameHandlerMono::relocalizeFrame(
+FrameHandlerStereo::UpdateResult FrameHandlerStereo::relocalizeFrame(
     const SE3& T_cur_ref,
     FramePtr ref_keyframe)
 {
@@ -257,7 +242,7 @@ FrameHandlerMono::UpdateResult FrameHandlerMono::relocalizeFrame(
   {
     SE3 T_f_w_last = last_frame_->T_f_w_;
     last_frame_ = ref_keyframe;
-    FrameHandlerMono::UpdateResult res = processFrame();
+    FrameHandlerStereo::UpdateResult res = processFrame();
     if(res != RESULT_FAILURE)
     {
       stage_ = STAGE_DEFAULT_FRAME;
@@ -270,7 +255,7 @@ FrameHandlerMono::UpdateResult FrameHandlerMono::relocalizeFrame(
   return RESULT_FAILURE;
 }
 
-bool FrameHandlerMono::relocalizeFrameAtPose(
+bool FrameHandlerStereo::relocalizeFrameAtPose(
     const int keyframe_id,
     const SE3& T_f_kf,
     const cv::Mat& img,
@@ -288,7 +273,7 @@ bool FrameHandlerMono::relocalizeFrameAtPose(
   return false;
 }
 
-void FrameHandlerMono::resetAll()
+void FrameHandlerStereo::resetAll()
 {
   resetCommon();
   last_frame_.reset();
@@ -298,29 +283,21 @@ void FrameHandlerMono::resetAll()
   depth_filter_->reset();
 }
 
-void FrameHandlerMono::setFirstFrame(const FramePtr& first_frame)
-{
-  resetAll();
-  last_frame_ = first_frame;
-  last_frame_->setKeyframe();
-  map_.addKeyframe(last_frame_);
-  stage_ = STAGE_DEFAULT_FRAME;
-}
-
-bool FrameHandlerMono::needNewKf(double scene_depth_mean)
+bool FrameHandlerStereo::needNewKf(double scene_depth_mean)
 {
   for(auto it=overlap_kfs_.begin(), ite=overlap_kfs_.end(); it!=ite; ++it)
   {
     Vector3d relpos = new_frame_->w2f(it->first->pos());
-    if(fabs(relpos.x())/scene_depth_mean < Config::kfSelectMinDist() &&
-       fabs(relpos.y())/scene_depth_mean < Config::kfSelectMinDist()*0.8 &&
-       fabs(relpos.z())/scene_depth_mean < Config::kfSelectMinDist()*1.3)
+    // printf("delta:(%.2f %.2f %.2f) scene depth:%.2f\n", relpos.x(),relpos.y(),relpos.z());
+    if(fabs(relpos.x()) < Config::kfSelectMinDist() &&
+       fabs(relpos.y()) < Config::kfSelectMinDist() &&
+       fabs(relpos.z()) < Config::kfSelectMinDist())
       return false;
   }
   return true;
 }
 
-void FrameHandlerMono::setCoreKfs(size_t n_closest)
+void FrameHandlerStereo::setCoreKfs(size_t n_closest)
 {
   size_t n = min(n_closest, overlap_kfs_.size()-1);
   std::partial_sort(overlap_kfs_.begin(), overlap_kfs_.begin()+n, overlap_kfs_.end(),
