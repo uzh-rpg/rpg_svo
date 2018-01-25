@@ -25,6 +25,8 @@
 
 namespace svo {
 
+typedef std::shared_ptr<FrameBundle> FrameBundlePtr;
+
 /// Monocular Visual Odometry Pipeline as described in the SVO paper.
 class FrameHandlerStereo : public FrameHandlerBase
 {
@@ -38,7 +40,7 @@ public:
   void addImage(const cv::Mat& img_left, const cv::Mat& img_right, double timestamp);
 
   /// Get the last frame that has been processed.
-  FramePtr lastFrame() { return last_frame_; }
+  FrameBundlePtr lastFrames() { return last_frames_; }
 
   /// Get the set of spatially closest keyframes of the last frame.
   const set<FramePtr>& coreKeyframes() { return core_kfs_; }
@@ -56,9 +58,8 @@ public:
 protected:
   vk::AbstractCamera* cam_;                     //!< Camera model, can be ATAN, Pinhole or Ocam (see vikit).
   Reprojector reprojector_;                     //!< Projects points from other keyframes into the current frame
-  FramePtr new_frame_;                          //!< Current frame.
-  FramePtr new_frame_right_;                    //!< Current frame right.
-  FramePtr last_frame_;                         //!< Last frame, not necessarily a keyframe.
+  FrameBundlePtr new_frames_;                   //!< Current frame.
+  FrameBundlePtr last_frames_;                   //!< Last frame, not necessarily a keyframe.
   set<FramePtr> core_kfs_;                      //!< Keyframes in the closer neighbourhood.
   vector< pair<FramePtr,size_t> > overlap_kfs_; //!< All keyframes with overlapping field of view. the paired number specifies how many common mappoints are observed TODO: why vector!?
   DepthFilter* depth_filter_;                   //!< Depth estimation algorithm runs in a parallel thread and is used to initialize new 3D points.

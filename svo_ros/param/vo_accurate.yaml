@@ -1,7 +1,7 @@
 grid_size: 20
-max_n_kfs: 50
+max_n_kfs: 30
 loba_num_iter: 10
-max_fts: 200
+max_fts: 180
 quality_max_drop_fts: 130
 kfselect_mindist: 0.4
 quality_min_fts: 30

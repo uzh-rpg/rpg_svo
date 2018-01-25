@@ -193,7 +193,7 @@ void computeHomography(
   T_cur_from_ref = Homography.T_c2_from_c1;
 }
 
-InitResult initFrameStereo(FramePtr frame_left, FramePtr frame_right, float baseline)
+InitResult initFrameStereo(FramePtr frame_left, FramePtr frame_right)
 {
   vector<cv::Point2f> px_left, px_right;
   vector<Vector3d> f_left, f_right;   //!< bearing vectors corresponding to the keypoints in the reference image.
@@ -204,6 +204,8 @@ InitResult initFrameStereo(FramePtr frame_left, FramePtr frame_right, float base
   SVO_INFO_STREAM("Init: KLT tracked "<< disparities.size() <<" features");
   if(disparities.size() < Config::initMinTracked())
     return FAILURE;
+
+  double baseline = (frame_left->T_body_cam_ * frame_right->T_cam_body_).translation().norm();
 
   int inlier_cnt = 0;
   for(size_t i=0; i<px_left.size(); i++)
@@ -220,6 +222,10 @@ InitResult initFrameStereo(FramePtr frame_left, FramePtr frame_right, float base
     Feature* ftr_left(new Feature(frame_left.get(), new_point, Vector2d(p_left.x, p_left.y), f_left[i], 0));
     frame_left->addFeature(ftr_left);
     new_point->addFrameRef(ftr_left);
+
+    Feature* ftr_right(new Feature(frame_right.get(), new_point, Vector2d(p_right.x, p_right.y), f_right[i], 0));
+    frame_right->addFeature(ftr_right);
+    new_point->addFrameRef(ftr_right);
 
     inlier_cnt++;
   }
@@ -242,7 +248,6 @@ InitResult initFrameStereo(FramePtr frame_left, FramePtr frame_right, float base
     }
     cv::imshow("stereo init",img_show);
     cv::waitKey();
-    printf("track pts size:%d\n", inlier_cnt);
   #endif
 
   if(inlier_cnt < Config::initMinInliers())

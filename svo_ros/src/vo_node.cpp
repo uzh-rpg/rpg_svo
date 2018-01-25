@@ -98,16 +98,17 @@ VoNode::~VoNode()
 }
 
 void VoNode::processImgLR(const cv::Mat& imgl, const cv::Mat& imgr, double timestamp)
-{
+{  
   processUserActions();
   vo_->addImage(imgl, imgr, timestamp);
-  visualizer_.publishMinimal(imgl, vo_->lastFrame(), *vo_, timestamp);
+
+  visualizer_.publishMinimal(imgl, vo_->lastFrames()->at(0), *vo_, timestamp);
 
   if(publish_markers_ && vo_->stage() != FrameHandlerBase::STAGE_PAUSED)
-    visualizer_.visualizeMarkers(vo_->lastFrame(), vo_->coreKeyframes(), vo_->map());
+    visualizer_.visualizeMarkers(vo_->lastFrames()->at(0), vo_->coreKeyframes(), vo_->map());
 
   if(publish_dense_input_)
-    visualizer_.exportToDense(vo_->lastFrame());
+    visualizer_.exportToDense(vo_->lastFrames()->at(0));
 
   if(vo_->stage() == FrameHandlerStereo::STAGE_PAUSED)
     usleep(100000);
@@ -156,6 +157,7 @@ void VoNode::remoteKeyCb(const std_msgs::StringConstPtr& key_input)
 } // namespace svo
 
 #define PLAY_VIDEO 1
+#define SAVE_TRAJ  1
 
 #if PLAY_VIDEO
 #include "dataset.h"
@@ -175,7 +177,11 @@ int video_demo(svo::VoNode* vo_node)
       printf("[ERROR] stereo_video_play: cannot open file %s\n", video_ts_file.c_str());
       return -1;
   }
-  usleep(3000000);
+  // usleep(3000000);
+#if SAVE_TRAJ
+  FILE* fp_log = fopen("trajectory_svo_stereo.txt","w");
+  fprintf(fp_log, "#imgidx timestamp x y z qw qx qy qz cost_ms\n");
+#endif
 
   std::vector<float>  frame_costs;
   cv::Mat image;
@@ -199,6 +205,7 @@ int video_demo(svo::VoNode* vo_node)
       float cost_ms = toc("process");
       frame_costs.push_back(cost_ms);
 
+    #if 0
       cv::Mat img_draw;
       cv::cvtColor(image, img_draw, cv::COLOR_GRAY2BGR);
       char text[30] = {0};
@@ -207,7 +214,25 @@ int video_demo(svo::VoNode* vo_node)
       cv::imshow("image",img_draw);
       char key = cv::waitKey(100);
       if(key==27) {break;}
+    #else
+      usleep(10000);
+    #endif
+    #if SAVE_TRAJ
+      Sophus::SE3 cam_pose = vo_node->vo_->lastFrames()->at(0)->T_world_cam();
+      Eigen::Vector3d xyz = cam_pose.translation();
+      Eigen::Quaterniond quat_wxyz = cam_pose.unit_quaternion();
+      // std::cout<<cam_pose.rotation_matrix();
+      // printf("%f %f %f %f\n", quat_wxyz.w(), quat_wxyz.x(), quat_wxyz.y(), quat_wxyz.z());
+      // getchar();
+      fprintf(fp_log, "%d %f %f %f %f %f %f %f %f %f\n", i, tframe, xyz.x(), xyz.y(), xyz.z(),
+                                            quat_wxyz.w(), quat_wxyz.x(), quat_wxyz.y(), quat_wxyz.z(),
+                                            cost_ms);
+      fflush(fp_log);
+    #endif
   }
+#if SAVE_TRAJ
+  fclose(fp_log);
+#endif
   return 0;
 }
 #endif

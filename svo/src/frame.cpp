@@ -149,6 +149,12 @@ bool Frame::isVisible(const Vector3d& xyz_w) const
   return false;
 }
 
+int FrameBundle::bundle_counter_ = 0;
+
+FrameBundle::FrameBundle(const std::vector<FramePtr>& frames)
+: frames_(frames)
+, bundle_id_(bundle_counter_++)
+{}
 
 /// Utility functions for the Frame class
 namespace frame_utils {

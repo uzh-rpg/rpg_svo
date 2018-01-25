@@ -18,6 +18,7 @@
 #define SVO_POSE_OPTIMIZER_H_
 
 #include <svo/global.h>
+#include <svo/frame.h>
 
 namespace svo {
 
@@ -39,6 +40,16 @@ void optimizeGaussNewton(
     const size_t n_iter,
     const bool verbose,
     FramePtr& frame,
+    double& estimated_scale,
+    double& error_init,
+    double& error_final,
+    size_t& num_obs);
+
+void optimizeGaussNewton(
+    const double reproj_thresh,
+    const size_t n_iter,
+    const bool verbose,
+    FrameBundle::Ptr frames,
     double& estimated_scale,
     double& error_init,
     double& error_final,

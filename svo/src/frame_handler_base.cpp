@@ -196,5 +196,33 @@ void FrameHandlerBase::optimizeStructure(
   }
 }
 
+void FrameHandlerBase::optimizeStructure(
+    FrameBundle::Ptr frames,
+    size_t max_n_pts,
+    int max_iter)
+{
+  set<Point*> pts_set;
+  for(size_t i=0; i<frames->size(); i++)
+  {
+    FramePtr frame = frames->at(i);
+    for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it)
+    {
+      if((*it)->point != NULL)
+        pts_set.insert((*it)->point);
+    }
+  }
+  deque<Point*> pts(pts_set.begin(), pts_set.end());
+#if 0
+  max_n_pts = min(max_n_pts, pts.size());
+  nth_element(pts.begin(), pts.begin() + max_n_pts, pts.end(), ptLastOptimComparator);
+  for(deque<Point*>::iterator it=pts.begin(); it!=pts.begin()+max_n_pts; ++it)
+#else
+  for(auto it=pts.begin(); it!=pts.end(); ++it)
+#endif  
+  {
+    (*it)->optimize(max_iter);
+    (*it)->last_structure_optim_ = frames->getBundleId();
+  }
+}
 
 } // namespace svo

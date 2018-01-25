@@ -139,6 +139,8 @@ public:
   /// Return the pose of the frame in the (w)orld coordinate frame.
   inline Vector3d pos() const { return T_f_w_.inverse().translation(); }
 
+  inline Vector3d imuPos() const { return T_world_imu().translation(); }
+
   inline static Eigen::Matrix3d skew(const Eigen::Vector3d& v)
   {
     Eigen::Matrix3d v_sqew;
@@ -238,6 +240,115 @@ public:
 
 };
 
+class FrameBundle
+{
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+  typedef std::shared_ptr<FrameBundle> Ptr;
+  typedef std::vector<FramePtr> FrameList;
+
+  FrameBundle(const std::vector<FramePtr>& frames);
+  ~FrameBundle() = default;
+
+  FrameBundle(const FrameBundle&) = delete;
+  FrameBundle& operator=(const FrameBundle&) = delete;
+
+  inline const FramePtr& at(size_t i) const {
+    return frames_.at(i);
+  }
+
+  inline size_t size() const {
+    return frames_.size();
+  }
+
+  inline bool empty() const {
+    return frames_.empty();
+  }
+
+  inline int getBundleId() const {
+    return bundle_id_;
+  }
+
+  /// Get timestamp of camera rig.
+  inline int64_t getTimestamp() const {
+    assert(!frames_.empty());
+    return frames_[0]->timestamp_;
+  }
+
+  inline Vector3d imuPos() const {
+    assert(!frames_.empty());
+    return frames_[0]->imuPos();
+  }
+
+  /// Get pose of camera rig.
+  Sophus::SE3 get_T_W_B() const {
+    assert(!frames_.empty());
+    return frames_[0]->T_world_imu();
+  }
+
+  Sophus::SE3 get_T_B_W() const {
+    assert(!frames_.empty());
+    return frames_[0]->T_imu_world();
+  }
+
+  /// Set pose of camera rig.
+  void set_T_W_B(const Sophus::SE3& T_W_B) {
+    for(const FramePtr& frame : frames_)
+      frame->T_f_w_ = (T_W_B * frame->T_body_cam_).inverse();
+  }
+
+  void setKeyframe() {
+    is_keyframe_ = true;
+    for(const FramePtr& frame : frames_)
+      frame->setKeyframe();
+  }
+
+  bool isKeyframe() const {
+    return is_keyframe_;
+  }
+
+  /// Number of features. Not necessarily succesfully tracked ones.
+  size_t numFeatures() const
+  {
+    int n = 0;
+    for(const FramePtr& frame : frames_) n += frame->fts_.size();
+    return n;
+  }
+
+  /// Number of tracked features: both landmarks and matched seeds.
+  size_t numTrackedFeatures() const
+  {
+    //TODO
+    assert(false);
+  }
+
+  FrameList frames_;
+
+  /// IMU measurements since the last nframe (including the last IMU measurement
+  /// of the previous edge for integration).
+  Eigen::Matrix<int64_t, 1, Eigen::Dynamic> imu_timestamps_ns_;
+  Eigen::Matrix<double, 6, Eigen::Dynamic> imu_measurements_; // Order: [acc, gyro]
+
+  // Make class iterable:
+  typedef FrameList::value_type value_type;
+  typedef FrameList::iterator iterator;
+  typedef FrameList::const_iterator const_iterator;
+  FrameList::iterator begin() { return frames_.begin(); }
+  FrameList::iterator end() { return frames_.end(); }
+  FrameList::const_iterator begin() const { return frames_.begin(); }
+  FrameList::const_iterator end() const { return frames_.end(); }
+  FrameList::const_iterator cbegin() const { return frames_.cbegin(); }
+  FrameList::const_iterator cend() const { return frames_.cend(); }
+
+private:
+
+  static int bundle_counter_;         //!< Counts the number of created frames. Used to set the unique id.
+
+  bool is_keyframe_ = false;
+
+  int bundle_id_;
+};
 
 /// Some helper functions for the frame object.
 namespace frame_utils {

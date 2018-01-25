@@ -136,7 +136,8 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   SVO_START_TIMER("sparse_img_align");
   SparseImgAlign img_align(Config::kltMaxLevel(), Config::kltMinLevel(),
                            30, SparseImgAlign::GaussNewton, false, false);
-  size_t img_align_n_tracked = img_align.run(last_frame_, new_frame_);
+  size_t img_align_n_tracked = img_align.run(FrameBundle::Ptr(new FrameBundle(std::vector<FramePtr>({last_frame_}))),
+                                             FrameBundle::Ptr(new FrameBundle(std::vector<FramePtr>({new_frame_}))));
   SVO_STOP_TIMER("sparse_img_align");
   SVO_LOG(img_align_n_tracked);
   SVO_DEBUG_STREAM("Img Align:\t Tracked = " << img_align_n_tracked);
@@ -252,7 +253,8 @@ FrameHandlerMono::UpdateResult FrameHandlerMono::relocalizeFrame(
   }
   SparseImgAlign img_align(Config::kltMaxLevel(), Config::kltMinLevel(),
                            30, SparseImgAlign::GaussNewton, false, false);
-  size_t img_align_n_tracked = img_align.run(ref_keyframe, new_frame_);
+  size_t img_align_n_tracked = img_align.run(FrameBundle::Ptr(new FrameBundle(std::vector<FramePtr>({ref_keyframe}))),
+                                             FrameBundle::Ptr(new FrameBundle(std::vector<FramePtr>({new_frame_}))));
   if(img_align_n_tracked > 30)
   {
     SE3 T_f_w_last = last_frame_->T_f_w_;
