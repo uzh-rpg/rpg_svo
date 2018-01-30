@@ -104,10 +104,10 @@ void Frame::checkKeyPoints(Feature* ftr)
     if(key_pts_[2] == NULL)
       key_pts_[2] = ftr;
     else if((ftr->px[0]-cu) * (ftr->px[1]-cv)
-          > (key_pts_[2]->px[0]-cu) * (key_pts_[2]->px[1]-cv))
+          < (key_pts_[2]->px[0]-cu) * (key_pts_[2]->px[1]-cv))
       key_pts_[2] = ftr;
   }
-  if(ftr->px[0] < cv && ftr->px[1] < cv)
+  if(ftr->px[0] < cu && ftr->px[1] < cv)
   {
     if(key_pts_[3] == NULL)
       key_pts_[3] = ftr;
@@ -115,12 +115,12 @@ void Frame::checkKeyPoints(Feature* ftr)
           > (key_pts_[3]->px[0]-cu) * (key_pts_[3]->px[1]-cv))
       key_pts_[3] = ftr;
   }
-  if(ftr->px[0] < cv && ftr->px[1] >= cv)
+  if(ftr->px[0] < cu && ftr->px[1] >= cv)
   {
     if(key_pts_[4] == NULL)
       key_pts_[4] = ftr;
     else if((ftr->px[0]-cu) * (ftr->px[1]-cv)
-          > (key_pts_[4]->px[0]-cu) * (key_pts_[4]->px[1]-cv))
+          < (key_pts_[4]->px[0]-cu) * (key_pts_[4]->px[1]-cv))
       key_pts_[4] = ftr;
   }
 }
