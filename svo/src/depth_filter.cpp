@@ -111,6 +111,22 @@ void DepthFilter::addKeyframe(FramePtr frame, double depth_mean, double depth_mi
     initializeSeeds(frame);
 }
 
+void DepthFilter::addKeyframe(FramePtr frame, double depth_mean, double depth_min, const std::vector<FramePtr> & history_frames)
+{
+  new_keyframe_min_depth_ = depth_min;
+  new_keyframe_mean_depth_ = depth_mean;
+  if(thread_ != NULL)
+  {
+    new_keyframe_ = frame;
+    new_keyframe_set_ = true;
+    seeds_updating_halt_ = true;
+    new_keyframe_update_frames_ = history_frames;
+    frame_queue_cond_.notify_one();
+  }
+  else
+    initializeSeeds(frame);
+}
+
 void DepthFilter::initializeSeeds(FramePtr frame)
 {
   Features new_features;
@@ -171,6 +187,7 @@ void DepthFilter::updateSeedsLoop()
   while(!boost::this_thread::interruption_requested())
   {
     FramePtr frame;
+    std::vector<FramePtr> history_frames;
     {
       lock_t lock(frame_queue_mut_);
       while(frame_queue_.empty() && new_keyframe_set_ == false)
@@ -181,6 +198,7 @@ void DepthFilter::updateSeedsLoop()
         seeds_updating_halt_ = false;
         clearFrameQueue();
         frame = new_keyframe_;
+        history_frames = new_keyframe_update_frames_;
       }
       else
       {
@@ -190,7 +208,13 @@ void DepthFilter::updateSeedsLoop()
     }
     updateSeeds(frame);
     if(frame->isKeyframe())
+    {
       initializeSeeds(frame);
+      for(auto& f:new_keyframe_update_frames_)
+      {
+        updateSeeds(f);
+      }
+    }
   }
 }
 

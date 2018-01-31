@@ -30,6 +30,10 @@
 
 namespace svo {
 
+#define DBG_REPRJ_ERR(INFO) /*{ printf("%s: ", INFO); \
+        for(int i=0;i<new_frames_->size();i++) printf("%f ", calcReprojectError(new_frames_->at(i))); \
+        printf("\n");}*/
+
 FrameHandlerStereo::FrameHandlerStereo(vk::AbstractCamera* cam) :
   FrameHandlerBase(),
   cam_(cam),
@@ -114,6 +118,9 @@ void FrameHandlerStereo::addImage(const cv::Mat& img_left, const cv::Mat& img_ri
     new_frames_.reset();
   }
 #endif
+  history_frames_.push_back(last_frames_);
+  if(history_frames_.size()>10)
+    history_frames_.pop_front();
   // finish processing
   finishFrameProcessingCommon(last_frames_->getBundleId(), res, last_frames_->numFeatures());
 }
@@ -171,14 +178,7 @@ FrameHandlerBase::UpdateResult FrameHandlerStereo::processFrame()
   SVO_START_TIMER("sparse_img_align");
   SparseImgAlign img_align(Config::kltMaxLevel(), Config::kltMinLevel(),
                            30, SparseImgAlign::GaussNewton, false, false);
-#if 1
   size_t img_align_n_tracked = img_align.run(last_frames_, new_frames_);
-#else
-  size_t img_align_n_tracked = img_align.run(
-                                FrameBundle::Ptr(new FrameBundle(std::vector<FramePtr>(1, last_frames_->at(0)))),
-                                FrameBundle::Ptr(new FrameBundle(std::vector<FramePtr>(1, new_frames_->at(0)))));
-  new_frames_->set_T_W_B(new_frames_->at(0)->T_world_imu());
-#endif
   SVO_STOP_TIMER("sparse_img_align");
   SVO_LOG(img_align_n_tracked);
   SVO_DEBUG_STREAM("Img Align:\t Tracked = " << img_align_n_tracked);
@@ -227,27 +227,16 @@ FrameHandlerBase::UpdateResult FrameHandlerStereo::processFrame()
     tracking_quality_ = TRACKING_INSUFFICIENT;
     return RESULT_FAILURE;
   }
-#define DBG_REPRJ_ERR(INFO) { printf("%s: ", INFO); \
-        for(int i=0;i<new_frames_->size();i++) printf("%f ", calcReprojectError(new_frames_->at(i))); \
-        printf("\n");}
-  DBG_REPRJ_ERR("reprojectMap")
+
   // c. pose and point optimizaiton respectively
   // 根据投影的特征点，优化当前帧的pose(优化的重投影误差)，然后再根据pose优化特征点，分开优化是为了加速
   // pose optimization
   SVO_START_TIMER("pose_optimizer");
   size_t sfba_n_edges_final;
   double sfba_thresh, sfba_error_init, sfba_error_final;
-#if 1
   pose_optimizer::optimizeGaussNewton(
       Config::poseOptimThresh(), Config::poseOptimNumIter()*2, false,
       new_frames_, sfba_thresh, sfba_error_init, sfba_error_final, sfba_n_edges_final);
-#else
-  pose_optimizer::optimizeGaussNewton(
-      Config::poseOptimThresh(), Config::poseOptimNumIter(), false,
-      new_frames_->frames_[0], sfba_thresh, sfba_error_init, sfba_error_final, sfba_n_edges_final);
-  new_frames_->set_T_W_B(new_frames_->at(0)->T_world_imu());
-#endif
-  DBG_REPRJ_ERR("optimizeGaussNewton")
   SVO_STOP_TIMER("pose_optimizer");
   SVO_LOG4(sfba_thresh, sfba_error_init, sfba_error_final, sfba_n_edges_final);
   SVO_DEBUG_STREAM("PoseOptimizer:\t ErrInit = "<<sfba_error_init<<"px\t thresh = "<<sfba_thresh);
@@ -259,7 +248,6 @@ FrameHandlerBase::UpdateResult FrameHandlerStereo::processFrame()
   SVO_START_TIMER("point_optimizer");
   optimizeStructure(new_frames_, Config::structureOptimMaxPts()*2, Config::structureOptimNumIter()*2);
   SVO_STOP_TIMER("point_optimizer");
-  DBG_REPRJ_ERR("optimizeStructure")
 
   // d. select keyframe
   // 判断当前帧是否为关键帧，如果不是关键帧则退出，如果是，则增加关键帧，并提取新的特征点加到深度滤波器中
@@ -296,12 +284,17 @@ FrameHandlerBase::UpdateResult FrameHandlerStereo::processFrame()
     map_.point_candidates_.addCandidatePointToFrame(frame);
   }
   // init new depth-filters
-  for(size_t i=0; i<new_frames_->size(); i++)
   {
-    if(i == 0)
-      depth_filter_->addKeyframe(new_frames_->at(i), depth_mean, 0.5*depth_min);
-    else
-      depth_filter_->addFrame(new_frames_->at(i));
+    std::vector<FramePtr> update_frames;
+    for(auto & fb: history_frames_)
+    {
+      update_frames.insert(update_frames.begin(),fb->frames_.begin(),fb->frames_.end());
+    }
+    for(size_t i=1; i<new_frames_->size(); i++)
+    {
+      update_frames.push_back(new_frames_->at(i));
+    }
+    depth_filter_->addKeyframe(new_frames_->at(0), depth_mean, 0.5*depth_min, update_frames);
   }
 
   // if limited number of keyframes, remove the one furthest apart

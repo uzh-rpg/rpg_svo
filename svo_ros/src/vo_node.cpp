@@ -205,14 +205,14 @@ int video_demo(svo::VoNode* vo_node)
       float cost_ms = toc("process");
       frame_costs.push_back(cost_ms);
 
-    #if 0
+    #if 1
       cv::Mat img_draw;
       cv::cvtColor(image, img_draw, cv::COLOR_GRAY2BGR);
       char text[30] = {0};
       sprintf(text, "%6.1f fps", 1000.0f/vecMean(subvec(frame_costs, std::max(0,(int)frame_costs.size()-30))));
       cv::putText(img_draw, text, cv::Point(image.cols-90, 15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0,0,255), 1);
       cv::imshow("image",img_draw);
-      char key = cv::waitKey(100);
+      char key = cv::waitKey(10);
       if(key==27) {break;}
     #else
       usleep(10000);
