@@ -148,6 +148,7 @@ FrameHandlerStereo::UpdateResult FrameHandlerStereo::processFirstFrame()
     }
     map_.addKeyframe(f);
   }
+  last_keyframes_ = new_frames_;
   stage_ = STAGE_DEFAULT_FRAME;
   return RESULT_IS_KEYFRAME;
 }
@@ -309,6 +310,7 @@ FrameHandlerBase::UpdateResult FrameHandlerStereo::processFrame()
   for(size_t i=0; i<new_frames_->size(); i++)
     map_.addKeyframe(new_frames_->at(i));
 
+  last_keyframes_ = new_frames_;
   return RESULT_IS_KEYFRAME;
 }
 
@@ -340,16 +342,42 @@ void FrameHandlerStereo::resetAll()
 
 bool FrameHandlerStereo::needNewKf(double scene_depth_mean)
 {
+#if 1
   for(auto it=overlap_kfs_.begin(), ite=overlap_kfs_.end(); it!=ite; ++it)
   {
     Vector3d relpos = new_frames_->at(0)->w2f(it->first->pos());
-    // printf("delta:(%.2f %.2f %.2f) scene depth:%.2f\n", relpos.x(),relpos.y(),relpos.z());
     if(fabs(relpos.x()) < Config::kfSelectMinDist() &&
        fabs(relpos.y()) < Config::kfSelectMinDist() &&
        fabs(relpos.z()) < Config::kfSelectMinDist())
       return false;
   }
   return true;
+#else
+  // condition 1: check max frame count
+  const int max_frame_cnt = 30;
+  int delta_frame_cnt = new_frames_->getBundleId() - last_keyframes_->getBundleId();
+  if(delta_frame_cnt>max_frame_cnt) {return true;}
+
+  // condition 2: check camera motion
+  const float max_move_dist = std::min(1.0, scene_depth_mean*0.12);
+  const float max_move_angle = 8*0.017453;
+  Sophus::SE3 cur_w_f = new_frames_->at(0)->T_world_cam();
+  bool has_close_kf = false;
+  for(auto it=overlap_kfs_.begin(), ite=overlap_kfs_.end(); it!=ite; ++it)
+  {
+    Sophus::SE3 motion_prev_cur = it->first->T_cam_world() * cur_w_f;
+    Eigen::Vector3d trans = motion_prev_cur.translation();
+    if(   fabs(trans.z()) < max_move_dist*1.3
+      && hypotf(trans.x(),trans.y()) < max_move_dist
+      && fabs(2 * acos(motion_prev_cur.unit_quaternion().w())) < max_move_angle)
+    {
+      has_close_kf = true;
+      break;
+    }
+  }
+  if(!has_close_kf) {return true;}
+  return false;
+#endif
 }
 
 void FrameHandlerStereo::setCoreKfs(size_t n_closest)

@@ -180,6 +180,7 @@ bool getSceneDepth(const Frame& frame, double& depth_mean, double& depth_min)
     if((*it)->point != NULL)
     {
       const double z = frame.w2f((*it)->point->pos_).z();
+      if(z <= 0) continue;
       depth_vec.push_back(z);
       depth_min = fmin(z, depth_min);
     }

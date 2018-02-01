@@ -59,12 +59,13 @@ protected:
   vk::AbstractCamera* cam_;                     //!< Camera model, can be ATAN, Pinhole or Ocam (see vikit).
   Reprojector reprojector_;                     //!< Projects points from other keyframes into the current frame
   FrameBundlePtr new_frames_;                   //!< Current frame.
-  FrameBundlePtr last_frames_;                   //!< Last frame, not necessarily a keyframe.
+  FrameBundlePtr last_frames_;                  //!< Last frame, not necessarily a keyframe.
   set<FramePtr> core_kfs_;                      //!< Keyframes in the closer neighbourhood.
   vector< pair<FramePtr,size_t> > overlap_kfs_; //!< All keyframes with overlapping field of view. the paired number specifies how many common mappoints are observed TODO: why vector!?
   DepthFilter* depth_filter_;                   //!< Depth estimation algorithm runs in a parallel thread and is used to initialize new 3D points.
 
-  std::deque<FrameBundlePtr> history_frames_;
+  FrameBundlePtr last_keyframes_;               //!< Last keyframes, used at keyframe selection.
+  std::deque<FrameBundlePtr> history_frames_;   //!< history frames, used at depth filter.
 
   /// Initialize the visual odometry algorithm.
   virtual void initialize();
