@@ -247,7 +247,7 @@ void Visualizer::displayKeyframeWithMps(const FramePtr& frame, int ts)
   SE3 T_world_cam(T_world_from_vision_*frame->T_f_w_.inverse());
   vk::output_helper::publishFrameMarker(
       pub_frames_, T_world_cam.rotation_matrix(),
-      T_world_cam.translation(), "kfs", ros::Time::now(), frame->id_*10, 0, 0.15);
+      T_world_cam.translation(), "kfs", ros::Time::now(), frame->id_*10, 0, 0.25);
 
   // publish point cloud and links
   for(Features::iterator it=frame->fts_.begin(); it!=frame->fts_.end(); ++it)
@@ -260,7 +260,7 @@ void Visualizer::displayKeyframeWithMps(const FramePtr& frame, int ts)
 
     vk::output_helper::publishPointMarker(
         pub_points_, T_world_from_vision_*(*it)->point->pos_, "pts",
-        ros::Time::now(), (*it)->point->id_, 0, 0.05, Vector3d(1.0, 0., 1.0),
+        ros::Time::now(), (*it)->point->id_, 0, 0.2, Vector3d(1.0, 0., 1.0),
         publish_points_display_time_);
     (*it)->point->last_published_ts_ = ts;
   }
