@@ -5,6 +5,7 @@ Modify to svo2.0 to support stereo camera, with:
 - enhance the keyframe select strategy.
 
 =======================================================================================
+
 SVO
 ===
 
