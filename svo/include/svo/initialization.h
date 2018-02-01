@@ -77,6 +77,8 @@ void computeHomography(
     vector<Vector3d>& xyz_in_cur,
     SE3& T_cur_from_ref);
 
+InitResult initFrameStereo(FramePtr frame_left, FramePtr frame_right);
+
 } // namespace initialization
 } // namespace svo
 

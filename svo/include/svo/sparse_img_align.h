@@ -20,6 +20,7 @@
 #include <vikit/nlls_solver.h>
 #include <vikit/performance_monitor.h>
 #include <svo/global.h>
+#include <svo/frame.h>
 
 namespace vk {
 class AbstractCamera;
@@ -48,17 +49,15 @@ public:
       bool display,
       bool verbose);
 
-  size_t run(
-      FramePtr ref_frame,
-      FramePtr cur_frame);
+  size_t run(FrameBundle::Ptr ref_frames, FrameBundle::Ptr cur_frames);
 
   /// Return fisher information matrix, i.e. the Hessian of the log-likelihood
   /// at the converged state.
   Matrix<double, 6, 6> getFisherInformation();
 
 protected:
-  FramePtr ref_frame_;            //!< reference frame, has depth for gradient pixels.
-  FramePtr cur_frame_;            //!< only the image is known!
+  FrameBundle::Ptr ref_frames_;        //!< reference frame, has depth for gradient pixels.
+  FrameBundle::Ptr cur_frames_;        //!< only the image is known!
   int level_;                     //!< current pyramid level on which the optimization runs.
   bool display_;                  //!< display residual image.
   int max_level_;                 //!< coarsest pyramid level for the alignment.

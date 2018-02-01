@@ -25,6 +25,7 @@
 #include <boost/thread.hpp>
 #include <svo/global.h>
 #include <svo/map.h>
+#include <svo/frame.h>
 
 namespace vk
 {
@@ -85,6 +86,8 @@ public:
   /// Get the number of feature observations of the last frame.
   size_t lastNumObservations() const { return num_obs_last_; }
 
+  void setRelocalize(bool open_reloc) { relocalize_after_track_failed_ = open_reloc; }
+
 protected:
   Stage stage_;                 //!< Current stage of the algorithm.
   bool set_reset_;              //!< Flag that the user can set. Will reset the system before the next iteration.
@@ -95,6 +98,7 @@ protected:
   vk::RingBuffer<size_t> acc_num_obs_;          //!< Number of observed features of the last 10 frames, used to give some user feedback on the tracking performance.
   size_t num_obs_last_;                         //!< Number of observations in the previous frame.
   TrackingQuality tracking_quality_;            //!< An estimate of the tracking quality based on the number of tracked features.
+  bool  relocalize_after_track_failed_;         //!< relocalize after track failed, it set to 0, it'll reset when track failed.
 
   /// Before a frame is processed, this function is called.
   bool startFrameProcessingCommon(const double timestamp);
@@ -116,6 +120,8 @@ protected:
 
   /// Optimize some of the observed 3D points.
   virtual void optimizeStructure(FramePtr frame, size_t max_n_pts, int max_iter);
+
+  virtual void optimizeStructure(FrameBundle::Ptr frame, size_t max_n_pts, int max_iter);
 };
 
 } // namespace nslam

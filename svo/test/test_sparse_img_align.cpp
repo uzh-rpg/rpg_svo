@@ -27,6 +27,7 @@
 #include <svo/feature.h>
 #include <svo/config.h>
 #include "test_utils.h"
+#include <vector>
 
 namespace {
 
@@ -120,8 +121,8 @@ void SparseImgAlignTest::testSequence(
     vk::Timer t;
     svo::SparseImgAlign img_align(svo::Config::kltMaxLevel(), svo::Config::kltMinLevel(),
                                     30, svo::SparseImgAlign::GaussNewton, false, false);
-    img_align.run(frame_ref_, frame_cur_);
-
+    img_align.run(svo::FrameBundle::Ptr(new svo::FrameBundle(std::vector<svo::FramePtr>({frame_ref_}))),
+                  svo::FrameBundle::Ptr(new svo::FrameBundle(std::vector<svo::FramePtr>({frame_cur_}))));
     // compute error
     Sophus::SE3 T_f_gt = frame_cur_->T_f_w_ * T_gt_w.inverse();
     translation_error.push_back(T_f_gt.translation().norm());

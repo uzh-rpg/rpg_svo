@@ -1,3 +1,11 @@
+Modify to svo2.0 to support stereo camera, with:
+- use stereo initialzation instead of mono initialzation by SfM.
+- extend the sparse image alignment, pose optimization to support multi camera joint optimization. For other steps of feature alignment and mapping which are independent of camera amount, only need add another loop to iterate process each camera data.
+- depth filter use history frames to update new seeds, which suggested by the SVO2.0 paper.
+- enhance the keyframe select strategy.
+
+=======================================================================================
+
 SVO
 ===
 

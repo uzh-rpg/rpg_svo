@@ -103,6 +103,8 @@ public:
   /// Add new keyframe to the queue
   void addKeyframe(FramePtr frame, double depth_mean, double depth_min);
 
+  void addKeyframe(FramePtr frame, double depth_mean, double depth_min, const std::vector<FramePtr> & history_frames);
+
   /// Remove all seeds which are initialized from the specified keyframe. This
   /// function is used to make sure that no seeds points to a non-existent frame
   /// when a frame is removed from the map.
@@ -145,6 +147,7 @@ protected:
   boost::mutex frame_queue_mut_;
   boost::condition_variable frame_queue_cond_;
   FramePtr new_keyframe_;               //!< Next keyframe to extract new seeds.
+  std::vector<FramePtr> new_keyframe_update_frames_;
   bool new_keyframe_set_;               //!< Do we have a new keyframe to process?.
   double new_keyframe_min_depth_;       //!< Minimum depth in the new keyframe. Used for range in new seeds.
   double new_keyframe_mean_depth_;      //!< Maximum depth in the new keyframe. Used for range in new seeds.
@@ -155,7 +158,7 @@ protected:
   void initializeSeeds(FramePtr frame);
 
   /// Update all seeds with a new measurement frame.
-  virtual void updateSeeds(FramePtr frame);
+  virtual void updateSeeds(FramePtr frame, int start_seed_idx = 0);
 
   /// When a new keyframe arrives, the frame queue should be cleared.
   void clearFrameQueue();

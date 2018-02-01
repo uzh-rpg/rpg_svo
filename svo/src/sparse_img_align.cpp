@@ -40,24 +40,27 @@ SparseImgAlign::SparseImgAlign(
   eps_ = 0.000001;
 }
 
-size_t SparseImgAlign::run(FramePtr ref_frame, FramePtr cur_frame)
+size_t SparseImgAlign::run(FrameBundle::Ptr ref_frames, FrameBundle::Ptr cur_frames)
 {
   reset();
 
-  if(ref_frame->fts_.empty())
+  int n_fts = ref_frames->numFeatures();
+  if(ref_frames->empty() || n_fts<=0)
   {
     SVO_WARN_STREAM("SparseImgAlign: no features to track!");
     return 0;
   }
 
-  ref_frame_ = ref_frame;
-  cur_frame_ = cur_frame;
-  ref_patch_cache_ = cv::Mat(ref_frame_->fts_.size(), patch_area_, CV_32F);
-  jacobian_cache_.resize(Eigen::NoChange, ref_patch_cache_.rows*patch_area_);
-  visible_fts_.resize(ref_patch_cache_.rows, false); // TODO: should it be reset at each level?
+  ref_frames_ = ref_frames;
+  cur_frames_ = cur_frames;
 
-  SE3 T_cur_from_ref(cur_frame_->T_f_w_ * ref_frame_->T_f_w_.inverse());
+  ref_patch_cache_ = cv::Mat(n_fts, patch_area_, CV_32F);
+  jacobian_cache_.resize(Eigen::NoChange, n_fts*patch_area_);
+  visible_fts_.resize(n_fts, false); // TODO: should it be reset at each level?
 
+  // SE3 T_cur_from_ref(cur_frame_->T_f_w_ * ref_frame_->T_f_w_.inverse());
+  // body transform
+  SE3 T_cur_from_ref(cur_frames_->get_T_B_W()*ref_frames_->get_T_W_B());
   for(level_=max_level_; level_>=min_level_; --level_)
   {
     mu_ = 0.1;
@@ -67,9 +70,10 @@ size_t SparseImgAlign::run(FramePtr ref_frame, FramePtr cur_frame)
       printf("\nPYRAMID LEVEL %i\n---------------\n", level_);
     optimize(T_cur_from_ref);
   }
-  cur_frame_->T_f_w_ = T_cur_from_ref * ref_frame_->T_f_w_;
 
-
+  // cur_frame_->T_f_w_ = T_cur_from_ref * ref_frame_->T_f_w_;
+  SE3 T_cur_w_b = ref_frames_->get_T_W_B() * T_cur_from_ref.inverse();
+  cur_frames_->set_T_W_B(T_cur_w_b);
 
   return n_meas_/patch_area_;
 }
@@ -83,61 +87,71 @@ Matrix<double, 6, 6> SparseImgAlign::getFisherInformation()
 
 void SparseImgAlign::precomputeReferencePatches()
 {
-  const int border = patch_halfsize_+1;
-  const cv::Mat& ref_img = ref_frame_->img_pyr_.at(level_);
-  const int stride = ref_img.cols;
-  const float scale = 1.0f/(1<<level_);
-  const Vector3d ref_pos = ref_frame_->pos();
-  const double focal_length = ref_frame_->cam_->errorMultiplier2();
   size_t feature_counter = 0;
   std::vector<bool>::iterator visiblity_it = visible_fts_.begin();
-  for(auto it=ref_frame_->fts_.begin(), ite=ref_frame_->fts_.end();
-      it!=ite; ++it, ++feature_counter, ++visiblity_it)
+  for(auto it = ref_frames_->begin(); it != ref_frames_->end(); it++)
   {
-    // check if reference with patch size is within image
-    const float u_ref = (*it)->px[0]*scale;
-    const float v_ref = (*it)->px[1]*scale;
-    const int u_ref_i = floorf(u_ref);
-    const int v_ref_i = floorf(v_ref);
-    if((*it)->point == NULL || u_ref_i-border < 0 || v_ref_i-border < 0 || u_ref_i+border >= ref_img.cols || v_ref_i+border >= ref_img.rows)
-      continue;
-    *visiblity_it = true;
-
-    // cannot just take the 3d points coordinate because of the reprojection errors in the reference image!!!
-    const double depth(((*it)->point->pos_ - ref_pos).norm());
-    const Vector3d xyz_ref((*it)->f*depth);
-
-    // evaluate projection jacobian
-    Matrix<double,2,6> frame_jac;
-    Frame::jacobian_xyz2uv(xyz_ref, frame_jac);
-
-    // compute bilateral interpolation weights for reference image
-    const float subpix_u_ref = u_ref-u_ref_i;
-    const float subpix_v_ref = v_ref-v_ref_i;
-    const float w_ref_tl = (1.0-subpix_u_ref) * (1.0-subpix_v_ref);
-    const float w_ref_tr = subpix_u_ref * (1.0-subpix_v_ref);
-    const float w_ref_bl = (1.0-subpix_u_ref) * subpix_v_ref;
-    const float w_ref_br = subpix_u_ref * subpix_v_ref;
-    size_t pixel_counter = 0;
-    float* cache_ptr = reinterpret_cast<float*>(ref_patch_cache_.data) + patch_area_*feature_counter;
-    for(int y=0; y<patch_size_; ++y)
+    FramePtr ref_frame = *it;
+    const int border = patch_halfsize_+1;
+    const cv::Mat& ref_img = ref_frame->img_pyr_.at(level_);
+    const int stride = ref_img.cols;
+    const float scale = 1.0f/(1<<level_);
+    const Vector3d ref_pos = ref_frame->pos();
+    const double focal_length = ref_frame->cam_->errorMultiplier2()/(1<<level_);
+    for(auto it=ref_frame->fts_.begin(), ite=ref_frame->fts_.end();
+        it!=ite; ++it, ++feature_counter, ++visiblity_it)
     {
-      uint8_t* ref_img_ptr = (uint8_t*) ref_img.data + (v_ref_i+y-patch_halfsize_)*stride + (u_ref_i-patch_halfsize_);
-      for(int x=0; x<patch_size_; ++x, ++ref_img_ptr, ++cache_ptr, ++pixel_counter)
+      // check if reference with patch size is within image
+      const float u_ref = (*it)->px[0]*scale;
+      const float v_ref = (*it)->px[1]*scale;
+      const int u_ref_i = floorf(u_ref);
+      const int v_ref_i = floorf(v_ref);
+      if((*it)->point == NULL || u_ref_i-border < 0 || v_ref_i-border < 0 || u_ref_i+border >= ref_img.cols || v_ref_i+border >= ref_img.rows)
+        continue;
+      *visiblity_it = true;
+
+      // cannot just take the 3d points coordinate because of the reprojection errors in the reference image!!!
+      const double depth(((*it)->point->pos_ - ref_pos).norm());
+    #if 0
+      const Vector3d xyz_ref((*it)->f*depth);
+
+      // evaluate projection jacobian
+      Matrix<double,2,6> frame_jac;
+      Frame::jacobian_xyz2uv(xyz_ref, frame_jac);
+    #else
+      const Vector3d xyz_ref_body = (ref_frame->T_body_cam_ * (*it)->f*depth);
+      // evaluate projection jacobian
+      Matrix<double,2,6> frame_jac;
+      Frame::jacobian_xyz2uv_imu(ref_frame->T_cam_body_, xyz_ref_body, frame_jac);
+    #endif
+      // compute bilateral interpolation weights for reference image
+      const float subpix_u_ref = u_ref-u_ref_i;
+      const float subpix_v_ref = v_ref-v_ref_i;
+      const float w_ref_tl = (1.0-subpix_u_ref) * (1.0-subpix_v_ref);
+      const float w_ref_tr = subpix_u_ref * (1.0-subpix_v_ref);
+      const float w_ref_bl = (1.0-subpix_u_ref) * subpix_v_ref;
+      const float w_ref_br = subpix_u_ref * subpix_v_ref;
+      size_t pixel_counter = 0;
+      float* cache_ptr = reinterpret_cast<float*>(ref_patch_cache_.data) + patch_area_*feature_counter;
+      for(int y=0; y<patch_size_; ++y)
       {
-        // precompute interpolated reference patch color
-        *cache_ptr = w_ref_tl*ref_img_ptr[0] + w_ref_tr*ref_img_ptr[1] + w_ref_bl*ref_img_ptr[stride] + w_ref_br*ref_img_ptr[stride+1];
+        uint8_t* ref_img_ptr = (uint8_t*) ref_img.data + (v_ref_i+y-patch_halfsize_)*stride + (u_ref_i-patch_halfsize_);
+        for(int x=0; x<patch_size_; ++x, ++ref_img_ptr, ++cache_ptr, ++pixel_counter)
+        {
+          // precompute interpolated reference patch color
+          *cache_ptr = w_ref_tl*ref_img_ptr[0] + w_ref_tr*ref_img_ptr[1] + w_ref_bl*ref_img_ptr[stride] + w_ref_br*ref_img_ptr[stride+1];
 
-        // we use the inverse compositional: thereby we can take the gradient always at the same position
-        // get gradient of warped image (~gradient at warped position)
-        float dx = 0.5f * ((w_ref_tl*ref_img_ptr[1] + w_ref_tr*ref_img_ptr[2] + w_ref_bl*ref_img_ptr[stride+1] + w_ref_br*ref_img_ptr[stride+2])
-                          -(w_ref_tl*ref_img_ptr[-1] + w_ref_tr*ref_img_ptr[0] + w_ref_bl*ref_img_ptr[stride-1] + w_ref_br*ref_img_ptr[stride]));
-        float dy = 0.5f * ((w_ref_tl*ref_img_ptr[stride] + w_ref_tr*ref_img_ptr[1+stride] + w_ref_bl*ref_img_ptr[stride*2] + w_ref_br*ref_img_ptr[stride*2+1])
-                          -(w_ref_tl*ref_img_ptr[-stride] + w_ref_tr*ref_img_ptr[1-stride] + w_ref_bl*ref_img_ptr[0] + w_ref_br*ref_img_ptr[1]));
+          // we use the inverse compositional: thereby we can take the gradient always at the same position
+          // get gradient of warped image (~gradient at warped position)
+          float dx = 0.5f * ((w_ref_tl*ref_img_ptr[1] + w_ref_tr*ref_img_ptr[2] + w_ref_bl*ref_img_ptr[stride+1] + w_ref_br*ref_img_ptr[stride+2])
+                            -(w_ref_tl*ref_img_ptr[-1] + w_ref_tr*ref_img_ptr[0] + w_ref_bl*ref_img_ptr[stride-1] + w_ref_br*ref_img_ptr[stride]));
+          float dy = 0.5f * ((w_ref_tl*ref_img_ptr[stride] + w_ref_tr*ref_img_ptr[1+stride] + w_ref_bl*ref_img_ptr[stride*2] + w_ref_br*ref_img_ptr[stride*2+1])
+                            -(w_ref_tl*ref_img_ptr[-stride] + w_ref_tr*ref_img_ptr[1-stride] + w_ref_bl*ref_img_ptr[0] + w_ref_br*ref_img_ptr[1]));
 
-        // cache the jacobian
-        jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter) =
-            (dx*frame_jac.row(0) + dy*frame_jac.row(1))*(focal_length / (1<<level_));
+          // cache the jacobian
+          jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter) =
+              (dx*frame_jac.row(0) + dy*frame_jac.row(1))*focal_length;
+        }
       }
     }
   }
@@ -149,92 +163,99 @@ double SparseImgAlign::computeResiduals(
     bool linearize_system,
     bool compute_weight_scale)
 {
-  // Warp the (cur)rent image such that it aligns with the (ref)erence image
-  const cv::Mat& cur_img = cur_frame_->img_pyr_.at(level_);
-
-  if(linearize_system && display_)
-    resimg_ = cv::Mat(cur_img.size(), CV_32F, cv::Scalar(0));
-
-  if(have_ref_patch_cache_ == false)
-    precomputeReferencePatches();
-
-  // compute the weights on the first iteration
+  size_t feature_counter = 0; // is used to compute the index of the cached jacobian
+  std::vector<bool>::iterator visiblity_it = visible_fts_.begin();
+  float chi2 = 0.0;
   std::vector<float> errors;
   if(compute_weight_scale)
     errors.reserve(visible_fts_.size());
-  const int stride = cur_img.cols;
-  const int border = patch_halfsize_+1;
-  const float scale = 1.0f/(1<<level_);
-  const Vector3d ref_pos(ref_frame_->pos());
-  float chi2 = 0.0;
-  size_t feature_counter = 0; // is used to compute the index of the cached jacobian
-  std::vector<bool>::iterator visiblity_it = visible_fts_.begin();
-  for(auto it=ref_frame_->fts_.begin(); it!=ref_frame_->fts_.end();
-      ++it, ++feature_counter, ++visiblity_it)
+
+  for(size_t i=0; i<ref_frames_->size(); i++)
   {
-    // check if feature is within image
-    if(!*visiblity_it)
-      continue;
+    FramePtr ref_frame = ref_frames_->at(i);
+    FramePtr cur_frame = cur_frames_->at(i);
 
-    // compute pixel location in cur img
-    const double depth = ((*it)->point->pos_ - ref_pos).norm();
-    const Vector3d xyz_ref((*it)->f*depth);
-    const Vector3d xyz_cur(T_cur_from_ref * xyz_ref);
-    const Vector2f uv_cur_pyr(cur_frame_->cam_->world2cam(xyz_cur).cast<float>() * scale);
-    const float u_cur = uv_cur_pyr[0];
-    const float v_cur = uv_cur_pyr[1];
-    const int u_cur_i = floorf(u_cur);
-    const int v_cur_i = floorf(v_cur);
+    // Warp the (cur)rent image such that it aligns with the (ref)erence image
+    const cv::Mat& cur_img = cur_frame->img_pyr_.at(level_);
 
-    // check if projection is within the image
-    if(u_cur_i < 0 || v_cur_i < 0 || u_cur_i-border < 0 || v_cur_i-border < 0 || u_cur_i+border >= cur_img.cols || v_cur_i+border >= cur_img.rows)
-      continue;
+    if(linearize_system && display_)
+      resimg_ = cv::Mat(cur_img.size(), CV_32F, cv::Scalar(0));
 
-    // compute bilateral interpolation weights for the current image
-    const float subpix_u_cur = u_cur-u_cur_i;
-    const float subpix_v_cur = v_cur-v_cur_i;
-    const float w_cur_tl = (1.0-subpix_u_cur) * (1.0-subpix_v_cur);
-    const float w_cur_tr = subpix_u_cur * (1.0-subpix_v_cur);
-    const float w_cur_bl = (1.0-subpix_u_cur) * subpix_v_cur;
-    const float w_cur_br = subpix_u_cur * subpix_v_cur;
-    float* ref_patch_cache_ptr = reinterpret_cast<float*>(ref_patch_cache_.data) + patch_area_*feature_counter;
-    size_t pixel_counter = 0; // is used to compute the index of the cached jacobian
-    for(int y=0; y<patch_size_; ++y)
+    if(have_ref_patch_cache_ == false)
+      precomputeReferencePatches();
+
+    // compute the weights on the first iteration
+
+    const int stride = cur_img.cols;
+    const int border = patch_halfsize_+1;
+    const float scale = 1.0f/(1<<level_);
+    const Vector3d ref_pos(ref_frame->pos());
+    for(auto it=ref_frame->fts_.begin(); it!=ref_frame->fts_.end();
+        ++it, ++feature_counter, ++visiblity_it)
     {
-      uint8_t* cur_img_ptr = (uint8_t*) cur_img.data + (v_cur_i+y-patch_halfsize_)*stride + (u_cur_i-patch_halfsize_);
+      // check if feature is within image
+      if(!*visiblity_it)
+        continue;
 
-      for(int x=0; x<patch_size_; ++x, ++pixel_counter, ++cur_img_ptr, ++ref_patch_cache_ptr)
+      // compute pixel location in cur img
+      const double depth = ((*it)->point->pos_ - ref_pos).norm();
+      const Vector3d xyz_ref_cam((*it)->f*depth);
+      const Vector3d xyz_cur_cam(cur_frame->T_cam_body_ * T_cur_from_ref * ref_frame->T_body_cam_ * xyz_ref_cam);
+      const Vector2f uv_cur_pyr(cur_frame->cam_->world2cam(xyz_cur_cam).cast<float>() * scale);
+      const float u_cur = uv_cur_pyr[0];
+      const float v_cur = uv_cur_pyr[1];
+      const int u_cur_i = floorf(u_cur);
+      const int v_cur_i = floorf(v_cur);
+
+      // check if projection is within the image
+      if(u_cur_i < 0 || v_cur_i < 0 || u_cur_i-border < 0 || v_cur_i-border < 0 || u_cur_i+border >= cur_img.cols || v_cur_i+border >= cur_img.rows)
+        continue;
+
+      // compute bilateral interpolation weights for the current image
+      const float subpix_u_cur = u_cur-u_cur_i;
+      const float subpix_v_cur = v_cur-v_cur_i;
+      const float w_cur_tl = (1.0-subpix_u_cur) * (1.0-subpix_v_cur);
+      const float w_cur_tr = subpix_u_cur * (1.0-subpix_v_cur);
+      const float w_cur_bl = (1.0-subpix_u_cur) * subpix_v_cur;
+      const float w_cur_br = subpix_u_cur * subpix_v_cur;
+      float* ref_patch_cache_ptr = reinterpret_cast<float*>(ref_patch_cache_.data) + patch_area_*feature_counter;
+      size_t pixel_counter = 0; // is used to compute the index of the cached jacobian
+      for(int y=0; y<patch_size_; ++y)
       {
-        // compute residual
-        const float intensity_cur = w_cur_tl*cur_img_ptr[0] + w_cur_tr*cur_img_ptr[1] + w_cur_bl*cur_img_ptr[stride] + w_cur_br*cur_img_ptr[stride+1];
-        const float res = intensity_cur - (*ref_patch_cache_ptr);
+        uint8_t* cur_img_ptr = (uint8_t*) cur_img.data + (v_cur_i+y-patch_halfsize_)*stride + (u_cur_i-patch_halfsize_);
 
-        // used to compute scale for robust cost
-        if(compute_weight_scale)
-          errors.push_back(fabsf(res));
-
-        // robustification
-        float weight = 1.0;
-        if(use_weights_) {
-          weight = weight_function_->value(res/scale_);
-        }
-
-        chi2 += res*res*weight;
-        n_meas_++;
-
-        if(linearize_system)
+        for(int x=0; x<patch_size_; ++x, ++pixel_counter, ++cur_img_ptr, ++ref_patch_cache_ptr)
         {
-          // compute Jacobian, weighted Hessian and weighted "steepest descend images" (times error)
-          const Vector6d J(jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter));
-          H_.noalias() += J*J.transpose()*weight;
-          Jres_.noalias() -= J*res*weight;
-          if(display_)
-            resimg_.at<float>((int) v_cur+y-patch_halfsize_, (int) u_cur+x-patch_halfsize_) = res/255.0;
+          // compute residual
+          const float intensity_cur = w_cur_tl*cur_img_ptr[0] + w_cur_tr*cur_img_ptr[1] + w_cur_bl*cur_img_ptr[stride] + w_cur_br*cur_img_ptr[stride+1];
+          const float res = intensity_cur - (*ref_patch_cache_ptr);
+
+          // used to compute scale for robust cost
+          if(compute_weight_scale)
+            errors.push_back(fabsf(res));
+
+          // robustification
+          float weight = 1.0;
+          if(use_weights_) {
+            weight = weight_function_->value(res/scale_);
+          }
+
+          chi2 += res*res*weight;
+          n_meas_++;
+
+          if(linearize_system)
+          {
+            // compute Jacobian, weighted Hessian and weighted "steepest descend images" (times error)
+            const Vector6d J(jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter));
+            H_.noalias() += J*J.transpose()*weight;
+            Jres_.noalias() -= J*res*weight;
+            if(display_)
+              resimg_.at<float>((int) v_cur+y-patch_halfsize_, (int) u_cur+x-patch_halfsize_) = res/255.0;
+          }
         }
       }
     }
   }
-
   // compute the weights on the first iteration
   if(compute_weight_scale && iter_ == 0)
     scale_ = scale_estimator_->compute(errors);

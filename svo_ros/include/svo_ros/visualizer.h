@@ -20,6 +20,7 @@
 #include <queue>
 #include <ros/ros.h>
 #include <svo/global.h>
+#include <svo/frame_handler_stereo.h>
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <nav_msgs/Odometry.h>
@@ -70,7 +71,7 @@ public:
   void publishMinimal(
       const cv::Mat& img,
       const FramePtr& frame,
-      const FrameHandlerMono& slam,
+      const FrameHandlerStereo& slam,
       const double timestamp);
 
   void visualizeMarkers(

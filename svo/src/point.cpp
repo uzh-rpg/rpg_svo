@@ -145,7 +145,7 @@ void Point::optimize(const size_t n_iter)
     const Vector3d dp(A.ldlt().solve(b));
 
     // check if error increased
-    if((i > 0 && new_chi2 > chi2) || (bool) std::isnan((double)dp[0]))
+    if((i > 0 && new_chi2 > chi2) || (bool) std::isnan((double)dp[0]) || dp.norm()>1e4 )
     {
 #ifdef POINT_OPTIMIZER_DEBUG
       cout << "it " << i

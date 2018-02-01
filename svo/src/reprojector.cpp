@@ -162,6 +162,7 @@ bool Reprojector::reprojectCell(Cell& cell, FramePtr frame)
       continue;
     }
 
+    //feature alignment
     bool found_match = true;
     if(options_.find_match_direct)
       found_match = matcher_.findMatchDirect(*it->pt, *frame, it->px);

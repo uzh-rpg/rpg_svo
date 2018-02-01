@@ -131,16 +131,19 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   // Set initial pose TODO use prior
   new_frame_->T_f_w_ = last_frame_->T_f_w_;
 
-  // sparse image align
+  // a. sparse image align
+  // 当前帧与上一帧直接法粗匹配，利用上一帧的带深度的特征点patch
   SVO_START_TIMER("sparse_img_align");
   SparseImgAlign img_align(Config::kltMaxLevel(), Config::kltMinLevel(),
                            30, SparseImgAlign::GaussNewton, false, false);
-  size_t img_align_n_tracked = img_align.run(last_frame_, new_frame_);
+  size_t img_align_n_tracked = img_align.run(FrameBundle::Ptr(new FrameBundle(std::vector<FramePtr>({last_frame_}))),
+                                             FrameBundle::Ptr(new FrameBundle(std::vector<FramePtr>({new_frame_}))));
   SVO_STOP_TIMER("sparse_img_align");
   SVO_LOG(img_align_n_tracked);
   SVO_DEBUG_STREAM("Img Align:\t Tracked = " << img_align_n_tracked);
 
-  // map reprojection & feature alignment
+  // b. map reprojection & feature alignment
+  // 将相邻关键帧中所有的点投影到当前图像，并利用与参考帧的像素误差调整特征点的位置
   SVO_START_TIMER("reproject");
   reprojector_.reprojectMap(new_frame_, overlap_kfs_);
   SVO_STOP_TIMER("reproject");
@@ -156,6 +159,8 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
     return RESULT_FAILURE;
   }
 
+  // c. pose and point optimizaiton respectively
+  // 根据投影的特征点，优化当前帧的pose(优化的重投影误差)，然后再根据pose优化特征点，分开优化是为了加速
   // pose optimization
   SVO_START_TIMER("pose_optimizer");
   size_t sfba_n_edges_final;
@@ -175,7 +180,9 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
   optimizeStructure(new_frame_, Config::structureOptimMaxPts(), Config::structureOptimNumIter());
   SVO_STOP_TIMER("point_optimizer");
 
-  // select keyframe
+  // d. select keyframe
+  // 判断当前帧是否为关键帧，如果不是关键帧则退出，如果是，则增加关键帧，并提取新的特征点加到深度滤波器中
+  // 关键帧选取的逻辑非常naive：直接用的距离判断，距离阈值跟帧平均深度正相关
   core_kfs_.insert(new_frame_);
   setTrackingQuality(sfba_n_edges_final);
   if(tracking_quality_ == TRACKING_INSUFFICIENT)
@@ -246,7 +253,8 @@ FrameHandlerMono::UpdateResult FrameHandlerMono::relocalizeFrame(
   }
   SparseImgAlign img_align(Config::kltMaxLevel(), Config::kltMinLevel(),
                            30, SparseImgAlign::GaussNewton, false, false);
-  size_t img_align_n_tracked = img_align.run(ref_keyframe, new_frame_);
+  size_t img_align_n_tracked = img_align.run(FrameBundle::Ptr(new FrameBundle(std::vector<FramePtr>({ref_keyframe}))),
+                                             FrameBundle::Ptr(new FrameBundle(std::vector<FramePtr>({new_frame_}))));
   if(img_align_n_tracked > 30)
   {
     SE3 T_f_w_last = last_frame_->T_f_w_;

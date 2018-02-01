@@ -111,6 +111,22 @@ void DepthFilter::addKeyframe(FramePtr frame, double depth_mean, double depth_mi
     initializeSeeds(frame);
 }
 
+void DepthFilter::addKeyframe(FramePtr frame, double depth_mean, double depth_min, const std::vector<FramePtr> & history_frames)
+{
+  new_keyframe_min_depth_ = depth_min;
+  new_keyframe_mean_depth_ = depth_mean;
+  if(thread_ != NULL)
+  {
+    new_keyframe_ = frame;
+    new_keyframe_set_ = true;
+    seeds_updating_halt_ = true;
+    new_keyframe_update_frames_ = history_frames;
+    frame_queue_cond_.notify_one();
+  }
+  else
+    initializeSeeds(frame);
+}
+
 void DepthFilter::initializeSeeds(FramePtr frame)
 {
   Features new_features;
@@ -171,6 +187,7 @@ void DepthFilter::updateSeedsLoop()
   while(!boost::this_thread::interruption_requested())
   {
     FramePtr frame;
+    std::vector<FramePtr> history_frames;
     {
       lock_t lock(frame_queue_mut_);
       while(frame_queue_.empty() && new_keyframe_set_ == false)
@@ -181,6 +198,7 @@ void DepthFilter::updateSeedsLoop()
         seeds_updating_halt_ = false;
         clearFrameQueue();
         frame = new_keyframe_;
+        history_frames = new_keyframe_update_frames_;
       }
       else
       {
@@ -190,17 +208,27 @@ void DepthFilter::updateSeedsLoop()
     }
     updateSeeds(frame);
     if(frame->isKeyframe())
+    {
+      int old_seed_size = seeds_.size();
       initializeSeeds(frame);
+      int new_seed_size = seeds_.size();
+      if(new_seed_size>old_seed_size)
+      {
+        for(auto& f:new_keyframe_update_frames_)
+        updateSeeds(f, old_seed_size);
+      }
+    }
   }
 }
 
-void DepthFilter::updateSeeds(FramePtr frame)
+void DepthFilter::updateSeeds(FramePtr frame, int start_seed_idx)
 {
   // update only a limited number of seeds, because we don't have time to do it
   // for all the seeds in every frame!
   size_t n_updates=0, n_failed_matches=0, n_seeds = seeds_.size();
   lock_t lock(seeds_mut_);
   std::list<Seed>::iterator it=seeds_.begin();
+  for(int i=0; i<start_seed_idx; i++) {it++;}
 
   const double focal_length = frame->cam_->errorMultiplier2();
   double px_noise = 1.0;
