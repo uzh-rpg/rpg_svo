@@ -67,6 +67,8 @@ protected:
   FrameBundlePtr last_keyframes_;               //!< Last keyframes, used at keyframe selection.
   std::deque<FrameBundlePtr> history_frames_;   //!< history frames, used at depth filter.
 
+  Sophus::SE3 last_imu_pose_;                   //!< Last pose before lost, after reset use this pose to init first pose.
+
   /// Initialize the visual odometry algorithm.
   virtual void initialize();
 

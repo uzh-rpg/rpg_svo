@@ -98,20 +98,19 @@ VoNode::~VoNode()
 }
 
 void VoNode::processImgLR(const cv::Mat& imgl, const cv::Mat& imgr, double timestamp)
-{  
+{
   processUserActions();
   vo_->addImage(imgl, imgr, timestamp);
+  if(vo_->stage() == svo::FrameHandlerBase::STAGE_DEFAULT_FRAME)
+  {
+    visualizer_.publishMinimal(imgl, vo_->lastFrames()->at(0), *vo_, timestamp);
 
-  visualizer_.publishMinimal(imgl, vo_->lastFrames()->at(0), *vo_, timestamp);
+    if(publish_markers_ && vo_->stage() != FrameHandlerBase::STAGE_PAUSED)
+      visualizer_.visualizeMarkers(vo_->lastFrames()->at(0), vo_->coreKeyframes(), vo_->map());
 
-  if(publish_markers_ && vo_->stage() != FrameHandlerBase::STAGE_PAUSED)
-    visualizer_.visualizeMarkers(vo_->lastFrames()->at(0), vo_->coreKeyframes(), vo_->map());
-
-  if(publish_dense_input_)
-    visualizer_.exportToDense(vo_->lastFrames()->at(0));
-
-  if(vo_->stage() == FrameHandlerStereo::STAGE_PAUSED)
-    usleep(100000);
+    if(publish_dense_input_)
+      visualizer_.exportToDense(vo_->lastFrames()->at(0));
+  }
 }
 
 void VoNode::imgCb(const sensor_msgs::ImageConstPtr& msg)
@@ -218,16 +217,19 @@ int video_demo(svo::VoNode* vo_node)
       usleep(10000);
     #endif
     #if SAVE_TRAJ
-      Sophus::SE3 cam_pose = vo_node->vo_->lastFrames()->at(0)->T_world_cam();
-      Eigen::Vector3d xyz = cam_pose.translation();
-      Eigen::Quaterniond quat_wxyz = cam_pose.unit_quaternion();
-      // std::cout<<cam_pose.rotation_matrix();
-      // printf("%f %f %f %f\n", quat_wxyz.w(), quat_wxyz.x(), quat_wxyz.y(), quat_wxyz.z());
-      // getchar();
-      fprintf(fp_log, "%d %f %f %f %f %f %f %f %f %f\n", i, tframe, xyz.x(), xyz.y(), xyz.z(),
-                                            quat_wxyz.w(), quat_wxyz.x(), quat_wxyz.y(), quat_wxyz.z(),
-                                            cost_ms);
-      fflush(fp_log);
+      if(vo_node->vo_->stage() == svo::FrameHandlerBase::STAGE_DEFAULT_FRAME)
+      {
+        Sophus::SE3 cam_pose = vo_node->vo_->lastFrames()->at(0)->T_world_cam();
+        Eigen::Vector3d xyz = cam_pose.translation();
+        Eigen::Quaterniond quat_wxyz = cam_pose.unit_quaternion();
+        // std::cout<<cam_pose.rotation_matrix();
+        // printf("%f %f %f %f\n", quat_wxyz.w(), quat_wxyz.x(), quat_wxyz.y(), quat_wxyz.z());
+        // getchar();
+        fprintf(fp_log, "%d %f %f %f %f %f %f %f %f %f\n", i, tframe, xyz.x(), xyz.y(), xyz.z(),
+                                              quat_wxyz.w(), quat_wxyz.x(), quat_wxyz.y(), quat_wxyz.z(),
+                                              cost_ms);
+        fflush(fp_log);
+      }
     #endif
   }
 #if SAVE_TRAJ

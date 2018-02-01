@@ -41,6 +41,7 @@ FrameHandlerStereo::FrameHandlerStereo(vk::AbstractCamera* cam) :
   depth_filter_(NULL)
 {
   initialize();
+  setRelocalize(false);
 }
 
 void FrameHandlerStereo::initialize()
@@ -74,7 +75,7 @@ void FrameHandlerStereo::addImage(const cv::Mat& img_left, const cv::Mat& img_ri
   t_cam_body<<0,0,0;
   Vector3d t_cam_body_right;
   t_cam_body_right<<-0.11944,0,0;
-#if 1
+#if 1 // stereo svo
   // create new frame
   SVO_START_TIMER("pyramid_creation");
   new_frames_.reset(new FrameBundle(std::vector<FramePtr>({
@@ -95,7 +96,7 @@ void FrameHandlerStereo::addImage(const cv::Mat& img_left, const cv::Mat& img_ri
   // set last frame
   last_frames_ = new_frames_;
   new_frames_.reset();
-#else
+#else // degenerate to mono svo
   UpdateResult res = RESULT_FAILURE;
   if(stage_ == STAGE_FIRST_FRAME)
   {
@@ -128,8 +129,8 @@ void FrameHandlerStereo::addImage(const cv::Mat& img_left, const cv::Mat& img_ri
 FrameHandlerStereo::UpdateResult FrameHandlerStereo::processFirstFrame()
 {
   // new_frames_->set_T_W_B(new_frames_->at(0)->T_cam_imu());
-  new_frames_->set_T_W_B(SE3(Matrix3d::Identity(), Vector3d::Zero()));
-  
+  new_frames_->set_T_W_B(last_imu_pose_);
+
   initialization::InitResult res = initialization::initFrameStereo(new_frames_->at(0),new_frames_->at(1));
   if(res == initialization::FAILURE)
     return RESULT_FAILURE;
@@ -332,12 +333,20 @@ bool FrameHandlerStereo::relocalizeFrameAtPose(
 
 void FrameHandlerStereo::resetAll()
 {
+  if(last_frames_.get())
+    last_imu_pose_ = last_frames_->get_T_W_B();
+
   resetCommon();
   last_frames_.reset();
   new_frames_.reset();
   core_kfs_.clear();
   overlap_kfs_.clear();
   depth_filter_->reset();
+
+  last_keyframes_.reset();
+  history_frames_.clear();
+
+  printf("Stereo vo reset!!!\n");
 }
 
 bool FrameHandlerStereo::needNewKf(double scene_depth_mean)

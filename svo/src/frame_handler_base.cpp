@@ -41,6 +41,7 @@ FrameHandlerBase::FrameHandlerBase() :
   acc_frame_timings_(10),
   acc_num_obs_(10),
   num_obs_last_(0),
+  relocalize_after_track_failed_(true),
   tracking_quality_(TRACKING_INSUFFICIENT)
 {
 #ifdef SVO_TRACE
@@ -129,18 +130,19 @@ int FrameHandlerBase::finishFrameProcessingCommon(
   }
 #endif
 
-  if(dropout == RESULT_FAILURE &&
+  if( relocalize_after_track_failed_ && dropout == RESULT_FAILURE &&
       (stage_ == STAGE_DEFAULT_FRAME || stage_ == STAGE_RELOCALIZING ))
   {
-    stage_ = STAGE_PAUSED;
-    // stage_ = STAGE_RELOCALIZING;
+    stage_ = STAGE_RELOCALIZING;
     tracking_quality_ = TRACKING_INSUFFICIENT;
   }
   else if (dropout == RESULT_FAILURE)
+  {
     resetAll();
+    stage_ = STAGE_FIRST_FRAME;
+  }
   if(set_reset_)
     resetAll();
-
   return 0;
 }
 
@@ -212,7 +214,7 @@ void FrameHandlerBase::optimizeStructure(
     }
   }
   deque<Point*> pts(pts_set.begin(), pts_set.end());
-#if 0
+#if 1
   max_n_pts = min(max_n_pts, pts.size());
   nth_element(pts.begin(), pts.begin() + max_n_pts, pts.end(), ptLastOptimComparator);
   for(deque<Point*>::iterator it=pts.begin(); it!=pts.begin()+max_n_pts; ++it)
