@@ -158,7 +158,7 @@ protected:
   void initializeSeeds(FramePtr frame);
 
   /// Update all seeds with a new measurement frame.
-  virtual void updateSeeds(FramePtr frame);
+  virtual void updateSeeds(FramePtr frame, int start_seed_idx = 0);
 
   /// When a new keyframe arrives, the frame queue should be cleared.
   void clearFrameQueue();

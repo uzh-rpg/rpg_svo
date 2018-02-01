@@ -127,8 +127,8 @@ void FrameHandlerStereo::addImage(const cv::Mat& img_left, const cv::Mat& img_ri
 
 FrameHandlerStereo::UpdateResult FrameHandlerStereo::processFirstFrame()
 {
-  new_frames_->set_T_W_B(new_frames_->at(0)->T_cam_imu());
-  // new_frames_->set_T_W_B(SE3(Matrix3d::Identity(), Vector3d::Zero()));
+  // new_frames_->set_T_W_B(new_frames_->at(0)->T_cam_imu());
+  new_frames_->set_T_W_B(SE3(Matrix3d::Identity(), Vector3d::Zero()));
   
   initialization::InitResult res = initialization::initFrameStereo(new_frames_->at(0),new_frames_->at(1));
   if(res == initialization::FAILURE)
